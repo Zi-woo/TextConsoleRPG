@@ -275,6 +275,9 @@ namespace MyApp
         {
             string jsonString = JsonSerializer.Serialize(player, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(playerDataPath, jsonString);
+
+            string jsonString2 = JsonSerializer.Serialize(itemDb, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(itemDBPath, jsonString2);
         }
 
         static int CheckInput(int min, int max)
@@ -292,6 +295,5 @@ namespace MyApp
                 Console.WriteLine("잘못된 입력입니다!!!!");
             }
         }
-       
     }
 }
