@@ -2,21 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace TextConsoleRPG
 {
     class Character
     {
-        public int Level { get; }
-        public string Name { get; }
-        public string Job { get; }
-        public int Atk { get; }
-        public int Def { get; }
-        public int Hp { get; }
+        [JsonInclude]
+        public int Level { get; private set; }
+        [JsonInclude]
+        public string Name { get; private set; }
+        [JsonInclude]
+        public string Job { get; private set; }
+        [JsonInclude]
+        public int Atk { get; private set; }
+        [JsonInclude]
+        public int Def { get; private set; }
+        [JsonInclude]
+        public int Hp { get; private set; }
+        [JsonInclude]
         public int Gold { get; private set; }
-
+        [JsonInclude]
         public int ExtraAtk { get; private set; }
+        [JsonInclude]
         public int ExtraDef { get; private set; }
 
         private List<Item> Inventory = new List<Item>();
@@ -29,7 +38,7 @@ namespace TextConsoleRPG
                 return Inventory.Count;
             }
         }
-
+        public Character() { }
         public Character(int level, string name, string job, int atk, int def, int hp, int gold)
         {
             Level = level;
