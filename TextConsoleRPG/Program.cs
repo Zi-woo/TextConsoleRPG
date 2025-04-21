@@ -99,7 +99,7 @@ namespace MyApp
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
 
-            int result = CheckInput(1, 3);
+            int result = CheckInput(1, 4);
 
             switch (result)
             {
