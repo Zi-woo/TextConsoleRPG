@@ -35,5 +35,7 @@ namespace TextConsoleRPG
         {
             return $"{Name}  |  {DisplayTypeText} +{Value}  |  {Desc}";
         }
+
+
     }
 }
