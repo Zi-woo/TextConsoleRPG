@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace TextConsoleRPG
 {
-    public class BattleStartScreen
+    public class StartBattleScreen
     {
-            public void battleStar()
+            public void starBattle()
         {
             Console.Clear();
             Console.WriteLine("Battle!!");
