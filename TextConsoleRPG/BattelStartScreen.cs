@@ -11,6 +11,7 @@ namespace TextConsoleRPG
     {
             public void battleStar()
         {
+            Console.Clear();
             Console.WriteLine("Battle!!");
             Console.WriteLine();
             Console.WriteLine("Lv.2 미니언 HP 15");
