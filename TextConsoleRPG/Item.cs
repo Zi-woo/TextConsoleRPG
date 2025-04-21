@@ -33,7 +33,20 @@ namespace TextConsoleRPG
 
         public string ItemInfoText()
         {
-            return $"{Name}  |  {DisplayTypeText} +{Value}  |  {Desc}";
+            return $"{PadingKorean(Name,20)}  |  {DisplayTypeText} +{Value,-2}  |  {PadingKorean(Desc,50)}";
+        }
+
+        public static string PadingKorean(string input, int width)
+        {
+            int len = 0;
+            foreach (char c in input)
+            {
+                len += (c >= 0xAC00 && c <= 0xD7A3) ? 2 : 1;
+            }
+            int pad = width - len;
+            if (pad > 0)
+                return input + new string(' ', pad);
+            return input;
         }
     }
 }
