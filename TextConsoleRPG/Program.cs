@@ -15,49 +15,60 @@ namespace MyApp
 
         static void Main(string[] args)
         {
-            string name = CharacterCreationUI();
-            string job = ChoiceJobUI();
-            SetData(name, job);
+            StartScreen();
             DisplayMainUI();
         }
-
-        static void SetData(string name, string job)
+        static void StartScreen()
         {
-            player = new Character(1, name, job, 10, 5, 100, 10000);
+            Console.Clear();
+            Console.WriteLine("1. 새 게임");
+            Console.WriteLine("2. 불러오기");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            int result = CheckInput(1, 2);
 
-            if (File.Exists(playerDataPath))
+            switch (result)
             {
-                //json 파일 읽어오기
-                string json = File.ReadAllText(playerDataPath);
-                player = (JsonSerializer.Deserialize<Character>(json));
-            }
-            else
-            {
-                //TODO 캐릭터 생성
-                player = new Character(1, name, job, 10, 5, 100, 10000);
-            }
-            if (File.Exists(itemDBPath))
-            {
-                string json = File.ReadAllText(itemDBPath);
-                itemDb = JsonSerializer.Deserialize<List<Item>>(json);
-
-            }
-            else
-            {
-                Console.Write("Fatal Error!!! - 아이템 db 못 찾음");
-                Console.ReadKey();
+                case 1:
+                    string name = CharacterCreationUI();
+                    string job = ChoiceJobUI();
+                    SetData(name, job);
+                    break;
+                case 2:
+                    LoadPlayerData();
+                    break;
             }
         }
+        static void SetData(string name, string job)
+        {
+
+            //TODO 캐릭터 생성
+            switch (job)
+            {
+                case "전사":
+                    player = new Character(1, name, job, 8, 6, 110, 10000);
+                    break;
+                case "마법사":
+                    player = new Character(1, name, job, 5, 5, 100, 10000);
+                    break;
+                case "궁수":
+                    player = new Character(1, name, job, 11, 5, 90, 10000);
+                    break;
+                case "도적":
+                    player = new Character(1, name, job, 13, 4, 80, 10000);
+                    break;
+            }
+        }
+
         static string CharacterCreationUI()
         {
             Console.Clear();
             Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.");
             Console.WriteLine("원하시는 이름을 설정해주세요.");
-            string name = Console.ReadLine();
-            return name;
+            return Console.ReadLine();
         }
         static string ChoiceJobUI()
-        { 
+        {
             Console.Clear();
             Console.WriteLine("직업을 선택하세요");
             Console.WriteLine();
@@ -101,6 +112,7 @@ namespace MyApp
 
 
             int result = CheckInput(1, 5);
+
 
             switch (result)
             {
@@ -409,7 +421,32 @@ namespace MyApp
             string jsonString2 = JsonSerializer.Serialize(itemDb, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(itemDBPath, jsonString2);
         }
-
+        static void LoadPlayerData()
+        {
+            if (File.Exists(playerDataPath))
+            {
+                //json 파일 읽어오기
+                string json = File.ReadAllText(playerDataPath);
+                player = (JsonSerializer.Deserialize<Character>(json));
+            }
+            else
+            {
+                Console.WriteLine("저장된 데이터가 없습니다."); // 저장된 데이터가 없다고 뜨고 StartScreen으로 바로넘어가니까 콘솔창이 클리어되서 이 문구가 안보임 -> 여유되면 고치기
+                StartScreen();
+            }
+            if (File.Exists(itemDBPath))
+            {
+                string json = File.ReadAllText(itemDBPath);
+                itemDb = JsonSerializer.Deserialize<List<Item>>(json);
+            }
+            else
+            {
+                //Console.Write("Fatal Error!!! - 아이템 db 못 찾음");
+                Console.WriteLine("저장된 데이터가 없습니다.");
+                StartScreen();
+                Console.ReadKey();
+            }
+        }
         static int CheckInput(int min, int max)
         {
             int result;
