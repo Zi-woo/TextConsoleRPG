@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Numerics;
+using System.Text.Json;
 using TextConsoleRPG;
 
 namespace MyApp
@@ -6,7 +8,9 @@ namespace MyApp
     public class Program
     {
         private static Character player;
-        private static Item[] itemDb;
+        private static List<Item> itemDb;
+        public const string playerDataPath = "playerData.json";
+        public const string itemDBPath = "items.json";
 
         static void Main(string[] args)
         {
@@ -28,6 +32,29 @@ namespace MyApp
             new Item("청동 도끼", 0, 5,"어디선가 사용됐던거 같은 도끼입니다. ",1500),
             new Item("스파르타의 창", 0, 7,"스파르타의 전사들이 사용했다는 전설의 창입니다. ",2500)
             };
+
+            if (File.Exists(playerDataPath))
+            {
+                //json 파일 읽어오기
+                string json = File.ReadAllText(playerDataPath);
+                player = (JsonSerializer.Deserialize<Character>(json));
+            }
+            else
+            {
+                //TODO 캐릭터 생성
+                player = new Character(1, name, job, 10, 5, 100, 10000);
+            }
+            if (File.Exists(itemDBPath))
+            {
+                string json = File.ReadAllText(itemDBPath);
+                itemDb = JsonSerializer.Deserialize<List<Item>>(json);
+
+            }
+            else
+            {
+                Console.Write("Fatal Error!!! - 아이템 db 못 찾음");
+                Console.ReadKey();
+            }
         }
         static string CharacterCreationUI()
         {
@@ -75,6 +102,7 @@ namespace MyApp
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
+            Console.WriteLine("4. 저장");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -93,6 +121,9 @@ namespace MyApp
 
                 case 3:
                     DisplayShopUI();
+                    break;
+                case 4:
+                    SavePlayerData();
                     break;
             }
         }
@@ -195,7 +226,7 @@ namespace MyApp
             Console.WriteLine();
             Console.WriteLine("[아이템 목록]");
 
-            for (int i = 0; i < itemDb.Length; i++)
+            for (int i = 0; i < itemDb.Count; i++)
             {
                 Item curItem = itemDb[i];
 
@@ -234,7 +265,7 @@ namespace MyApp
             Console.WriteLine();
             Console.WriteLine("[아이템 목록]");
 
-            for (int i = 0; i < itemDb.Length; i++)
+            for (int i = 0; i < itemDb.Count; i++)
             {
                 Item curItem = itemDb[i];
 
@@ -247,7 +278,7 @@ namespace MyApp
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            int result = CheckInput(0, itemDb.Length);
+            int result = CheckInput(0, itemDb.Count);
 
             switch (result)
             {
@@ -289,6 +320,15 @@ namespace MyApp
             }
         }
 
+        static void SavePlayerData()
+        {
+            string jsonString = JsonSerializer.Serialize(player, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(playerDataPath, jsonString);
+
+            string jsonString2 = JsonSerializer.Serialize(itemDb, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(itemDBPath, jsonString2);
+        }
+
         static int CheckInput(int min, int max)
         {
             int result;
@@ -304,6 +344,5 @@ namespace MyApp
                 Console.WriteLine("잘못된 입력입니다!!!!");
             }
         }
-       
     }
 }

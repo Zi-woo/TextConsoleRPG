@@ -1,0 +1,50 @@
+[
+  {
+    "Name": "\uC218\uB828\uC790\uC758 \uAC11\uC637",
+    "Type": 1,
+    "Value": 5,
+    "Desc": "\uC218\uB828\uC5D0 \uB3C4\uC6C0\uC744 \uC8FC\uB294 \uAC11\uC637\uC785\uB2C8\uB2E4. ",
+    "Price": 1000,
+    "DisplayTypeText": "\uBC29\uC5B4\uB825"
+  },
+  {
+    "Name": "\uBB34\uC1E0\uAC11\uC637",
+    "Type": 1,
+    "Value": 9,
+    "Desc": "\uBB34\uC1E0\uB85C \uB9CC\uB4E4\uC5B4\uC838 \uD2BC\uD2BC\uD55C \uAC11\uC637\uC785\uB2C8\uB2E4. ",
+    "Price": 2000,
+    "DisplayTypeText": "\uBC29\uC5B4\uB825"
+  },
+  {
+    "Name": "\uC2A4\uD30C\uB974\uD0C0\uC758 \uAC11\uC637",
+    "Type": 1,
+    "Value": 15,
+    "Desc": "\uC2A4\uD30C\uB974\uD0C0\uC758 \uC804\uC0AC\uB4E4\uC774 \uC0AC\uC6A9\uD588\uB2E4\uB294 \uC804\uC124\uC758 \uAC11\uC637\uC785\uB2C8\uB2E4. ",
+    "Price": 3500,
+    "DisplayTypeText": "\uBC29\uC5B4\uB825"
+  },
+  {
+    "Name": "\uB0A3\uC740 \uAC80",
+    "Type": 0,
+    "Value": 2,
+    "Desc": "\uC27D\uAC8C \uBCFC \uC218 \uC788\uB294 \uB0A1\uC740 \uAC80 \uC785\uB2C8\uB2E4. ",
+    "Price": 600,
+    "DisplayTypeText": "\uACF5\uACA9\uB825"
+  },
+  {
+    "Name": "\uCCAD\uB3D9 \uB3C4\uB07C",
+    "Type": 0,
+    "Value": 5,
+    "Desc": "\uC5B4\uB514\uC120\uAC00 \uC0AC\uC6A9\uB410\uB358\uAC70 \uAC19\uC740 \uB3C4\uB07C\uC785\uB2C8\uB2E4. ",
+    "Price": 1500,
+    "DisplayTypeText": "\uACF5\uACA9\uB825"
+  },
+  {
+    "Name": "\uC2A4\uD30C\uB974\uD0C0\uC758 \uCC3D",
+    "Type": 0,
+    "Value": 7,
+    "Desc": "\uC2A4\uD30C\uB974\uD0C0\uC758 \uC804\uC0AC\uB4E4\uC774 \uC0AC\uC6A9\uD588\uB2E4\uB294 \uC804\uC124\uC758 \uCC3D\uC785\uB2C8\uB2E4. ",
+    "Price": 2500,
+    "DisplayTypeText": "\uACF5\uACA9\uB825"
+  }
+]
