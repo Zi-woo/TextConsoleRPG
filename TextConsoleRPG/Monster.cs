@@ -36,6 +36,7 @@ namespace TextConsoleRPG
         {
             Hp -= damage;
             if (Hp < 0) Hp = 0;
+            Console.WriteLine($"{damage} 데미지를 입혔다!");
         }
     }
 }
