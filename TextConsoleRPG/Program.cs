@@ -14,12 +14,25 @@ namespace MyApp
 
         static void Main(string[] args)
         {
-            SetData();
+            string name = CharacterCreationUI();
+            string job = ChoiceJobUI();
+            SetData(name, job);
             DisplayMainUI();
         }
 
-        static void SetData()
+        static void SetData(string name, string job)
         {
+            player = new Character(1, name, job, 10, 5, 100, 10000);
+            itemDb = new Item[]
+            {
+            new Item("수련자의 갑옷", 1, 5,"수련에 도움을 주는 갑옷입니다. ",1000),
+            new Item("무쇠갑옷", 1, 9,"무쇠로 만들어져 튼튼한 갑옷입니다. ",2000),
+            new Item("스파르타의 갑옷", 1, 15,"스파르타의 전사들이 사용했다는 전설의 갑옷입니다. ",3500),
+            new Item("낡은 검", 0, 2,"쉽게 볼 수 있는 낡은 검 입니다. ",600),
+            new Item("청동 도끼", 0, 5,"어디선가 사용됐던거 같은 도끼입니다. ",1500),
+            new Item("스파르타의 창", 0, 7,"스파르타의 전사들이 사용했다는 전설의 창입니다. ",2500)
+            };
+
             if (File.Exists(playerDataPath))
             {
                 //json 파일 읽어오기
@@ -29,7 +42,7 @@ namespace MyApp
             else
             {
                 //TODO 캐릭터 생성
-                player = new Character(1, "Chad", "전사", 10, 5, 100, 10000);
+                player = new Character(1, name, job, 10, 5, 100, 10000);
             }
             if (File.Exists(itemDBPath))
             {
@@ -43,7 +56,43 @@ namespace MyApp
                 Console.ReadKey();
             }
         }
+        static string CharacterCreationUI()
+        {
+            Console.Clear();
+            Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.");
+            Console.WriteLine("원하시는 이름을 설정해주세요.");
+            string name = Console.ReadLine();
+            return name;
+        }
+        static string ChoiceJobUI()
+        { 
+            Console.Clear();
+            Console.WriteLine("직업을 선택하세요");
+            Console.WriteLine();
+            Console.WriteLine("1. 전사");
+            Console.WriteLine("2. 마법사");
+            Console.WriteLine("3. 궁수");
+            Console.WriteLine("4. 도적");
 
+            int result = CheckInput(1, 4);
+
+            switch (result)
+            {
+                case 1:
+                    return "전사";
+                    break;
+                case 2:
+                    return "마법사";
+                    break;
+                case 3:
+                    return "궁수";
+                    break;
+                case 4:
+                    return "도적";
+                    break;
+            }
+            return "";
+        }
         static void DisplayMainUI()
         {
             Console.Clear();

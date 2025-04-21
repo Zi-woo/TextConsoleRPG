@@ -48,5 +48,7 @@ namespace TextConsoleRPG
                 return input + new string(' ', pad);
             return input;
         }
+
+
     }
 }
