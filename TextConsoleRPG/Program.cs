@@ -9,6 +9,7 @@ namespace MyApp
     {
         private static Character player;
         private static List<Item> itemDb;
+        private static List<Monster> monsterDb;
         public const string playerDataPath = "playerData.json";
         public const string itemDBPath = "items.json";
 
@@ -95,6 +96,7 @@ namespace MyApp
             }
             return "";
         }
+        #region 메인화면
         static void DisplayMainUI()
         {
             Console.Clear();
@@ -109,7 +111,8 @@ namespace MyApp
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
 
-            int result = CheckInput(1, 4);
+            int result = CheckInput(1, 5);
+
 
             switch (result)
             {
@@ -127,9 +130,13 @@ namespace MyApp
                 case 4:
                     SavePlayerData();
                     break;
+                case 5:
+                    DisplayBattleUI();
+                    break;
             }
         }
-
+        #endregion
+        #region 상태보기
         static void DisplayStatUI()
         {
             Console.Clear();
@@ -152,7 +159,8 @@ namespace MyApp
                     break;
             }
         }
-
+        #endregion
+        #region 인벤토리
         static void DisplayInventoryUI()
         {
             Console.Clear();
@@ -182,7 +190,8 @@ namespace MyApp
                     break;
             }
         }
-
+        #endregion
+        #region 장착관리
         static void DisplayEquipUI()
         {
             Console.Clear();
@@ -216,7 +225,8 @@ namespace MyApp
                     break;
             }
         }
-
+        #endregion
+        #region 상점
         static void DisplayShopUI()
         {
             Console.Clear();
@@ -255,7 +265,8 @@ namespace MyApp
                     break;
             }
         }
-
+        #endregion
+        #region 아이템 구매
         static void DisplayBuyUI()
         {
             Console.Clear();
@@ -321,7 +332,87 @@ namespace MyApp
                     break;
             }
         }
+        #endregion
+        static void DisplayBattleUI()
+        {
+            Console.Clear();
+            monsterDb = new List<Monster>
+            {
+            new Monster("미니언", 2, 15, 5),
+            new Monster("대포미니언", 5, 25, 8),
+            new Monster("공허충",3, 10, 9)
+            };
+            int result = CheckInput(0, 1);
 
+            switch (result)
+            {
+                case 0:
+                    DisplayMainUI();
+                    break;
+
+                case 1:
+                    DisplayAttackUI();
+                    break;
+            }
+        }
+        #region 공격
+        static void DisplayAttackUI()
+        {
+            Console.Clear();
+            Console.WriteLine("Battle!!\n");
+            
+            //몬스터 출력
+            for (int i = 0; i < monsterDb.Count; i++)
+            {
+                Monster m = monsterDb[i];
+                string status = m.AliveMonster() ? $"(HP: {m.Hp})" : "(Dead)";
+                Console.WriteLine($"{i + 1}. {m.Name} {status}");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("0. 취소");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            int result = CheckInput(0, monsterDb.Count);//몬스터수에 따른 입력값 
+
+            switch (result)
+            {
+                case 0:
+                    DisplayBattleUI();
+                    break;
+                default:
+                    int Monsterdx = result - 1;
+                    Monster targetMonster = monsterDb[Monsterdx];
+                    {
+                        if (!targetMonster.AliveMonster()) //타격 전 생존 확인 
+                        {
+                            Console.WriteLine("이미 죽은 대상입니다");
+                            Console.WriteLine("Enter 를 눌러주세요.");
+                            Console.ReadLine();
+                        }
+                        else // 타격
+                        {
+                            int damege = player.Atk;
+                            targetMonster.Damage(damege);
+                            Console.WriteLine($"{targetMonster.Name}을 공격!");
+                            Thread.Sleep(500);
+
+
+                        }
+                        if (!targetMonster.AliveMonster()) //타격 전 생존 확인 
+                        {
+                            Console.WriteLine($"{targetMonster.Name}이(가) 쓰러졌습니다!");
+                            Console.WriteLine("\nEnter 를 눌러주세요.");
+                            Console.ReadLine();
+                        }
+                    }
+                    DisplayAttackUI();
+                    break;
+
+            }
+        }
+        #endregion
         static void SavePlayerData()
         {
             string jsonString = JsonSerializer.Serialize(player, new JsonSerializerOptions { WriteIndented = true });
