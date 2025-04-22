@@ -22,9 +22,9 @@ namespace TextConsoleRPG
             Hp = hp;
             Atk = atk;
         }
-        public string MonsterInfoText()
+        public void MonsterInfoText()
         {
-            return $"Lv.{Level} {Name} HP {Hp}";
+            Console.WriteLine($"Lv.{Level} {Name} HP {Hp}");
         }
 
         
@@ -32,6 +32,7 @@ namespace TextConsoleRPG
         {
             return Hp > 0;
         }
+
         public void Damage(int damage)//몬스터 체력 감소
         {
             Hp -= damage;
@@ -39,4 +40,5 @@ namespace TextConsoleRPG
             Console.WriteLine($"{damage} 데미지를 입혔다!");
         }
     }
+
 }

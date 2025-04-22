@@ -106,7 +106,8 @@ namespace MyApp
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
-            Console.WriteLine("4. 저장");
+            Console.WriteLine("4. 전투 시작");
+            Console.WriteLine("5. 저장");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -127,10 +128,10 @@ namespace MyApp
                     DisplayShopUI();
                     break;
                 case 4:
-                    SavePlayerData();
+                    StartBattle();
                     break;
                 case 5:
-                    DisplayBattleUI();
+                    SavePlayerData();
                     break;
             }
         }
@@ -332,28 +333,38 @@ namespace MyApp
             }
         }
         #endregion
-        static void DisplayBattleUI()
+        static void StartBattle()
         {
             Console.Clear();
+
             monsterDb = new List<Monster>
             {
             new Monster("미니언", 2, 15, 5),
             new Monster("대포미니언", 5, 25, 8),
             new Monster("공허충",3, 10, 9)
             };
-            int result = CheckInput(0, 1);
-
-            switch (result)
+            
+            Random random = new Random();
+            int monsterCnt = random.Next(1, 5); // 1~4까지의 랜덤한 수
+            int playerTotalHp = player.Hp;
+            for (int i = 0; i < monsterCnt; i++)
             {
-                case 0:
-                    DisplayMainUI();
-                    break;
+                int monsterNum = random.Next(0, monsterDb.Count);
 
-                case 1:
-                    DisplayAttackUI();
-                    break;
+                monsterDb[monsterNum].MonsterInfoText();
             }
+            Console.WriteLine();
+            Console.WriteLine("[내정보]");
+            Console.WriteLine($"Lv. {player.Level} {player.Name} ({player.Job})");
+            Console.WriteLine($"HP {player.Hp}/{playerTotalHp}");
+            Console.WriteLine();
+            Console.WriteLine("1. 공격");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            int result = CheckInput(1, 1);
+            DisplayAttackUI();
         }
+        
         #region 공격
         static void DisplayAttackUI()
         {
@@ -364,6 +375,7 @@ namespace MyApp
             for (int i = 0; i < monsterDb.Count; i++)
             {
                 Monster m = monsterDb[i];
+                
                 string status = m.AliveMonster() ? $"(HP: {m.Hp})" : "(Dead)";
                 Console.WriteLine($"{i + 1}. {m.Name} {status}");
             }
@@ -378,7 +390,7 @@ namespace MyApp
             switch (result)
             {
                 case 0:
-                    DisplayBattleUI();
+                    //DisplayBattleUI();
                     break;
                 default:
                     int Monsterdx = result - 1;
