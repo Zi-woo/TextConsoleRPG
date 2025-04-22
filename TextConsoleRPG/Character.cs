@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.ConstrainedExecution;
@@ -62,7 +63,7 @@ namespace TextConsoleRPG
             Console.WriteLine($"{Name} {{ {Job} }}");
             Console.WriteLine(ExtraAtk == 0 ? $"공격력 : {Atk}" : $"공격력 : {Atk + ExtraAtk} (+{ExtraAtk})");
             Console.WriteLine(ExtraDef == 0 ? $"방어력 : {Def}" : $"방어력 : {Def + ExtraDef} (+{ExtraDef})");
-            Console.WriteLine($"체력 : {CurHp}");
+            Console.WriteLine($"체력 : {CurHp}/{MaxHp}");
             Console.WriteLine($"Gold : {Gold} G");
         }
 
@@ -112,6 +113,27 @@ namespace TextConsoleRPG
         public bool HasItem(Item item)
         {
             return Inventory.Contains(item);
+        }
+
+        public void Rest(int cost) 
+        {
+            Console.Clear();
+            if (Gold >= cost)//보유 여부 확인
+            {
+                Gold -= cost;
+                Console.WriteLine("몸이 한결 가벼워진 느낌을 받습니다.");
+                Console.WriteLine($"HP {CurHp} -> {MaxHp}\n");
+                CurHp = MaxHp;
+                Console.WriteLine("Enter 를 눌러주세요.");
+                Console.ReadLine();
+
+            }
+            else
+            {
+                Console.WriteLine("Gold 가 부족합니다.");
+                Console.WriteLine("Enter 를 눌러주세요.");
+                Console.ReadLine();
+            }
         }
 
         public void DamagebyMonster(int damage)//플레이어 체력 감소

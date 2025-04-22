@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Numerics;
 using System.Reflection;
 using System.Text.Json;
@@ -109,8 +110,9 @@ namespace MyApp
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
-            Console.WriteLine("4. 전투 시작");
-            Console.WriteLine("5. 저장");
+            Console.WriteLine("4. 휴식");
+            Console.WriteLine("5. 전투 시작");
+            Console.WriteLine("6. 저장");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -131,9 +133,12 @@ namespace MyApp
                     DisplayShopUI();
                     break;
                 case 4:
-                    InitializeBattle();
+                    DisplayRestUI();
                     break;
                 case 5:
+                    InitializeBattle();
+                    break;
+                case 6:
                     SavePlayerData();
                     break;
             }
@@ -336,6 +341,34 @@ namespace MyApp
             }
         }
         #endregion
+        #region 휴식
+        static void DisplayRestUI()
+        {
+            int restcost = 500;
+            Console.Clear();
+            Console.WriteLine("휴식");
+            Console.WriteLine("휴식을 취하여 체력을 회복 할 수 있습니다..\n");
+            Console.WriteLine("휴식하기");
+            Console.WriteLine($"{restcost} G를 내면 체력을 회복할 수 있습니다.(보유골드 : {player.Gold}G)\n");
+            Console.WriteLine("1. 휴식하기");
+            Console.WriteLine("0. 나가기\n");
+            Console.WriteLine("원하시는 행동을입력해주세요.");
+
+            int result = CheckInput(0, 1);
+
+            switch (result)
+            {
+                case 0:
+                    DisplayMainUI();
+                    break;
+                case 1:
+                    player.Rest(restcost);
+                    DisplayRestUI();
+                    break;
+            }
+        }
+        #endregion
+        #region 전투 세팅
         static void InitializeBattle()
         {
             player.PreDgnHp = player.CurHp;
@@ -370,6 +403,7 @@ namespace MyApp
 
             PlayerPhase();
         }
+        #endregion
         #region 공격
         static void EnemyPhase()
         {
@@ -490,6 +524,8 @@ namespace MyApp
             DisplayMainUI();
         }
         #endregion
+
+        #region 세이브
         static void SavePlayerData()
         {
             string jsonString = JsonSerializer.Serialize(player, new JsonSerializerOptions { WriteIndented = true });
@@ -524,6 +560,7 @@ namespace MyApp
                 Console.ReadKey();
             }
         }
+        #endregion
         static int CheckInput(int min, int max)
         {
             int result;
