@@ -20,7 +20,9 @@ namespace TextConsoleRPG
         [JsonInclude]
         public int Def { get; private set; }
         [JsonInclude]
-        public int Hp { get; private set; }
+        public int CurHp { get; private set; }
+        public int PreDgnHp { get; set; } // 던전입장전체력
+        public int MaxHp { get; private set; } // 최대체력
         [JsonInclude]
         public int Gold { get; private set; }
         [JsonInclude]
@@ -46,7 +48,9 @@ namespace TextConsoleRPG
             Job = job;
             Atk = atk;
             Def = def;
-            Hp = hp;
+            CurHp = hp;
+            PreDgnHp = hp;
+            MaxHp = hp;
             Gold = gold;
         }
 
@@ -56,7 +60,7 @@ namespace TextConsoleRPG
             Console.WriteLine($"{Name} {{ {Job} }}");
             Console.WriteLine(ExtraAtk == 0 ? $"공격력 : {Atk}" : $"공격력 : {Atk + ExtraAtk} (+{ExtraAtk})");
             Console.WriteLine(ExtraDef == 0 ? $"방어력 : {Def}" : $"방어력 : {Def + ExtraDef} (+{ExtraDef})");
-            Console.WriteLine($"체력 : {Hp}");
+            Console.WriteLine($"체력 : {CurHp}");
             Console.WriteLine($"Gold : {Gold} G");
         }
 
@@ -106,6 +110,12 @@ namespace TextConsoleRPG
         public bool HasItem(Item item)
         {
             return Inventory.Contains(item);
+        }
+
+        public void Damage(int damage)//몬스터 체력 감소
+        {
+            CurHp -= damage;
+            if (CurHp < 0) CurHp = 0;
         }
     }
 }
