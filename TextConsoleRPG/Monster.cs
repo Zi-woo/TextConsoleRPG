@@ -27,7 +27,7 @@ namespace TextConsoleRPG
             Console.WriteLine($"Lv.{Level} {Name} HP {Hp}");
         }
 
-        
+   
         public bool AliveMonster() //몬스터 생존 확인 
         {
             return Hp > 0;

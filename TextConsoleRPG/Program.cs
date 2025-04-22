@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Numerics;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text.Json;
+using System.Xml.Linq;
 using TextConsoleRPG;
 
 namespace MyApp
@@ -48,16 +50,16 @@ namespace MyApp
             switch (job)
             {
                 case "전사":
-                    player = new Character(1, name, job, 8, 6, 110, 10000);
+                    player = new Character(1, 1, name, job, 8, 6, 110, 10000, 0);
                     break;
                 case "마법사":
-                    player = new Character(1, name, job, 5, 5, 100, 10000);
+                    player = new Character(1, 1, name, job, 5, 5, 100, 10000, 0);
                     break;
                 case "궁수":
-                    player = new Character(1, name, job, 11, 5, 90, 10000);
+                    player = new Character(1, 1, name, job, 11, 5, 90, 10000, 0);
                     break;
                 case "도적":
-                    player = new Character(1, name, job, 13, 4, 80, 10000);
+                    player = new Character(1, 1, name, job, 13, 4, 80, 10000, 0);
                     break;
             }
         }
@@ -347,8 +349,13 @@ namespace MyApp
             mm = new MonsterManager();
             mm.SpawnRandomMonster(random.Next(1,5));
 
+                  
+           
+            
             DisplayBattleUI();
         }
+        int totalLevel = mm.spawnedMonsters.Sum(m => m.Level);    //스폰몬스터 토탈레벨
+        
         static void DisplayBattleUI()
         {
             for (int i = 0; i < mm.spawnedMonsters.Count; i++)
@@ -487,7 +494,33 @@ namespace MyApp
                 Console.WriteLine();
                 CheckInput(0, 0);
             }
+            LevelUp();
+        }
+
+        static void LevelUp()
+        {
+            Console.Clear();
+            
+            Console.WriteLine("Battle!! - Result");
+            Console.WriteLine();
+            Console.WriteLine("Victory");
+            Console.WriteLine();
+            Console.WriteLine($"던전에서 몬스터 {mm.spawnedMonsters.Count}마리를 잡았습니다.");
+            Console.WriteLine();
+            Console.WriteLine("[캐릭터 정보]");
+            int totalLevel = mm.spawnedMonsters.Sum(m => m.Level);
+            int KillMonsterExp = totalLevel;
+            int previousExp = player.Exp;
+            player.AddExp(KillMonsterExp);
+            Console.WriteLine($"Lv. {player.PreviousLevel}. {player.Name} -> Lv.{player.Level}. {player.Name}");
+            Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}");
+            Console.WriteLine($"EXP {previousExp} -> {player.Exp}");
+
+            Console.WriteLine("\nEnter를 눌러 메인 화면으로 돌아갑니다.");
+            Console.ReadLine();
+
             DisplayMainUI();
+
         }
         #endregion
         static void SavePlayerData()

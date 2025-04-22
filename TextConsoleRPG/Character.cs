@@ -11,6 +11,7 @@ namespace TextConsoleRPG
 {
     class Character
     {
+        public int PreviousLevel { get; private set; }
         [JsonInclude]
         public int Level { get; private set; }
         [JsonInclude]
@@ -32,6 +33,8 @@ namespace TextConsoleRPG
         [JsonInclude]
         public int ExtraDef { get; private set; }
 
+        public int Exp { get; private set; }
+
         private List<Item> Inventory = new List<Item>();
         private List<Item> EquipList = new List<Item>();
 
@@ -43,8 +46,9 @@ namespace TextConsoleRPG
             }
         }
         public Character() { }
-        public Character(int level, string name, string job, int atk, int def, int hp, int gold)
+        public Character(int previousLevel,int level, string name, string job, int atk, int def, int hp, int gold, int exp)
         {
+            PreviousLevel = previousLevel;
             Level = level;
             Name = name;
             Job = job;
@@ -54,7 +58,51 @@ namespace TextConsoleRPG
             PreDgnHp = hp;
             MaxHp = hp;
             Gold = gold;
+            Exp = exp;
         }
+
+        public void AddExp(int amount)
+        {
+
+            Exp += amount;
+            
+            while (CanLevelUp())
+            {
+                LevelUp();
+            }
+        }
+
+        private bool CanLevelUp() // 레벨업 할 수 있니?
+        {
+            int requiredExp = GetRequiredExpForNextLevel(); // 다음 레벨에 필요한 경험치 계산
+            return Exp >= requiredExp;  // 지금 경험치가 그보다 많거나 같으면 true
+        }
+
+        private int GetRequiredExpForNextLevel() //다음 레벨까지 필요한 경험치를 계산해서 가져오는 함수
+        {
+            switch (Level)
+            {
+                case 1: return 10;
+                case 2: return 35;
+                case 3: return 65;
+                case 4: return 100;
+                default: return int.MaxValue; // 최대 레벨
+            }
+        }
+
+        private void LevelUp()
+        {
+            int previousLevel = Level;  // 이전 레벨을 저장 (필요 시 로그나 비교용)
+            Exp -= GetRequiredExpForNextLevel();    // 현재 경험치에서 레벨업에 필요한 경험치를 차감
+            Level++;
+            MaxHp += 10;
+            Atk += (int)0.5f;
+            Def += 1;
+            CurHp = MaxHp;
+         
+        }
+
+
 
         public void DisplayCharacterInfo()
         {
@@ -64,6 +112,7 @@ namespace TextConsoleRPG
             Console.WriteLine(ExtraDef == 0 ? $"방어력 : {Def}" : $"방어력 : {Def + ExtraDef} (+{ExtraDef})");
             Console.WriteLine($"체력 : {CurHp}");
             Console.WriteLine($"Gold : {Gold} G");
+            Console.WriteLine($"Exp : {Exp}");
         }
 
         public void DisplayInventory(bool showIdx)
