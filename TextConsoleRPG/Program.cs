@@ -394,7 +394,7 @@ namespace MyApp
                 Console.WriteLine();
                 if (player.CurHp <= 0) DisplayBattleResult(false);
             }
-            PlayerPhase();
+            DisplayBattleUI();
         }
         static void PlayerPhase()
         {
