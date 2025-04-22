@@ -11,7 +11,7 @@ using MyApp;
 
 namespace TextConsoleRPG
 {
-    class Character
+    internal class Character
     {
         [JsonInclude]
         public int Level { get; private set; }
@@ -37,7 +37,7 @@ namespace TextConsoleRPG
         [JsonInclude]
         public int CurMp { get; private set; }
         [JsonInclude]
-        public int PreDgnMp { get; set; } 
+        public int PreDgnMp { get; set; }
         [JsonInclude]
         public int MaxMp { get; private set; }
         [JsonInclude]
@@ -55,9 +55,14 @@ namespace TextConsoleRPG
         private List<int> InventoryIdList { get; set; } = new List<int>();
         [JsonInclude]
         private List<int> EquipItemIdList { get; set; } = new List<int>();
+
+        [JsonInclude]
+        private List<string> QuestNameList { get; set; } = new List<string>();
         public List<Skills> LearnedSkills { get; private set; }
         private List<Item> Inventory { get; set; } = new List<Item>();
         private List<Item> EquipList { get; set; } = new List<Item>();
+
+        private List<IQuest> Quests { get; set; } = new List<IQuest>();
 
         public int InventoryCount
         {
@@ -66,9 +71,8 @@ namespace TextConsoleRPG
                 return Inventory.Count;
             }
         }
-
-        public Character(int level, string name, string job, int atk, int def, int matk, int hp,int mp, int gold, List<Skills> learnedSkills)
-            
+        public Character() { }
+        public Character(int level, string name, string job, int atk, int def, int matk, int hp, int mp, int gold, List<Skills> learnedSkills)
         {
             Level = level;
             Exp = 0;
@@ -160,7 +164,19 @@ namespace TextConsoleRPG
         {
             return EquipList.Contains(item);
         }
-
+        public void GetReward(Item item, int itemCount, int gold, int exp)
+        {
+            Gold += gold;
+            Exp += exp;
+            if (item != null)
+            {
+                for (int i = 0; i < itemCount; i++)
+                {
+                    Inventory.Add(item);
+                    InventoryIdList.Add(item.Id);
+                }
+            }
+        }
         public void BuyItem(Item item)
         {
             Gold -= item.Price;
@@ -177,7 +193,7 @@ namespace TextConsoleRPG
             Inventory.Add(item);
         }
 
-        public void Rest(int cost) 
+        public void Rest(int cost)
         {
             Console.Clear();
             if (Gold >= cost)//보유 여부 확인
@@ -253,9 +269,9 @@ namespace TextConsoleRPG
         {
             CurHp -= damage;
             if (CurHp <= 0) CurHp = 0;
-            
+
         }
-        public int SkillDamageAttack(int manaCost, float damageMul) 
+        public int SkillDamageAttack(int manaCost, float damageMul)
         {
             CurMp -= manaCost;
             return (int)(Atk * damageMul);
@@ -301,6 +317,20 @@ namespace TextConsoleRPG
                 Console.WriteLine("포션이 부족합니다.");
             }
             Console.WriteLine();
+        }
+        public bool isAcceptedQuest(string questName)
+        {
+            return QuestNameList.Contains(questName);
+        }
+        public void AcceptQuest(IQuest quest)
+        {
+            Quests.Add(quest);
+            QuestNameList.Add(quest.Name);
+        }
+        public void RemoveQuest(IQuest quest)
+        {
+            Quests.Remove(quest);
+            QuestNameList.Remove(quest.Name);
         }
     }
 }
