@@ -625,7 +625,7 @@ namespace MyApp
                                 Console.WriteLine($"{targetMonster.Name}을 공격!");
                                 float Atkf = player.Atk;
                                 int total = player.Damage(Atkf, 0/*몬스터 방어력*/);
-                                targetMonster.DamagebyPlayer(total);
+                                targetMonster.DamagebyPlayer(total);                                
                                 Console.WriteLine("Enter 를 눌러주세요.");
                                 Console.ReadLine();
                             }
@@ -726,7 +726,6 @@ namespace MyApp
                     Random random = new Random();
                     List<Monster> shuffledList = targetMonster.OrderBy(x => random.Next()).ToList(); // 몬스터리스트 섞어서 렌덤성부여
                 }
-
                 player.LearnedSkills[skillChoice].Effect(player, targetMonster);
 
                 Console.WriteLine($"{player.LearnedSkills[skillChoice].Name}을(를) 시전!");
