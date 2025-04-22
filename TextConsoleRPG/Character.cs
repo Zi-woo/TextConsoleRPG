@@ -59,9 +59,8 @@ namespace TextConsoleRPG
             }
         }
 
-        public Character() { }
         public Character(int level, string name, string job, int atk, int def, int matk, int hp,int mp, int gold, List<Skills> learnedSkills)
-
+            
         {
             Level = level;
             Exp = 0;
@@ -186,11 +185,17 @@ namespace TextConsoleRPG
             {
                 damage = damage * 1.6f;
                 Console.WriteLine($"치명타");
-                return totaldamage = (int)damage;
-                
+                totaldamage = (int)damage - Def;
+                if (totaldamage < 0) totaldamage = 0;
+                return totaldamage;
+
             }
             else
-                return totaldamage = (int)damage;      
+            {
+                totaldamage = (int)damage - Def;
+                if (totaldamage < 0) totaldamage = 0;
+                return totaldamage;
+            }
         }
         public void ReceivedDamage(int damage)
         {

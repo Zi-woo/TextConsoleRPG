@@ -13,7 +13,6 @@ namespace TextConsoleRPG
         public int Hp { get; private set;}
         public int Atk { get; }
 
-        private List<Monster> MonsterList = new List<Monster>();
 
         public Monster(string name, int level, int hp, int atk)
         {
@@ -33,8 +32,7 @@ namespace TextConsoleRPG
             return Hp > 0;
         }
 
-        public void DamageByPlayer(int damage)//몬스터 체력 감소
-
+        public void DamagebyPlayer(int damage)//몬스터 체력 감소
         {
             Hp -= damage;
             if (Hp < 0) Hp = 0;

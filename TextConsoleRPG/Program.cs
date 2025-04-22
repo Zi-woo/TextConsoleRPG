@@ -55,7 +55,7 @@ namespace MyApp
                     (user, targetList) => {
                         Monster target = targetList.First();
                         if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamageByPlayer(user.SkillDamageAttack(10,2f));
+                        else target.DamagebyPlayer(user.SkillDamageAttack(10,2f));
                     }
                 ),
                 new Skills("더블 스트라이크",
@@ -67,7 +67,7 @@ namespace MyApp
                     foreach (var target in targets)
                     {
                         if (user.SkillDamageAttack(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamageByPlayer(user.SkillDamageAttack(10,1.5f));
+                        else target.DamagebyPlayer(user.SkillDamageAttack(10,1.5f));
                     }
                   }
                 )
@@ -81,7 +81,7 @@ namespace MyApp
                     (user, targetList) => {
                         Monster target = targetList.First();
                         if (user.SkillDamageMagic(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamageByPlayer(user.SkillDamageMagic(10,2f));
+                        else target.DamagebyPlayer(user.SkillDamageMagic(10,2f));
                     }
                 ),
                 new Skills("파이어 애로우",
@@ -93,7 +93,7 @@ namespace MyApp
                     foreach (var target in targets)
                     {
                         if (user.SkillDamageMagic(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamageByPlayer(user.SkillDamageMagic(10,1.5f));
+                        else target.DamagebyPlayer(user.SkillDamageMagic(10,1.5f));
                     }
                   }
                 )
@@ -107,7 +107,7 @@ namespace MyApp
                     (user, targetList) => {
                         Monster target = targetList.First();
                         if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamageByPlayer(user.SkillDamageAttack(10,2f));
+                        else target.DamagebyPlayer(user.SkillDamageAttack(10,2f));
                     }
                 ),
                 new Skills("더블 애로우",
@@ -119,7 +119,7 @@ namespace MyApp
                     foreach (var target in targets)
                     {
                         if (user.SkillDamageAttack(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamageByPlayer(user.SkillDamageAttack(10,1.5f));
+                        else target.DamagebyPlayer(user.SkillDamageAttack(10,1.5f));
                     }
                   }
                 )
@@ -134,7 +134,7 @@ namespace MyApp
                     (user, targetList) => {
                         Monster target = targetList.First();
                         if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamageByPlayer(user.SkillDamageAttack(10, 2f));
+                        else target.DamagebyPlayer(user.SkillDamageAttack(10, 2f));
                     }
                 ),
                 new Skills("그림자 베기",
@@ -146,7 +146,7 @@ namespace MyApp
                     foreach (var target in targets)
                     {
                         if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamageByPlayer(user.SkillDamageAttack(10, 1.5f));
+                        else target.DamagebyPlayer(user.SkillDamageAttack(10, 1.5f));
                     }
                   }
                 )
@@ -154,6 +154,7 @@ namespace MyApp
             //TODO 캐릭터 생성
             switch (job)
             {
+                //레벨, 이름, 직업, 공격력, 방어력, 마법공격력, 체력, 마나, 돈, 보유 스킬
                 case "전사":
                     player = new Character(1, name, job, 8, 6, 0, 110, 50, 10000, skillsWarrior);
                     break;
@@ -722,7 +723,6 @@ namespace MyApp
             }
             EnemyPhase();
         }
-        #endregion
         static void DisplayBattleResult(bool isWin)
         {
             Console.Clear();
