@@ -29,12 +29,11 @@ namespace TextConsoleRPG
         public int ExtraDef { get; private set; }
         [JsonInclude]
         public int ExtraMatk { get; private set; }
-        public List<Skills> LearnedSkills { get; private set; }
         [JsonInclude]
         private List<int> InventoryIdList { get; set; } = new List<int>();
         [JsonInclude]
         private List<int> EquipItemIdList { get; set; } = new List<int>();
-
+        public List<Skills> LearnedSkills { get; private set; }
         private List<Item> Inventory { get; set; } = new List<Item>();
         private List<Item> EquipList { get; set; } = new List<Item>();
 
