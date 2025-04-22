@@ -13,7 +13,6 @@ namespace MyApp
         private static Character player;
         private static List<Item> itemDb;
         private static MonsterManager mm;
-        //private static List<Monster> spawnedMonster;
         public const string playerDataPath = "playerData.json";
         public const string itemDBPath = "items.json";
 
@@ -30,6 +29,20 @@ namespace MyApp
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
             int result = CheckInput(1, 2);
+
+            //아이템 정보 불러오기 - 게임 데이터를 로드할 때 한 번에 하면 좋을 것
+            if (File.Exists(itemDBPath))
+            {
+                string json = File.ReadAllText(itemDBPath);
+                itemDb = JsonSerializer.Deserialize<List<Item>>(json);
+            }
+            else
+            {
+                //Console.Write("Fatal Error!!! - 아이템 db 못 찾음");
+                Console.WriteLine("저장된 데이터가 없습니다.");
+                Console.ReadKey();
+                StartScreen();
+            }
 
             switch (result)
             {
@@ -331,10 +344,13 @@ namespace MyApp
                     break;
 
                 default:
+                    //int itemIdx = result - 1;
+                    //Item targetItem = itemDb[itemIdx];
+                    //player.EquipItem(targetItem);
 
+                    //---------인벤토리 리스트 내 아이템 선택 코드 수정-------------
                     int itemIdx = result - 1;
-                    Item targetItem = itemDb[itemIdx];
-                    player.EquipItem(targetItem);
+                    player.EquipItem(itemIdx);
 
                     DisplayEquipUI();
                     break;
@@ -489,7 +505,7 @@ namespace MyApp
             DisplayBattleUI();
         }
         static void DisplayBattleUI()
-        {        
+        {
             Console.Clear();
             for (int i = 0; i < mm.spawnedMonsters.Count; i++)
             {
@@ -523,7 +539,7 @@ namespace MyApp
         static void EnemyPhase()
         {
 
-            Console.Clear();          
+            Console.Clear();
 
             Console.WriteLine("Battle!!");
             Console.WriteLine();
@@ -548,7 +564,7 @@ namespace MyApp
                     Console.WriteLine($"{player.Name}을(를) 맞췄습니다. [데미지: {m.Atk}]\n");
                     int Atkm = player.Damage(m.Atk);
                     player.DamagebyMonster(Atkm);
-                    
+
                     Console.WriteLine($"Lv. {player.Level} {player.Name}");
                     Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}\n");//현재체력 최대체력
                     Console.WriteLine("Enter 를 눌러주세요.");
@@ -595,9 +611,8 @@ namespace MyApp
                             Console.ReadLine();
                             PlayerPhaseAttack();
                         }
-                        else 
+                        else
                         {
-
                             bool evasion = player.Evasion();
                             if (evasion) //회피
                             {
@@ -610,7 +625,7 @@ namespace MyApp
                                 Console.WriteLine($"{targetMonster.Name}을 공격!");
                                 float Atkf = player.Atk;
                                 int total = player.Damage(Atkf);
-                                targetMonster.DamagebyPlayer(total);                                
+                                targetMonster.DamageByPlayer(total);
                                 Console.WriteLine("Enter 를 눌러주세요.");
                                 Console.ReadLine();
                             }
@@ -679,8 +694,7 @@ namespace MyApp
                     }
                     else
                     {
-                        player.LearnedSkills[skillChoice].Effect(player, mm.spawnedMonsters);
-
+                        player.LearnedSkills[skillChoice].Effect(player, targetMonster);
                         Console.WriteLine($"{player.LearnedSkills[skillChoice].Name}을(를) 시전!");
                         Thread.Sleep(500);
                         if (!targetMonster[0].AliveMonster())
@@ -707,6 +721,11 @@ namespace MyApp
                         targetMonster.Add(target);
                     }
                 }
+                if (targetMonster.Count >= 2)
+                {
+                    List<Monster> shuffledList = targetMonster.OrderBy(x => random.Next()).ToList(); // 몬스터리스트 섞어서 렌덤성부여
+                }
+
                 player.LearnedSkills[skillChoice].Effect(player, targetMonster);
 
                 Console.WriteLine($"{player.LearnedSkills[skillChoice].Name}을(를) 시전!");
@@ -720,9 +739,15 @@ namespace MyApp
                         Console.ReadLine();
                     }
                 }
+
+
+
             }
             EnemyPhase();
         }
+
+        #endregion
+
         static void DisplayBattleResult(bool isWin)
         {
             Console.Clear();
@@ -757,7 +782,6 @@ namespace MyApp
             DisplayMainUI();
         }
 
-        #endregion
 
         #region 세이브
 
@@ -776,23 +800,13 @@ namespace MyApp
                 //json 파일 읽어오기
                 string json = File.ReadAllText(playerDataPath);
                 player = (JsonSerializer.Deserialize<Character>(json));
+                player.LoadItemList(itemDb);
             }
             else
             {
                 Console.WriteLine("저장된 데이터가 없습니다."); // 저장된 데이터가 없다고 뜨고 StartScreen으로 바로넘어가니까 콘솔창이 클리어되서 이 문구가 안보임 -> 여유되면 고치기
-                StartScreen();
-            }
-            if (File.Exists(itemDBPath))
-            {
-                string json = File.ReadAllText(itemDBPath);
-                itemDb = JsonSerializer.Deserialize<List<Item>>(json);
-            }
-            else
-            {
-                //Console.Write("Fatal Error!!! - 아이템 db 못 찾음");
-                Console.WriteLine("저장된 데이터가 없습니다.");
-                StartScreen();
                 Console.ReadKey();
+                StartScreen();
             }
         }
         #endregion
