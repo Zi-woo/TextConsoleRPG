@@ -35,7 +35,7 @@ namespace TextConsoleRPG
         [JsonInclude]
         public int CurMp { get; private set; }
         [JsonInclude]
-        public int PreDgnMp { get; set; } 
+        public int PreDgnMp { get; set; }
         [JsonInclude]
         public int MaxMp { get; private set; }
         [JsonInclude]
@@ -69,7 +69,7 @@ namespace TextConsoleRPG
         }
 
         public Character() { }
-        public Character(int level, string name, string job, int atk, int def, int matk, int hp,int mp, int gold, List<Skills> learnedSkills)
+        public Character(int level, string name, string job, int atk, int def, int matk, int hp, int mp, int gold, List<Skills> learnedSkills)
 
         {
             Level = level;
@@ -161,7 +161,7 @@ namespace TextConsoleRPG
         {
             return EquipList.Contains(item);
         }
-        public void GetReward(Item item,int itemCount, int gold, int exp)
+        public void GetReward(Item item, int itemCount, int gold, int exp)
         {
             Gold += gold;
             Exp += exp;
@@ -186,7 +186,7 @@ namespace TextConsoleRPG
             return Inventory.Contains(item);
         }
 
-        public void Rest(int cost) 
+        public void Rest(int cost)
         {
             Console.Clear();
             if (Gold >= cost)//보유 여부 확인
@@ -233,18 +233,18 @@ namespace TextConsoleRPG
                 damage = damage * 1.6f;
                 Console.WriteLine($"치명타");
                 return totaldamage = (int)damage;
-                
+
             }
             else
-                return totaldamage = (int)damage;      
+                return totaldamage = (int)damage;
         }
         public void ReceivedDamage(int damage)
         {
             CurHp -= damage;
             if (CurHp <= 0) CurHp = 0;
-            
+
         }
-        public int SkillDamageAttack(int manaCost, float damageMul) 
+        public int SkillDamageAttack(int manaCost, float damageMul)
         {
             if (CurMp < manaCost) return 0;
             CurMp -= manaCost;
@@ -267,7 +267,8 @@ namespace TextConsoleRPG
             return evasion;
         }
 
-        public bool isAcceptedQuest(string questName) {
+        public bool isAcceptedQuest(string questName)
+        {
             return QuestNameList.Contains(questName);
         }
         public void AcceptQuest(IQuest quest)
@@ -303,4 +304,5 @@ namespace TextConsoleRPG
             }
             Console.WriteLine();
         }
+    }
 }
