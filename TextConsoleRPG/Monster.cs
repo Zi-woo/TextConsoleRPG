@@ -33,7 +33,7 @@ namespace TextConsoleRPG
             return Hp > 0;
         }
 
-        public void DamagebyPlayer(int damage)//몬스터 체력 감소
+        public void DamageByPlayer(int damage)//몬스터 체력 감소
 
         {
             Hp -= damage;

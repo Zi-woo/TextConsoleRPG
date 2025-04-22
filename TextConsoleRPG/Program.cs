@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Numerics;
 using System.Reflection;
 using System.Text.Json;
@@ -43,21 +44,126 @@ namespace MyApp
         }
         static void SetData(string name, string job)
         {
-
+            List<Skills> skillsWarrior = new List<Skills>()
+            {
+                new Skills(
+                    "알파 스트라이크",
+                    "공격력 * 2로 하나의 적을 공격합니다.",
+                    10,
+                    1,
+                    (user, targetList) => {
+                        Monster target = targetList.First();
+                        if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        else target.DamageByPlayer(user.SkillDamageAttack(10,2f));
+                    }
+                ),
+                new Skills("더블 스트라이크",
+                "공격력 * 1.5로 두 명의 적을 랜덤으로 공격합니다.",
+                10,
+                2,
+                (user, targetList) => {
+                        var targets = targetList.Take(2);
+                    foreach (var target in targets)
+                    {
+                        if (user.SkillDamageAttack(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        else target.DamageByPlayer(user.SkillDamageAttack(10,1.5f));
+                    }
+                  }
+                )
+            };
+            List<Skills> skillsWizard = new List<Skills>(){
+                new Skills(
+                    "파이어 볼",
+                    "마법공격력 * 2로 하나의 적을 공격합니다.",
+                    10,
+                    1,
+                    (user, targetList) => {
+                        Monster target = targetList.First();
+                        if (user.SkillDamageMagic(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        else target.DamageByPlayer(user.SkillDamageMagic(10,2f));
+                    }
+                ),
+                new Skills("파이어 애로우",
+                "마법공격력 * 1.5로 두 명의 적을 랜덤으로 공격합니다.",
+                10,
+                2,
+                (user, targetList) => {
+                        var targets = targetList.Take(2);
+                    foreach (var target in targets)
+                    {
+                        if (user.SkillDamageMagic(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        else target.DamageByPlayer(user.SkillDamageMagic(10,1.5f));
+                    }
+                  }
+                )
+            };
+            List<Skills> skillsArcher = new List<Skills>(){
+                new Skills(
+                    "스나이핑",
+                    "공격력 * 2로 하나의 적을 공격합니다.",
+                    10,
+                    1,
+                    (user, targetList) => {
+                        Monster target = targetList.First();
+                        if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        else target.DamageByPlayer(user.SkillDamageAttack(10,2f));
+                    }
+                ),
+                new Skills("더블 애로우",
+                "공격력 * 1.5로 두 명의 적을 랜덤으로 공격합니다.",
+                10,
+                2,
+                (user, targetList) => {
+                        var targets = targetList.Take(2);
+                    foreach (var target in targets)
+                    {
+                        if (user.SkillDamageAttack(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        else target.DamageByPlayer(user.SkillDamageAttack(10,1.5f));
+                    }
+                  }
+                )
+            };
+            List<Skills> skillsRogue = new List<Skills>()
+            {
+                new Skills(
+                    "암습",
+                    "공격력 * 2로 하나의 적을 공격합니다.",
+                    10,
+                    1,
+                    (user, targetList) => {
+                        Monster target = targetList.First();
+                        if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        else target.DamageByPlayer(user.SkillDamageAttack(10, 2f));
+                    }
+                ),
+                new Skills("그림자 베기",
+                "공격력 * 1.5로 두 명의 적을 랜덤으로 공격합니다.",
+                10,
+                2,
+                (user, targetList) => {
+                        var targets = targetList.Take(2);
+                    foreach (var target in targets)
+                    {
+                        if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        else target.DamageByPlayer(user.SkillDamageAttack(10, 1.5f));
+                    }
+                  }
+                )
+            };
             //TODO 캐릭터 생성
             switch (job)
             {
                 case "전사":
-                    player = new Character(1, name, job, 8, 6, 110, 10000);
+                    player = new Character(1, name, job, 8, 6, 0, 110, 50, 10000, skillsWarrior);
                     break;
                 case "마법사":
-                    player = new Character(1, name, job, 5, 5, 100, 10000);
+                    player = new Character(1, name, job, 5, 5, 10, 100, 100, 10000, skillsWizard);
                     break;
                 case "궁수":
-                    player = new Character(1, name, job, 11, 5, 90, 10000);
+                    player = new Character(1, name, job, 11, 5, 0, 90, 50, 10000, skillsArcher);
                     break;
                 case "도적":
-                    player = new Character(1, name, job, 13, 4, 80, 10000);
+                    player = new Character(1, name, job, 13, 4, 0, 80, 50, 10000, skillsRogue);
                     break;
             }
         }
@@ -343,9 +449,9 @@ namespace MyApp
             Console.WriteLine("Battle!!");
             Console.WriteLine();
             Random random = new Random();
-            
+
             mm = new MonsterManager();
-            mm.SpawnRandomMonster(random.Next(1,5));
+            mm.SpawnRandomMonster(random.Next(1, 5));
 
             DisplayBattleUI();
         }
@@ -362,18 +468,27 @@ namespace MyApp
             Console.WriteLine($"HP {player.CurHp}/{player.MaxHp}");
             Console.WriteLine();
             Console.WriteLine("1. 공격");
+            Console.WriteLine("2. 스킬");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            int result = CheckInput(1, 1);
+            int result = CheckInput(1, 2);
+            switch (result)
+            {
+                case 1:
+                    PlayerPhaseAttack();
+                    break;
+                case 2:
+                    PlayerPhaseSkill();
+                    break;
+            }
 
-            PlayerPhase();
         }
         #region 공격
         static void EnemyPhase()
         {
             Console.Clear();
-            
+
             Console.WriteLine("Battle!!");
             Console.WriteLine();
             for (int i = 0; i < mm.spawnedMonsters.Count; i++)
@@ -384,7 +499,7 @@ namespace MyApp
                 Console.WriteLine($"Lv. {m.Level} {m.Name} 의 공격!");
                 Console.WriteLine($"{player.Name}을(를) 맞췄습니다. [데미지: {m.Atk}]");
                 Console.WriteLine();
-                player.Damage(m.Atk);
+                player.ReceivedDamage(m.Atk);
                 Console.WriteLine($"Lv. {player.Level} {player.Name}");
                 Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}");
                 Console.WriteLine();
@@ -394,13 +509,13 @@ namespace MyApp
                 Console.WriteLine();
                 if (player.CurHp <= 0) DisplayBattleResult(false);
             }
-            PlayerPhase();
+            DisplayBattleUI();
         }
-        static void PlayerPhase()
+        static void PlayerPhaseAttack()
         {
             Console.Clear();
             Console.WriteLine("Battle!!\n");
-            
+
             //몬스터 출력
             for (int i = 0; i < mm.spawnedMonsters.Count; i++)
             {
@@ -430,13 +545,13 @@ namespace MyApp
                             Console.WriteLine("이미 죽은 대상입니다");
                             Console.WriteLine("Enter 를 눌러주세요.");
                             Console.ReadLine();
-                            PlayerPhase();
+                            PlayerPhaseAttack();
                         }
                         else // 타격
                         {
                             float Atkf = player.Atk;
                             int total = player.Damage(Atkf);
-                            targetMonster.DamagebyPlayer(total);
+                            targetMonster.DamageByPlayer(total);
                             Console.WriteLine($"{targetMonster.Name}을 공격!");
                             Thread.Sleep(500);
                             if (!targetMonster.AliveMonster()) //타격 후 생존 확인 
@@ -456,6 +571,98 @@ namespace MyApp
                     break;
             }
         }
+        static void PlayerPhaseSkill()
+        {
+            Console.Clear();
+            Console.WriteLine("Battle!!\n");
+
+            //몬스터 출력
+            for (int i = 0; i < mm.spawnedMonsters.Count; i++)
+            {
+                Monster m = mm.spawnedMonsters[i];
+                string status = m.AliveMonster() ? $"(HP: {m.Hp})" : "(Dead)";
+                Console.WriteLine($"{i + 1}. {m.Name} {status}");
+            }
+
+            Console.WriteLine();
+            int idx = 1;
+            foreach (var skill in player.LearnedSkills)
+            {
+                Console.WriteLine($"{idx}. {skill.Name} - MP {skill.MpCost}");
+                Console.WriteLine($"{skill.Description}");
+                idx++;
+            }
+            Console.WriteLine("0. 취소");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            int userChoice = CheckInput(0, player.LearnedSkills.Count);
+            int skillChoice = userChoice - 1;
+            if (userChoice == 0) DisplayBattleUI();
+            if (player.LearnedSkills[userChoice - 1].Type == 1)
+            {
+                Console.WriteLine();
+                Console.WriteLine("대상을 입력하세요.");
+                int result = CheckInput(1, mm.spawnedMonsters.Count);//몬스터수에 따른 입력값
+                int MonsterIdx = result - 1;
+
+                List<Monster> targetMonster = new List<Monster>();
+                targetMonster.Add(mm.spawnedMonsters[MonsterIdx]);
+                {
+                    if (!targetMonster[0].AliveMonster()) //스킬시전 전 생존 확인 
+                    {
+                        Console.WriteLine("이미 죽은 대상입니다");
+                        Console.WriteLine("Enter 를 눌러주세요.");
+                        Console.ReadLine();
+                        PlayerPhaseSkill();
+                    }
+                    else
+                    {
+                        player.LearnedSkills[skillChoice].Effect(player, mm.spawnedMonsters);
+
+                        Console.WriteLine($"{player.LearnedSkills[skillChoice].Name}을(를) 시전!");
+                        Thread.Sleep(500);
+                        if (!targetMonster[0].AliveMonster())
+                        {
+                            Console.WriteLine($"{targetMonster[0].Name}이(가) 쓰러졌습니다!");
+                            Console.WriteLine("\nEnter 를 눌러주세요.");
+                            Console.ReadLine();
+                        }
+                    }
+                }
+                for (int i = 0; i < mm.spawnedMonsters.Count; i++)
+                {
+                    if (mm.spawnedMonsters[i].Hp > 0) break;
+                    if (i == mm.spawnedMonsters.Count - 1) DisplayBattleResult(true);
+                }
+            }
+            else
+            {
+                List<Monster> targetMonster = new List<Monster>();
+                foreach (var target in mm.spawnedMonsters)
+                {
+                    if (target.Hp > 0)
+                    {
+                        targetMonster.Add(target);
+                    }
+                }
+                player.LearnedSkills[skillChoice].Effect(player, targetMonster);
+
+                Console.WriteLine($"{player.LearnedSkills[skillChoice].Name}을(를) 시전!");
+                Thread.Sleep(500);
+                foreach (var target in targetMonster)
+                {
+                    if (!target.AliveMonster())
+                    {
+                        Console.WriteLine($"{target.Name}이(가) 쓰러졌습니다!");
+                        Console.WriteLine("\nEnter 를 눌러주세요.");
+                        Console.ReadLine();
+                    }
+                }
+            }
+            EnemyPhase();
+        }
+        #endregion
         static void DisplayBattleResult(bool isWin)
         {
             Console.Clear();
@@ -489,7 +696,7 @@ namespace MyApp
             }
             DisplayMainUI();
         }
-        #endregion
+
         static void SavePlayerData()
         {
             string jsonString = JsonSerializer.Serialize(player, new JsonSerializerOptions { WriteIndented = true });

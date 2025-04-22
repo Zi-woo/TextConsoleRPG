@@ -14,6 +14,8 @@ namespace TextConsoleRPG
         [JsonInclude]
         public int Level { get; private set; }
         [JsonInclude]
+        public int Exp { get; private set; }
+        [JsonInclude]
         public string Name { get; private set; }
         [JsonInclude]
         public string Job { get; private set; }
@@ -22,15 +24,28 @@ namespace TextConsoleRPG
         [JsonInclude]
         public int Def { get; private set; }
         [JsonInclude]
+        public int Matk { get; private set; } // 마법공격력
+        [JsonInclude]
         public int CurHp { get; private set; }
+        [JsonInclude]
         public int PreDgnHp { get; set; } // 던전입장전체력
+        [JsonInclude]
         public int MaxHp { get; private set; } // 최대체력
+        [JsonInclude]
+        public int CurMp { get; private set; }
+        [JsonInclude]
+        public int PreDgnMp { get; set; } 
+        [JsonInclude]
+        public int MaxMp { get; private set; }
         [JsonInclude]
         public int Gold { get; private set; }
         [JsonInclude]
         public int ExtraAtk { get; private set; }
         [JsonInclude]
         public int ExtraDef { get; private set; }
+        [JsonInclude]
+        public int ExtraMatk { get; private set; }
+        public List<Skills> LearnedSkills { get; private set; }
 
         private List<Item> Inventory = new List<Item>();
         private List<Item> EquipList = new List<Item>();
@@ -43,17 +58,23 @@ namespace TextConsoleRPG
             }
         }
         public Character() { }
-        public Character(int level, string name, string job, int atk, int def, int hp, int gold)
+        public Character(int level, string name, string job, int atk, int def, int matk, int hp,int mp, int gold, List<Skills> learnedSkills)
         {
             Level = level;
+            Exp = 0;
             Name = name;
             Job = job;
             Atk = atk;
             Def = def;
+            Matk = matk;
             CurHp = hp;
             PreDgnHp = hp;
             MaxHp = hp;
+            CurMp = mp;
+            PreDgnMp = mp;
+            MaxMp = mp;
             Gold = gold;
+            LearnedSkills = learnedSkills;
         }
 
         public void DisplayCharacterInfo()
@@ -62,7 +83,9 @@ namespace TextConsoleRPG
             Console.WriteLine($"{Name} {{ {Job} }}");
             Console.WriteLine(ExtraAtk == 0 ? $"공격력 : {Atk}" : $"공격력 : {Atk + ExtraAtk} (+{ExtraAtk})");
             Console.WriteLine(ExtraDef == 0 ? $"방어력 : {Def}" : $"방어력 : {Def + ExtraDef} (+{ExtraDef})");
-            Console.WriteLine($"체력 : {CurHp}");
+            Console.WriteLine(ExtraDef == 0 ? $"마법공격력 : {Matk}" : $"마법공격력 : {Matk + ExtraMatk} (+{ExtraMatk})");
+            Console.WriteLine($"HP : {CurHp}");
+            Console.WriteLine($"MP : {CurMp}");
             Console.WriteLine($"Gold : {Gold} G");
         }
 
@@ -136,8 +159,25 @@ namespace TextConsoleRPG
                 
             }
             else
-                return totaldamage = (int)damage;           
-
+                return totaldamage = (int)damage;      
+        }
+        public void ReceivedDamage(int damage)
+        {
+            CurHp -= damage;
+            if (CurHp <= 0) CurHp = 0;
+            
+        }
+        public int SkillDamageAttack(int manaCost, float damageMul) 
+        {
+            if (CurMp < manaCost) return 0;
+            CurMp -= manaCost;
+            return (int)(Atk * damageMul);
+        }
+        public int SkillDamageMagic(int manaCost, float damageMul)
+        {
+            if (CurMp < manaCost) return 0;
+            CurMp -= manaCost;
+            return (int)(Matk * damageMul);
         }
     }
 }
