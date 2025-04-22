@@ -114,6 +114,38 @@ namespace TextConsoleRPG
             return Inventory.Contains(item);
         }
 
+<<<<<<< Updated upstream
+=======
+        public void Rest(int cost) 
+        {
+            
+            if (Gold >= cost)//보유 여부 확인
+            {
+                Console.Clear();
+                Gold -= cost;
+                Console.WriteLine("몸이 한결 가벼워진 느낌을 받습니다.");
+                Console.WriteLine($"HP {CurHp} -> {MaxHp}\n");
+                CurHp = MaxHp;
+                Console.WriteLine("Enter 를 눌러주세요.");
+                Console.ReadLine();
+
+            }
+            else
+            {
+                Console.WriteLine("Gold 가 부족합니다.");
+                Console.WriteLine("Enter 를 눌러주세요.");
+                Console.ReadLine();
+            }
+        }
+
+        public void DamagebyMonster(int damage)//플레이어 체력 감소
+
+        {
+            CurHp -= damage;
+            if (CurHp < 0) CurHp = 0;
+            Console.WriteLine($"{damage} 데미지를 입었다!");
+        }
+>>>>>>> Stashed changes
 
         public int Damage(float Atkf) //데미지 계산
         {
