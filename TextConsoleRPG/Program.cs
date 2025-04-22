@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Reflection;
 using System.Text.Json;
 using TextConsoleRPG;
 
@@ -9,7 +10,8 @@ namespace MyApp
     {
         private static Character player;
         private static List<Item> itemDb;
-        private static List<Monster> monsterDb;
+        private static MonsterManager mm;
+        //private static List<Monster> spawnedMonster;
         public const string playerDataPath = "playerData.json";
         public const string itemDBPath = "items.json";
 
@@ -65,7 +67,8 @@ namespace MyApp
             Console.Clear();
             Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.");
             Console.WriteLine("원하시는 이름을 설정해주세요.");
-            return Console.ReadLine();
+            string name = Console.ReadLine();
+            return name;
         }
         static string ChoiceJobUI()
         {
@@ -106,10 +109,10 @@ namespace MyApp
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
-            Console.WriteLine("4. 저장");
+            Console.WriteLine("4. 전투 시작");
+            Console.WriteLine("5. 저장");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
-
 
             int result = CheckInput(1, 5);
 
@@ -128,10 +131,10 @@ namespace MyApp
                     DisplayShopUI();
                     break;
                 case 4:
-                    SavePlayerData();
+                    InitializeBattle();
                     break;
                 case 5:
-                    DisplayBattleUI();
+                    SavePlayerData();
                     break;
             }
         }
@@ -333,38 +336,75 @@ namespace MyApp
             }
         }
         #endregion
+        static void InitializeBattle()
+        {
+            player.PreDgnHp = player.CurHp;
+            Console.Clear();
+            Console.WriteLine("Battle!!");
+            Console.WriteLine();
+            Random random = new Random();
+            
+            mm = new MonsterManager();
+            mm.SpawnRandomMonster(random.Next(1,5));
+
+            DisplayBattleUI();
+        }
         static void DisplayBattleUI()
         {
-            Console.Clear();
-            monsterDb = new List<Monster>
+            for (int i = 0; i < mm.spawnedMonsters.Count; i++)
             {
-            new Monster("미니언", 2, 15, 5),
-            new Monster("대포미니언", 5, 25, 8),
-            new Monster("공허충",3, 10, 9)
-            };
-            int result = CheckInput(0, 1);
-
-            switch (result)
-            {
-                case 0:
-                    DisplayMainUI();
-                    break;
-
-                case 1:
-                    DisplayAttackUI();
-                    break;
+                mm.spawnedMonsters[i].MonsterInfoText();
             }
+
+            Console.WriteLine();
+            Console.WriteLine("[내정보]");
+            Console.WriteLine($"Lv. {player.Level} {player.Name} ({player.Job})");
+            Console.WriteLine($"HP {player.CurHp}/{player.MaxHp}");
+            Console.WriteLine();
+            Console.WriteLine("1. 공격");
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+            int result = CheckInput(1, 1);
+
+            PlayerPhase();
         }
         #region 공격
-        static void DisplayAttackUI()
+        static void EnemyPhase()
+        {
+            Console.Clear();
+            
+            Console.WriteLine("Battle!!");
+            Console.WriteLine();
+            for (int i = 0; i < mm.spawnedMonsters.Count; i++)
+            {
+                Monster m = mm.spawnedMonsters[i];
+                if (m.Hp <= 0)
+                    continue;
+                Console.WriteLine($"Lv. {m.Level} {m.Name} 의 공격!");
+                Console.WriteLine($"{player.Name}을(를) 맞췄습니다. [데미지: {m.Atk}]");
+                Console.WriteLine();
+                player.Damage(m.Atk);
+                Console.WriteLine($"Lv. {player.Level} {player.Name}");
+                Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}");
+                Console.WriteLine();
+                Console.WriteLine("0. 다음");
+                Console.WriteLine();
+                CheckInput(0, 0);
+                Console.WriteLine();
+                if (player.CurHp <= 0) DisplayBattleResult(false);
+            }
+            PlayerPhase();
+        }
+        static void PlayerPhase()
         {
             Console.Clear();
             Console.WriteLine("Battle!!\n");
             
             //몬스터 출력
-            for (int i = 0; i < monsterDb.Count; i++)
+            for (int i = 0; i < mm.spawnedMonsters.Count; i++)
             {
-                Monster m = monsterDb[i];
+                Monster m = mm.spawnedMonsters[i];
                 string status = m.AliveMonster() ? $"(HP: {m.Hp})" : "(Dead)";
                 Console.WriteLine($"{i + 1}. {m.Name} {status}");
             }
@@ -374,7 +414,7 @@ namespace MyApp
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            int result = CheckInput(0, monsterDb.Count);//몬스터수에 따른 입력값 
+            int result = CheckInput(0, mm.spawnedMonsters.Count);//몬스터수에 따른 입력값 
 
             switch (result)
             {
@@ -382,14 +422,15 @@ namespace MyApp
                     DisplayBattleUI();
                     break;
                 default:
-                    int Monsterdx = result - 1;
-                    Monster targetMonster = monsterDb[Monsterdx];
+                    int MonsterIdx = result - 1;
+                    Monster targetMonster = mm.spawnedMonsters[MonsterIdx];
                     {
                         if (!targetMonster.AliveMonster()) //타격 전 생존 확인 
                         {
                             Console.WriteLine("이미 죽은 대상입니다");
                             Console.WriteLine("Enter 를 눌러주세요.");
                             Console.ReadLine();
+                            PlayerPhase();
                         }
                         else // 타격
                         {
@@ -398,20 +439,55 @@ namespace MyApp
                             targetMonster.DamagebyPlayer(total);
                             Console.WriteLine($"{targetMonster.Name}을 공격!");
                             Thread.Sleep(500);
-
-
-                        }
-                        if (!targetMonster.AliveMonster()) //타격 전 생존 확인 
-                        {
-                            Console.WriteLine($"{targetMonster.Name}이(가) 쓰러졌습니다!");
-                            Console.WriteLine("\nEnter 를 눌러주세요.");
-                            Console.ReadLine();
+                            if (!targetMonster.AliveMonster()) //타격 후 생존 확인 
+                            {
+                                Console.WriteLine($"{targetMonster.Name}이(가) 쓰러졌습니다!");
+                                Console.WriteLine("\nEnter 를 눌러주세요.");
+                                Console.ReadLine();
+                            }
                         }
                     }
-                    DisplayAttackUI();
+                    for (int i = 0; i < mm.spawnedMonsters.Count; i++)
+                    {
+                        if (mm.spawnedMonsters[i].Hp > 0) break;
+                        if (i == mm.spawnedMonsters.Count - 1) DisplayBattleResult(true);
+                    }
+                    EnemyPhase();
                     break;
-
             }
+        }
+        static void DisplayBattleResult(bool isWin)
+        {
+            Console.Clear();
+            if (isWin)
+            {
+                Console.WriteLine("Battle!! - Result");
+                Console.WriteLine();
+                Console.WriteLine("Victory");
+                Console.WriteLine();
+                Console.WriteLine($"던전에서 몬스터 {mm.spawnedMonsters.Count}마리를 잡았습니다.");
+                Console.WriteLine();
+                Console.WriteLine($"Lv. {player.Level} {player.Name}");
+                Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}");
+                Console.WriteLine();
+                Console.WriteLine("0. 다음");
+                Console.WriteLine();
+                CheckInput(0, 0);
+            }
+            else
+            {
+                Console.WriteLine("Battle!! - Result");
+                Console.WriteLine();
+                Console.WriteLine("You Lose");
+                Console.WriteLine();
+                Console.WriteLine($"Lv. {player.Level} {player.Name}");
+                Console.WriteLine($"HP {player.PreDgnHp} -> 0");
+                Console.WriteLine();
+                Console.WriteLine("0. 다음");
+                Console.WriteLine();
+                CheckInput(0, 0);
+            }
+            DisplayMainUI();
         }
         #endregion
         static void SavePlayerData()
