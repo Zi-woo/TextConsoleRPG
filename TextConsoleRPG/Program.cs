@@ -393,12 +393,9 @@ namespace MyApp
                         }
                         else // 타격
                         {
-                            double damage = player.Atk;
-                            Random random = new Random();
-                            int d = (int)Math.Ceiling(damage * 0.1);
-                            int randomDamage = random.Next(-d, d + 1);
-                            int total = (int)damage + randomDamage;
-                            targetMonster.Damage(total);
+                            float Atkf = player.Atk;
+                            int total = player.Damage(Atkf);
+                            targetMonster.DamagebyPlayer(total);
                             Console.WriteLine($"{targetMonster.Name}을 공격!");
                             Thread.Sleep(500);
 

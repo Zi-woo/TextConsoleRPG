@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -106,6 +108,30 @@ namespace TextConsoleRPG
         public bool HasItem(Item item)
         {
             return Inventory.Contains(item);
+        }
+
+        public int Damage(float Atkf) //데미지 계산
+        {
+            Random random = new Random();
+            int C = random.Next(1, 101);
+            bool critical = false;
+            if (C <= 15)
+                critical = true;
+
+            int d = (int)Math.Ceiling(Atkf * 0.1);
+            float randomAtk = random.Next(-d, d + 1);
+            float damage = Atkf + randomAtk;
+
+            int totaldamage;
+            if (critical)
+            {
+                damage = damage * 1.6f;
+                Console.WriteLine($"치명타");
+                return totaldamage = (int)damage;
+                
+            }
+            else
+                return totaldamage = (int)damage;           
         }
     }
 }
