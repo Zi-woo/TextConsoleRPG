@@ -12,14 +12,16 @@ namespace TextConsoleRPG
         public int Level { get; }
         public int Hp { get; private set;}
         public int Atk { get; }
+        public int Exp { get; }
 
 
-        public Monster(string name, int level, int hp, int atk)
+        public Monster(string name, int level, int hp, int atk, int exp)
         {
             Name = name;
             Level = level;
             Hp = hp;
             Atk = atk;
+            Exp = exp;
         }
         public void MonsterInfoText()
         {
@@ -32,7 +34,7 @@ namespace TextConsoleRPG
             return Hp > 0;
         }
 
-        public void DamagebyPlayer(int damage)//몬스터 체력 감소
+        public void DamageByPlayer(int damage)//몬스터 체력 감소
         {
             Hp -= damage;
             if (Hp < 0) Hp = 0;

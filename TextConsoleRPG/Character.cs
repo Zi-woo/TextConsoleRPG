@@ -7,6 +7,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using MyApp;
 
 namespace TextConsoleRPG
 {
@@ -16,6 +17,7 @@ namespace TextConsoleRPG
         public int Level { get; private set; }
         [JsonInclude]
         public int Exp { get; private set; }
+       
         [JsonInclude]
         public string Name { get; private set; }
         [JsonInclude]
@@ -46,6 +48,8 @@ namespace TextConsoleRPG
         public int ExtraDef { get; private set; }
         [JsonInclude]
         public int ExtraMatk { get; private set; }
+        [JsonInclude]
+        public int Potion { get; private set; }
 
         [JsonInclude]
         private List<int> InventoryIdList { get; set; } = new List<int>();
@@ -81,6 +85,7 @@ namespace TextConsoleRPG
             MaxMp = mp;
             Gold = gold;
             LearnedSkills = learnedSkills;
+            Potion = 3;
         }
 
         public void LoadItemList(List<Item> items)
@@ -188,7 +193,21 @@ namespace TextConsoleRPG
                 Console.ReadLine();
             }
         }
-
+        public void GetExp(int exp, LevelManager lm)
+        {
+            Exp += exp;
+            while (lm.LevelUp(Level, Exp))
+            {
+                Exp -= lm.GetRequiredExp(Level);
+                Level++;
+                Atk++; // 0.5 올라야 되지만 Atk int형을 깨기싫어서..
+                Matk++;
+                Def++;
+                Console.WriteLine("레벨업!!");
+                Console.WriteLine($"현재레벨 : {Level}");
+                Console.WriteLine();
+            }
+        }
         public void DamagebyMonster(int damage)//플레이어 체력 감소
 
         {
@@ -253,6 +272,30 @@ namespace TextConsoleRPG
             if (E <= 10)
                 evasion = true;
             return evasion;
+        }
+
+        public void UsePotion()
+        {
+            if (CurHp == MaxHp)
+            {
+                Console.WriteLine("더 이상 체력을 회복할 수 없습니다.");
+                Console.WriteLine("아무키나 누르세요.");
+                Console.WriteLine();
+                Console.ReadLine();
+                return;
+            }
+            if (Potion> 0)
+            {
+                Potion--;
+                CurHp += 30;
+                if (CurHp > MaxHp) CurHp = MaxHp;
+                Console.WriteLine("회복을 완료했습니다.");
+            }
+            else
+            {
+                Console.WriteLine("포션이 부족합니다.");
+            }
+            Console.WriteLine();
         }
     }
 }

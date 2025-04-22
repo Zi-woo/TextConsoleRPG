@@ -13,6 +13,7 @@ namespace MyApp
         private static Character player;
         private static List<Item> itemDb;
         private static MonsterManager mm;
+        private static LevelManager lm = new LevelManager();
         public const string playerDataPath = "playerData.json";
         public const string itemDBPath = "items.json";
 
@@ -68,7 +69,7 @@ namespace MyApp
                     (user, targetList) => {
                         Monster target = targetList.First();
                         if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamagebyPlayer(user.SkillDamageAttack(10,2f));
+                        else target.DamageByPlayer(user.SkillDamageAttack(10,2f));
                     }
                 ),
                 new Skills("더블 스트라이크",
@@ -80,7 +81,7 @@ namespace MyApp
                     foreach (var target in targets)
                     {
                         if (user.SkillDamageAttack(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamagebyPlayer(user.SkillDamageAttack(10,1.5f));
+                        else target.DamageByPlayer(user.SkillDamageAttack(10,1.5f));
                     }
                   }
                 )
@@ -94,7 +95,7 @@ namespace MyApp
                     (user, targetList) => {
                         Monster target = targetList.First();
                         if (user.SkillDamageMagic(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamagebyPlayer(user.SkillDamageMagic(10,2f));
+                        else target.DamageByPlayer(user.SkillDamageMagic(10,2f));
                     }
                 ),
                 new Skills("파이어 애로우",
@@ -106,7 +107,7 @@ namespace MyApp
                     foreach (var target in targets)
                     {
                         if (user.SkillDamageMagic(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamagebyPlayer(user.SkillDamageMagic(10,1.5f));
+                        else target.DamageByPlayer(user.SkillDamageMagic(10,1.5f));
                     }
                   }
                 )
@@ -120,7 +121,7 @@ namespace MyApp
                     (user, targetList) => {
                         Monster target = targetList.First();
                         if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamagebyPlayer(user.SkillDamageAttack(10,2f));
+                        else target.DamageByPlayer(user.SkillDamageAttack(10,2f));
                     }
                 ),
                 new Skills("더블 애로우",
@@ -132,7 +133,7 @@ namespace MyApp
                     foreach (var target in targets)
                     {
                         if (user.SkillDamageAttack(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamagebyPlayer(user.SkillDamageAttack(10,1.5f));
+                        else target.DamageByPlayer(user.SkillDamageAttack(10,1.5f));
                     }
                   }
                 )
@@ -147,7 +148,7 @@ namespace MyApp
                     (user, targetList) => {
                         Monster target = targetList.First();
                         if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamagebyPlayer(user.SkillDamageAttack(10, 2f));
+                        else target.DamageByPlayer(user.SkillDamageAttack(10, 2f));
                     }
                 ),
                 new Skills("그림자 베기",
@@ -159,7 +160,7 @@ namespace MyApp
                     foreach (var target in targets)
                     {
                         if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
-                        else target.DamagebyPlayer(user.SkillDamageAttack(10, 1.5f));
+                        else target.DamageByPlayer(user.SkillDamageAttack(10, 1.5f));
                     }
                   }
                 )
@@ -231,13 +232,13 @@ namespace MyApp
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 휴식");
-            Console.WriteLine("5. 전투 시작");
-            Console.WriteLine("6. 저장");
+            Console.WriteLine("5. 회복 아이템");
+            Console.WriteLine("6. 전투 시작");
+            Console.WriteLine("7. 저장");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
             int result = CheckInput(1, 5);
-
 
             switch (result)
             {
@@ -256,9 +257,12 @@ namespace MyApp
                     DisplayRestUI();
                     break;
                 case 5:
-                    InitializeBattle();
+                    DisplayPotionUI();
                     break;
                 case 6:
+                    InitializeBattle();
+                    break;
+                case 7:
                     SavePlayerData();
                     break;
             }
@@ -464,7 +468,7 @@ namespace MyApp
             }
         }
         #endregion
-        #region 휴식
+        #region 회복
         static void DisplayRestUI()
         {
             int restcost = 500;
@@ -490,7 +494,30 @@ namespace MyApp
                     break;
             }
         }
+        static void DisplayPotionUI()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("회복");
+                Console.WriteLine($"포션을 사용하면 체력을 30 회복 할 수 있습니다. (남은 포션 : {player.Potion} )");
+                Console.WriteLine();
+                Console.WriteLine("1. 사용하기");
+                Console.WriteLine("2. 나가기");
+                Console.WriteLine();
+                int result = CheckInput(1, 2);
+                switch (result)
+                {
+                    case 1:
+                        player.UsePotion();
+                        break;
+                    case 2:
+                        return;
+                }
+            }
+        }
         #endregion
+
         #region 전투 세팅
         static void InitializeBattle()
         {
@@ -498,9 +525,10 @@ namespace MyApp
             Console.WriteLine("Battle!!");
             Console.WriteLine();
             Random random = new Random();
-
+            
             mm = new MonsterManager();
             mm.SpawnRandomMonster(random.Next(1, 5));
+            player.PreDgnHp = player.CurHp;
 
             DisplayBattleUI();
         }
@@ -560,13 +588,12 @@ namespace MyApp
                 }
                 else //명중
                 {
-                    player.PreDgnHp = player.CurHp;
                     Console.WriteLine($"{player.Name}을(를) 맞췄습니다. [데미지: {m.Atk}]\n");
                     int Atkm = player.Damage(m.Atk);
                     player.DamagebyMonster(Atkm);
 
                     Console.WriteLine($"Lv. {player.Level} {player.Name}");
-                    Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}\n");//현재체력 최대체력
+                    Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}\n");
                     Console.WriteLine("Enter 를 눌러주세요.");
                     Console.ReadLine();
                     Console.WriteLine();
@@ -705,15 +732,11 @@ namespace MyApp
                         }
                     }
                 }
-                for (int i = 0; i < mm.spawnedMonsters.Count; i++)
-                {
-                    if (mm.spawnedMonsters[i].Hp > 0) break;
-                    if (i == mm.spawnedMonsters.Count - 1) DisplayBattleResult(true);
-                }
             }
             else
             {
                 List<Monster> targetMonster = new List<Monster>();
+                Random random = new Random();
                 foreach (var target in mm.spawnedMonsters)
                 {
                     if (target.Hp > 0)
@@ -739,9 +762,11 @@ namespace MyApp
                         Console.ReadLine();
                     }
                 }
-
-
-
+            }
+            for (int i = 0; i < mm.spawnedMonsters.Count; i++)
+            {
+                if (mm.spawnedMonsters[i].Hp > 0) break;
+                if (i == mm.spawnedMonsters.Count - 1) DisplayBattleResult(true);
             }
             EnemyPhase();
         }
@@ -753,14 +778,24 @@ namespace MyApp
             Console.Clear();
             if (isWin)
             {
+                int preExp = player.Exp;
+                int preLv = player.Level;
+                int expUp = 0;
                 Console.WriteLine("Battle!! - Result");
                 Console.WriteLine();
                 Console.WriteLine("Victory");
                 Console.WriteLine();
                 Console.WriteLine($"던전에서 몬스터 {mm.spawnedMonsters.Count}마리를 잡았습니다.");
                 Console.WriteLine();
+                foreach (var monster in mm.spawnedMonsters)
+                {
+                    expUp += monster.Exp;
+                }
+                player.GetExp(expUp, lm);
                 Console.WriteLine($"Lv. {player.Level} {player.Name}");
                 Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}");
+                if (preLv == player.Level) Console.WriteLine($"exp {preExp} -> {player.Exp}");
+                else Console.WriteLine($"Lv. {preLv} -> Lv. {player.Level}");
                 Console.WriteLine();
                 Console.WriteLine("0. 다음");
                 Console.WriteLine();
