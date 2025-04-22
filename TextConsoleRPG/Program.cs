@@ -351,6 +351,7 @@ namespace MyApp
         }
         static void DisplayBattleUI()
         {
+            Console.Clear();
             for (int i = 0; i < mm.spawnedMonsters.Count; i++)
             {
                 mm.spawnedMonsters[i].MonsterInfoText();
@@ -384,13 +385,12 @@ namespace MyApp
                 Console.WriteLine($"Lv. {m.Level} {m.Name} 의 공격!");
                 Console.WriteLine($"{player.Name}을(를) 맞췄습니다. [데미지: {m.Atk}]");
                 Console.WriteLine();
-                player.Damage(m.Atk);
+                int Atkm = player.Damage(m.Atk);
+                player.DamagebyMonster(Atkm);
                 Console.WriteLine($"Lv. {player.Level} {player.Name}");
-                Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}");
-                Console.WriteLine();
-                Console.WriteLine("0. 다음");
-                Console.WriteLine();
-                CheckInput(0, 0);
+                Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}\n");//현재체력 최대체력
+                Console.WriteLine("Enter 를 눌러주세요.");
+                Console.ReadLine();
                 Console.WriteLine();
                 if (player.CurHp <= 0) DisplayBattleResult(false);
             }

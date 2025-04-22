@@ -42,7 +42,7 @@ namespace TextConsoleRPG
                 return Inventory.Count;
             }
         }
-        public Character() { }
+       
         public Character(int level, string name, string job, int atk, int def, int hp, int gold)
         {
             Level = level;
@@ -114,6 +114,13 @@ namespace TextConsoleRPG
             return Inventory.Contains(item);
         }
 
+        public void DamagebyMonster(int damage)//플레이어 체력 감소
+
+        {
+            CurHp -= damage;
+            if (CurHp < 0) CurHp = 0;
+            Console.WriteLine($"{damage} 데미지를 입혔다!");
+        }
 
         public int Damage(float Atkf) //데미지 계산
         {
