@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.ConstrainedExecution;
@@ -57,8 +58,10 @@ namespace TextConsoleRPG
                 return Inventory.Count;
             }
         }
+
         public Character() { }
         public Character(int level, string name, string job, int atk, int def, int matk, int hp,int mp, int gold, List<Skills> learnedSkills)
+
         {
             Level = level;
             Exp = 0;
@@ -84,8 +87,8 @@ namespace TextConsoleRPG
             Console.WriteLine(ExtraAtk == 0 ? $"공격력 : {Atk}" : $"공격력 : {Atk + ExtraAtk} (+{ExtraAtk})");
             Console.WriteLine(ExtraDef == 0 ? $"방어력 : {Def}" : $"방어력 : {Def + ExtraDef} (+{ExtraDef})");
             Console.WriteLine(ExtraDef == 0 ? $"마법공격력 : {Matk}" : $"마법공격력 : {Matk + ExtraMatk} (+{ExtraMatk})");
-            Console.WriteLine($"HP : {CurHp}");
-            Console.WriteLine($"MP : {CurMp}");
+            Console.WriteLine($"HP : {CurHp}/{MaxHp}");
+            Console.WriteLine($"MP : {CurMp}/{MaxMp}");
             Console.WriteLine($"Gold : {Gold} G");
         }
 
@@ -137,10 +140,38 @@ namespace TextConsoleRPG
             return Inventory.Contains(item);
         }
 
+        public void Rest(int cost) 
+        {
+            Console.Clear();
+            if (Gold >= cost)//보유 여부 확인
+            {
+                Gold -= cost;
+                Console.WriteLine("몸이 한결 가벼워진 느낌을 받습니다.");
+                Console.WriteLine($"HP {CurHp} -> {MaxHp}\n");
+                CurHp = MaxHp;
+                Console.WriteLine("Enter 를 눌러주세요.");
+                Console.ReadLine();
+
+            }
+            else
+            {
+                Console.WriteLine("Gold 가 부족합니다.");
+                Console.WriteLine("Enter 를 눌러주세요.");
+                Console.ReadLine();
+            }
+        }
+
+        public void DamagebyMonster(int damage)//플레이어 체력 감소
+
+        {
+            CurHp -= damage;
+            if (CurHp < 0) CurHp = 0;
+            Console.WriteLine($"{damage} 데미지를 입었다!");
+        }
 
         public int Damage(float Atkf) //데미지 계산
         {
-            Random random = new Random();
+            Random random = new Random();//치명타
             int C = random.Next(1, 101);
             bool critical = false;
             if (C <= 15)
@@ -178,6 +209,16 @@ namespace TextConsoleRPG
             if (CurMp < manaCost) return 0;
             CurMp -= manaCost;
             return (int)(Matk * damageMul);
+        }
+
+        public bool Evasion() //회피
+        {
+            Random random = new Random();
+            int E = random.Next(1, 101);
+            bool evasion = false;
+            if (E <= 10)
+                evasion = true;
+            return evasion;
         }
     }
 }
