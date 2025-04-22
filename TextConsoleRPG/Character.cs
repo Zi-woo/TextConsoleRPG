@@ -156,12 +156,15 @@ namespace TextConsoleRPG
         {
             return EquipList.Contains(item);
         }
-
+        public void AddItemToInventory(Item item)
+        {
+            Inventory.Add(item);
+            InventoryIdList.Add(item.Id);
+        }
         public void BuyItem(Item item)
         {
             Gold -= item.Price;
-            Inventory.Add(item);
-            InventoryIdList.Add(item.Id);
+            AddItemToInventory(item);
         }
 
         public bool HasItem(Item item)
