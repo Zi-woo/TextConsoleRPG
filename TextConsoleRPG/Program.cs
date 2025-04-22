@@ -498,7 +498,7 @@ namespace MyApp
             Console.WriteLine("Battle!!");
             Console.WriteLine();
             Random random = new Random();
-
+            player.PreDgnHp = player.CurHp;
             mm = new MonsterManager();
             mm.SpawnRandomMonster(random.Next(1, 5));
 
@@ -560,13 +560,13 @@ namespace MyApp
                 }
                 else //명중
                 {
-                    player.PreDgnHp = player.CurHp;
+                    int PreCurHp = player.CurHp;
                     Console.WriteLine($"{player.Name}을(를) 맞췄습니다. [데미지: {m.Atk}]\n");
                     int Atkm = player.Damage(m.Atk, player.Def);
                     player.DamagebyMonster(Atkm);
 
                     Console.WriteLine($"Lv. {player.Level} {player.Name}");
-                    Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}\n");//현재체력 최대체력
+                    Console.WriteLine($"HP {PreCurHp} -> {player.CurHp}\n");//피격전체력 피격후체력
                     Console.WriteLine("Enter 를 눌러주세요.");
                     Console.ReadLine();
                     Console.WriteLine();
