@@ -46,6 +46,8 @@ namespace TextConsoleRPG
         public int ExtraDef { get; private set; }
         [JsonInclude]
         public int ExtraMatk { get; private set; }
+        [JsonInclude]
+        public int Potion { get; private set; }
 
         [JsonInclude]
         private List<int> InventoryIdList { get; set; } = new List<int>();
@@ -232,11 +234,17 @@ namespace TextConsoleRPG
             {
                 damage = damage * 1.6f;
                 Console.WriteLine($"치명타");
-                return totaldamage = (int)damage;
+                totaldamage = (int)damage - Def;
+                if (totaldamage < 0) totaldamage = 0;
+                return totaldamage;
 
             }
             else
-                return totaldamage = (int)damage;
+            {
+                totaldamage = (int)damage - Def;
+                if (totaldamage < 0) totaldamage = 0;
+                return totaldamage;
+            }
         }
         public void ReceivedDamage(int damage)
         {
@@ -265,6 +273,10 @@ namespace TextConsoleRPG
             if (E <= 10)
                 evasion = true;
             return evasion;
+        }
+        public void GetGold(int gold)
+        {
+            Gold += gold;
         }
         public void UsePotion()
         {
