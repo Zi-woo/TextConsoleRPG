@@ -8,6 +8,7 @@ namespace TextConsoleRPG
 {
     class Item
     {
+        public int Id { get; }
         public string Name { get; }
         public int Type { get; }
         public int Value { get; }
@@ -22,8 +23,9 @@ namespace TextConsoleRPG
             }
         }
 
-        public Item(string name, int type, int value, string desc, int price)
+        public Item(int id,string name, int type, int value, string desc, int price)
         {
+            Id = id;
             Name = name;
             Type = type;
             Value = value;
