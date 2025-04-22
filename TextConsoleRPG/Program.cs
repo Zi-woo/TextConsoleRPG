@@ -562,7 +562,7 @@ namespace MyApp
                 {
                     player.PreDgnHp = player.CurHp;
                     Console.WriteLine($"{player.Name}을(를) 맞췄습니다. [데미지: {m.Atk}]\n");
-                    int Atkm = player.Damage(m.Atk);
+                    int Atkm = player.Damage(m.Atk, player.Def);
                     player.DamagebyMonster(Atkm);
 
                     Console.WriteLine($"Lv. {player.Level} {player.Name}");
@@ -624,8 +624,8 @@ namespace MyApp
                             {
                                 Console.WriteLine($"{targetMonster.Name}을 공격!");
                                 float Atkf = player.Atk;
-                                int total = player.Damage(Atkf);
-                                targetMonster.DamageByPlayer(total);
+                                int total = player.Damage(Atkf, 0/*몬스터 방어력*/);
+                                targetMonster.DamagebyPlayer(total);
                                 Console.WriteLine("Enter 를 눌러주세요.");
                                 Console.ReadLine();
                             }
@@ -723,6 +723,7 @@ namespace MyApp
                 }
                 if (targetMonster.Count >= 2)
                 {
+                    Random random = new Random();
                     List<Monster> shuffledList = targetMonster.OrderBy(x => random.Next()).ToList(); // 몬스터리스트 섞어서 렌덤성부여
                 }
 
