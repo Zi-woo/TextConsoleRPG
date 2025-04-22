@@ -30,6 +30,20 @@ namespace MyApp
             Console.WriteLine("원하시는 행동을 입력해주세요.");
             int result = CheckInput(1, 2);
 
+            //아이템 정보 불러오기 - 게임 데이터를 로드할 때 한 번에 하면 좋을 것
+            if (File.Exists(itemDBPath))
+            {
+                string json = File.ReadAllText(itemDBPath);
+                itemDb = JsonSerializer.Deserialize<List<Item>>(json);
+            }
+            else
+            {
+                //Console.Write("Fatal Error!!! - 아이템 db 못 찾음");
+                Console.WriteLine("저장된 데이터가 없습니다.");
+                Console.ReadKey();
+                StartScreen();
+            }
+
             switch (result)
             {
                 case 1:
@@ -329,10 +343,13 @@ namespace MyApp
                     break;
 
                 default:
+                    //int itemIdx = result - 1;
+                    //Item targetItem = itemDb[itemIdx];
+                    //player.EquipItem(targetItem);
 
+                    //---------인벤토리 리스트 내 아이템 선택 코드 수정-------------
                     int itemIdx = result - 1;
-                    Item targetItem = itemDb[itemIdx];
-                    player.EquipItem(targetItem);
+                    player.EquipItem(itemIdx);
 
                     DisplayEquipUI();
                     break;
@@ -781,23 +798,13 @@ namespace MyApp
                 //json 파일 읽어오기
                 string json = File.ReadAllText(playerDataPath);
                 player = (JsonSerializer.Deserialize<Character>(json));
+                player.LoadItemList(itemDb);
             }
             else
             {
                 Console.WriteLine("저장된 데이터가 없습니다."); // 저장된 데이터가 없다고 뜨고 StartScreen으로 바로넘어가니까 콘솔창이 클리어되서 이 문구가 안보임 -> 여유되면 고치기
-                StartScreen();
-            }
-            if (File.Exists(itemDBPath))
-            {
-                string json = File.ReadAllText(itemDBPath);
-                itemDb = JsonSerializer.Deserialize<List<Item>>(json);
-            }
-            else
-            {
-                //Console.Write("Fatal Error!!! - 아이템 db 못 찾음");
-                Console.WriteLine("저장된 데이터가 없습니다.");
-                StartScreen();
                 Console.ReadKey();
+                StartScreen();
             }
         }
         #endregion

@@ -46,10 +46,14 @@ namespace TextConsoleRPG
         public int ExtraDef { get; private set; }
         [JsonInclude]
         public int ExtraMatk { get; private set; }
-        public List<Skills> LearnedSkills { get; private set; }
 
-        private List<Item> Inventory = new List<Item>();
-        private List<Item> EquipList = new List<Item>();
+        [JsonInclude]
+        private List<int> InventoryIdList { get; set; } = new List<int>();
+        [JsonInclude]
+        private List<int> EquipItemIdList { get; set; } = new List<int>();
+        public List<Skills> LearnedSkills { get; private set; }
+        private List<Item> Inventory { get; set; } = new List<Item>();
+        private List<Item> EquipList { get; set; } = new List<Item>();
 
         public int InventoryCount
         {
@@ -80,6 +84,24 @@ namespace TextConsoleRPG
             LearnedSkills = learnedSkills;
         }
 
+        public void LoadItemList(List<Item> items)
+        {
+            foreach (Item item in items)
+            {
+                if (InventoryIdList.Contains(item.Id))
+                {
+                    Inventory.Add(item);
+                }
+            }
+            foreach (Item item in Inventory)
+            {
+                if (EquipItemIdList.Contains(item.Id))
+                {
+                    EquipList.Add(item);
+                }
+            }
+        }
+
         public void DisplayCharacterInfo()
         {
             Console.WriteLine($"Lv. {Level:D2}");
@@ -104,11 +126,16 @@ namespace TextConsoleRPG
             }
         }
 
+        public void EquipItem(int index)
+        {
+            EquipItem(Inventory[index]);
+        }
         public void EquipItem(Item item)
         {
             if (IsEquipped(item))
             {
                 EquipList.Remove(item);
+                EquipItemIdList.Remove(item.Id);
                 if (item.Type == 0)
                     ExtraAtk -= item.Value;
                 else
@@ -117,6 +144,7 @@ namespace TextConsoleRPG
             else
             {
                 EquipList.Add(item);
+                EquipItemIdList.Add(item.Id);
                 if (item.Type == 0)
                     ExtraAtk += item.Value;
                 else
@@ -133,6 +161,7 @@ namespace TextConsoleRPG
         {
             Gold -= item.Price;
             Inventory.Add(item);
+            InventoryIdList.Add(item.Id);
         }
 
         public bool HasItem(Item item)
