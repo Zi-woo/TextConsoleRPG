@@ -265,9 +265,10 @@ namespace MyApp
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 휴식");
-            Console.WriteLine("5. 전투 시작");
-            Console.WriteLine("6. 퀘스트");
-            Console.WriteLine("7. 저장");
+            Console.WriteLine("5. 회복 아이템");
+            Console.WriteLine("6. 전투 시작");
+            Console.WriteLine("7. 퀘스트");
+            Console.WriteLine("8. 저장");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -291,12 +292,15 @@ namespace MyApp
                     DisplayRestUI();
                     break;
                 case 5:
-                    InitializeBattle();
+                    DisplayPotionUI();
                     break;
                 case 6:
-                    DisplayQuestUI();
+                    InitializeBattle();
                     break;
                 case 7:
+                    DisplayQuestUI();
+                    break;
+                case 8:
                     SavePlayerData();
                     break;
             }
@@ -503,6 +507,7 @@ namespace MyApp
         }
         #endregion
         #region 휴식
+        #region 회복
         static void DisplayRestUI()
         {
             int restcost = 500;
@@ -528,6 +533,29 @@ namespace MyApp
                     break;
             }
         }
+        static void DisplayPotionUI()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("회복");
+                Console.WriteLine($"포션을 사용하면 체력을 30 회복 할 수 있습니다. (남은 포션 : {player.Potion} )");
+                Console.WriteLine();
+                Console.WriteLine("1. 사용하기");
+                Console.WriteLine("2. 나가기");
+                Console.WriteLine();
+                int result = CheckInput(1, 2);
+                switch (result)
+                {
+                    case 1:
+                        player.UsePotion();
+                        break;
+                    case 2:
+                        return;
+                }
+            }
+        }
+        #endregion
         #endregion
         #region 전투 세팅
         static void InitializeBattle()

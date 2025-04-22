@@ -280,5 +280,27 @@ namespace TextConsoleRPG
             Quests.Remove(quest);
             QuestNameList.Remove(quest.Name);
         }
-    }
+        public void UsePotion()
+        {
+            if (CurHp == MaxHp)
+            {
+                Console.WriteLine("더 이상 체력을 회복할 수 없습니다.");
+                Console.WriteLine("아무키나 누르세요.");
+                Console.WriteLine();
+                Console.ReadLine();
+                return;
+            }
+            if (Potion > 0)
+            {
+                Potion--;
+                CurHp += 30;
+                if (CurHp > MaxHp) CurHp = MaxHp;
+                Console.WriteLine("회복을 완료했습니다.");
+            }
+            else
+            {
+                Console.WriteLine("포션이 부족합니다.");
+            }
+            Console.WriteLine();
+        }
 }
