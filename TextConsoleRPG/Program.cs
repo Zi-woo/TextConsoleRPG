@@ -68,7 +68,7 @@ namespace MyApp
                     1,
                     (user, targetList) => {
                         Monster target = targetList.First();
-                        if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
+                       if (user.CurMp < 10) Console.WriteLine("MP가 부족합니다!");
                         else target.DamageByPlayer(user.SkillDamageAttack(10,2f));
                     }
                 ),
@@ -80,7 +80,7 @@ namespace MyApp
                         var targets = targetList.Take(2);
                     foreach (var target in targets)
                     {
-                        if (user.SkillDamageAttack(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
+                       if (user.CurMp < 10) Console.WriteLine("MP가 부족합니다!");
                         else target.DamageByPlayer(user.SkillDamageAttack(10,1.5f));
                     }
                   }
@@ -94,7 +94,7 @@ namespace MyApp
                     1,
                     (user, targetList) => {
                         Monster target = targetList.First();
-                        if (user.SkillDamageMagic(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        if (user.CurMp < 10) Console.WriteLine("MP가 부족합니다!");
                         else target.DamageByPlayer(user.SkillDamageMagic(10,2f));
                     }
                 ),
@@ -106,7 +106,7 @@ namespace MyApp
                         var targets = targetList.Take(2);
                     foreach (var target in targets)
                     {
-                        if (user.SkillDamageMagic(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        if (user.CurMp < 10) Console.WriteLine("MP가 부족합니다!");
                         else target.DamageByPlayer(user.SkillDamageMagic(10,1.5f));
                     }
                   }
@@ -120,7 +120,7 @@ namespace MyApp
                     1,
                     (user, targetList) => {
                         Monster target = targetList.First();
-                        if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        if (user.CurMp < 10) Console.WriteLine("MP가 부족합니다!");
                         else target.DamageByPlayer(user.SkillDamageAttack(10,2f));
                     }
                 ),
@@ -132,7 +132,7 @@ namespace MyApp
                         var targets = targetList.Take(2);
                     foreach (var target in targets)
                     {
-                        if (user.SkillDamageAttack(10,1.5f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        if (user.CurMp < 10) Console.WriteLine("MP가 부족합니다!");
                         else target.DamageByPlayer(user.SkillDamageAttack(10,1.5f));
                     }
                   }
@@ -147,7 +147,7 @@ namespace MyApp
                     1,
                     (user, targetList) => {
                         Monster target = targetList.First();
-                        if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        if (user.CurMp < 10) Console.WriteLine("MP가 부족합니다!");
                         else target.DamageByPlayer(user.SkillDamageAttack(10, 2f));
                     }
                 ),
@@ -157,9 +157,10 @@ namespace MyApp
                 2,
                 (user, targetList) => {
                         var targets = targetList.Take(2);
+                    
                     foreach (var target in targets)
                     {
-                        if (user.SkillDamageAttack(10,2f) == 0) Console.WriteLine("MP가 부족합니다!");
+                        if (user.CurMp < 10) Console.WriteLine("MP가 부족합니다!");
                         else target.DamageByPlayer(user.SkillDamageAttack(10, 1.5f));
                     }
                   }
@@ -238,7 +239,7 @@ namespace MyApp
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            int result = CheckInput(1, 5);
+            int result = CheckInput(1, 7);
 
             switch (result)
             {
@@ -778,9 +779,14 @@ namespace MyApp
             Console.Clear();
             if (isWin)
             {
+                Random random = new Random();
                 int preExp = player.Exp;
                 int preLv = player.Level;
                 int expUp = 0;
+                int getGold = 0;
+                Item droppedItem;
+                List<Item> getItem = new List<Item>();
+
                 Console.WriteLine("Battle!! - Result");
                 Console.WriteLine();
                 Console.WriteLine("Victory");
@@ -790,12 +796,27 @@ namespace MyApp
                 foreach (var monster in mm.spawnedMonsters)
                 {
                     expUp += monster.Exp;
+                    droppedItem = monster.ItemDrop();
+                    if (droppedItem != null)
+                    {
+                        player.GetItem(droppedItem);
+                        getItem.Add(droppedItem);
+                    }
                 }
                 player.GetExp(expUp, lm);
                 Console.WriteLine($"Lv. {player.Level} {player.Name}");
                 Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}");
                 if (preLv == player.Level) Console.WriteLine($"exp {preExp} -> {player.Exp}");
                 else Console.WriteLine($"Lv. {preLv} -> Lv. {player.Level}");
+                Console.WriteLine();
+                Console.WriteLine("[획득 아이템]");
+                getGold = random.Next(10 * expUp, 20 * expUp);
+                Console.WriteLine($"{getGold} Gold");
+                player.GetGold(getGold);
+                foreach (var item in getItem)
+                {
+                    Console.WriteLine($"{item.Name} - 1");
+                }
                 Console.WriteLine();
                 Console.WriteLine("0. 다음");
                 Console.WriteLine();

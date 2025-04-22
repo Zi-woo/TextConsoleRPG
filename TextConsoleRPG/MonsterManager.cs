@@ -9,15 +9,43 @@ namespace TextConsoleRPG
      class MonsterManager
     {
         public List<Monster> monsterDb = new List<Monster>() // 이 세상에 존재하는 몬스터 종류
-    {
-        new Monster("미니언", 2, 15, 5, 2),
-        new Monster("대포미니언", 5, 25, 8, 5),
-        new Monster("공허충", 3, 10, 9, 3),
-        new Monster("원거리미니언", 2, 15, 5, 2),
-        new Monster("슈퍼미니언", 4, 11, 11, 4),
-        new Monster("지휘관미니언", 5, 12, 11,5),
-        new Monster("바론버프미니언", 6, 14, 10, 6)
-    };
+        {
+            new Monster("미니언", 2, 15, 5, 2,  new List<Item>
+            {
+                new Item(101, "낡은 검", 0, 2, "무뎌진 검. 공격력이 조금 상승한다.", 500),
+                new Item(102, "낡은 방패", 1, 3, "튼튼하지 않지만 막을 수는 있다.", 500)
+            }),
+            new Monster("대포미니언", 5, 25, 8, 5, new List<Item>
+            {
+                new Item(103, "부서진 칼자루", 3, 0, "뭔가 쓸모있어 보인다.", 200),
+                new Item(104, "부서진 칼날", 3, 0, "어디선가 본 듯 하다.", 300)
+            }),
+            new Monster("공허충", 3, 10, 9, 3, new List<Item>
+            {
+                new Item(105, "낡은 스태프", 0, 7, "마력이 조금 깃든 오래된 지팡이.", 800),
+                new Item(106, "낡은 방패", 1, 3, "튼튼하지 않지만 막을 수는 있다.", 500)
+            }),
+            new Monster("원거리미니언", 2, 15, 5, 2, new List<Item>
+            {
+                new Item(107, "회복 포션", 4, 30, "마시면 체력이 조금 회복된다.", 100),
+                new Item(108, "두꺼운 장갑", 1, 5, "아주 질기다", 600)
+            }),
+            new Monster("슈퍼미니언", 4, 11, 11, 4, new List<Item>
+            {
+                new Item(109, "구리 단검", 0, 6, "날카롭지만 금방 날이 망가질 것 같다.", 500),
+                new Item(110, "은 방패", 1, 8, "반짝반짝 빛난다.", 800)
+            }),
+            new Monster("지휘관미니언", 5, 12, 11,5, new List<Item>
+            {
+                new Item(111, "거대한 장궁", 0, 9, "활시위가 튼튼한 거대한 활.", 900),
+                new Item(112, "멋진 모자", 1, 8, "멋이 좋다.", 800)
+            }),
+            new Monster("바론버프미니언", 6, 14, 10, 6, new List<Item>
+            {
+                new Item(113, "두꺼운 갑옷", 1, 10, "무겁지만 튼튼하다. 듬직하다.", 1000),
+                new Item(114, "헤르메스의 신발", 1, 8, "신으면 빨라질 것 같다.", 1200)
+            })
+        };
 
         public List<Monster> spawnedMonsters = new List<Monster>(); // 실제로 스폰된 몬스터 List
 
@@ -32,7 +60,8 @@ namespace TextConsoleRPG
                     monsterDb[index].Level,
                     monsterDb[index].Hp,
                     monsterDb[index].Atk,
-                    monsterDb[index].Exp
+                    monsterDb[index].Exp,
+                    monsterDb[index].DropItemList
                 );
                 spawnedMonsters.Add(selected);
             }

@@ -172,6 +172,10 @@ namespace TextConsoleRPG
         {
             return Inventory.Contains(item);
         }
+        public void GetItem(Item item)
+        {
+            Inventory.Add(item);
+        }
 
         public void Rest(int cost) 
         {
@@ -253,13 +257,11 @@ namespace TextConsoleRPG
         }
         public int SkillDamageAttack(int manaCost, float damageMul) 
         {
-            if (CurMp < manaCost) return 0;
             CurMp -= manaCost;
             return (int)(Atk * damageMul);
         }
         public int SkillDamageMagic(int manaCost, float damageMul)
         {
-            if (CurMp < manaCost) return 0;
             CurMp -= manaCost;
             return (int)(Matk * damageMul);
         }
@@ -273,7 +275,10 @@ namespace TextConsoleRPG
                 evasion = true;
             return evasion;
         }
-
+        public void GetGold(int gold)
+        {
+            Gold += gold;
+        }
         public void UsePotion()
         {
             if (CurHp == MaxHp)
