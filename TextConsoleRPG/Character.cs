@@ -141,12 +141,12 @@ namespace TextConsoleRPG
         {
             CurHp -= damage;
             if (CurHp < 0) CurHp = 0;
-            Console.WriteLine($"{damage} 데미지를 입혔다!");
+            Console.WriteLine($"{damage} 데미지를 입었다!");
         }
 
         public int Damage(float Atkf) //데미지 계산
         {
-            Random random = new Random();
+            Random random = new Random();//치명타
             int C = random.Next(1, 101);
             bool critical = false;
             if (C <= 15)
@@ -167,6 +167,16 @@ namespace TextConsoleRPG
             else
                 return totaldamage = (int)damage;           
 
+        }
+
+        public bool Evasion() //회피
+        {
+            Random random = new Random();
+            int E = random.Next(1, 101);
+            bool evasion = false;
+            if (E <= 10)
+                evasion = true;
+            return evasion;
         }
     }
 }

@@ -371,7 +371,6 @@ namespace MyApp
         #region 전투 세팅
         static void InitializeBattle()
         {
-            player.PreDgnHp = player.CurHp;
             Console.Clear();
             Console.WriteLine("Battle!!");
             Console.WriteLine();
@@ -383,7 +382,7 @@ namespace MyApp
             DisplayBattleUI();
         }
         static void DisplayBattleUI()
-        {
+        {        
             Console.Clear();
             for (int i = 0; i < mm.spawnedMonsters.Count; i++)
             {
@@ -407,8 +406,8 @@ namespace MyApp
         #region 공격
         static void EnemyPhase()
         {
-            Console.Clear();
             
+            Console.Clear();          
             Console.WriteLine("Battle!!");
             Console.WriteLine();
             for (int i = 0; i < mm.spawnedMonsters.Count; i++)
@@ -416,16 +415,30 @@ namespace MyApp
                 Monster m = mm.spawnedMonsters[i];
                 if (m.Hp <= 0)
                     continue;
+
                 Console.WriteLine($"Lv. {m.Level} {m.Name} 의 공격!");
-                Console.WriteLine($"{player.Name}을(를) 맞췄습니다. [데미지: {m.Atk}]");
-                Console.WriteLine();
-                int Atkm = player.Damage(m.Atk);
-                player.DamagebyMonster(Atkm);
-                Console.WriteLine($"Lv. {player.Level} {player.Name}");
-                Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}\n");//현재체력 최대체력
-                Console.WriteLine("Enter 를 눌러주세요.");
-                Console.ReadLine();
-                Console.WriteLine();
+                
+                
+                bool evasion = player.Evasion();
+                if (evasion) //회피
+                {
+                    Console.WriteLine($"{player.Name}은 공격을 피했다!");//현재체력 최대체력
+                    Console.WriteLine("Enter 를 눌러주세요.");
+                    Console.ReadLine();
+                }
+                else //명중
+                {
+                    player.PreDgnHp = player.CurHp;
+                    Console.WriteLine($"{player.Name}을(를) 맞췄습니다. [데미지: {m.Atk}]\n");
+                    int Atkm = player.Damage(m.Atk);
+                    player.DamagebyMonster(Atkm);
+                    
+                    Console.WriteLine($"Lv. {player.Level} {player.Name}");
+                    Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}\n");//현재체력 최대체력
+                    Console.WriteLine("Enter 를 눌러주세요.");
+                    Console.ReadLine();
+                    Console.WriteLine();
+                }
                 if (player.CurHp <= 0) DisplayBattleResult(false);
             }
             DisplayBattleUI();
@@ -466,13 +479,24 @@ namespace MyApp
                             Console.ReadLine();
                             PlayerPhase();
                         }
-                        else // 타격
+                        else 
                         {
-                            float Atkf = player.Atk;
-                            int total = player.Damage(Atkf);
-                            targetMonster.DamagebyPlayer(total);
-                            Console.WriteLine($"{targetMonster.Name}을 공격!");
-                            Thread.Sleep(500);
+                            bool evasion = player.Evasion();
+                            if (evasion) //회피
+                            {
+                                Console.WriteLine($"{targetMonster.Name}은(는) 공격을 피했다!");
+                                Console.WriteLine("Enter 를 눌러주세요.");
+                                Console.ReadLine();
+                            }
+                            else //명중
+                            {
+                                Console.WriteLine($"{targetMonster.Name}을 공격!");
+                                float Atkf = player.Atk;
+                                int total = player.Damage(Atkf);
+                                targetMonster.DamagebyPlayer(total);                                
+                                Console.WriteLine("Enter 를 눌러주세요.");
+                                Console.ReadLine();
+                            }
                             if (!targetMonster.AliveMonster()) //타격 후 생존 확인 
                             {
                                 Console.WriteLine($"{targetMonster.Name}이(가) 쓰러졌습니다!");
