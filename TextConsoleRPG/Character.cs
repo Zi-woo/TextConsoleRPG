@@ -266,21 +266,6 @@ namespace TextConsoleRPG
                 evasion = true;
             return evasion;
         }
-
-        public bool isAcceptedQuest(string questName)
-        {
-            return QuestNameList.Contains(questName);
-        }
-        public void AcceptQuest(IQuest quest)
-        {
-            Quests.Add(quest);
-            QuestNameList.Add(quest.Name);
-        }
-        public void RemoveQuest(IQuest quest)
-        {
-            Quests.Remove(quest);
-            QuestNameList.Remove(quest.Name);
-        }
         public void UsePotion()
         {
             if (CurHp == MaxHp)
@@ -303,6 +288,21 @@ namespace TextConsoleRPG
                 Console.WriteLine("포션이 부족합니다.");
             }
             Console.WriteLine();
+        }
+
+        public bool isAcceptedQuest(string questName)
+        {
+            return QuestNameList.Contains(questName);
+        }
+        public void AcceptQuest(IQuest quest)
+        {
+            Quests.Add(quest);
+            QuestNameList.Add(quest.Name);
+        }
+        public void RemoveQuest(IQuest quest)
+        {
+            Quests.Remove(quest);
+            QuestNameList.Remove(quest.Name);
         }
     }
 }
