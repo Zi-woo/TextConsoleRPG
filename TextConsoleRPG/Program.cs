@@ -787,7 +787,6 @@ namespace MyApp
                 }
                 if (targetMonster.Count >= 2)
                 {
-                    Random random = new Random();
                     List<Monster> shuffledList = targetMonster.OrderBy(x => random.Next()).ToList(); // 몬스터리스트 섞어서 렌덤성부여
                 }
 
