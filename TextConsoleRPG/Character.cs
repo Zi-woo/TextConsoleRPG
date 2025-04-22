@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace TextConsoleRPG
 {
-    class Character
+    internal class Character
     {
         [JsonInclude]
         public int Level { get; private set; }
@@ -51,9 +51,14 @@ namespace TextConsoleRPG
         private List<int> InventoryIdList { get; set; } = new List<int>();
         [JsonInclude]
         private List<int> EquipItemIdList { get; set; } = new List<int>();
+
+        [JsonInclude]
+        private List<string> QuestNameList { get; set; } = new List<string>();
         public List<Skills> LearnedSkills { get; private set; }
         private List<Item> Inventory { get; set; } = new List<Item>();
         private List<Item> EquipList { get; set; } = new List<Item>();
+
+        private List<IQuest> Quests { get; set; } = new List<IQuest>();
 
         public int InventoryCount
         {
@@ -156,15 +161,24 @@ namespace TextConsoleRPG
         {
             return EquipList.Contains(item);
         }
-        public void AddItemToInventory(Item item)
+        public void GetReward(Item item,int itemCount, int gold, int exp)
         {
-            Inventory.Add(item);
-            InventoryIdList.Add(item.Id);
+            Gold += gold;
+            Exp += exp;
+            if (item != null)
+            {
+                for (int i = 0; i < itemCount; i++)
+                {
+                    Inventory.Add(item);
+                    InventoryIdList.Add(item.Id);
+                }
+            }
         }
         public void BuyItem(Item item)
         {
             Gold -= item.Price;
-            AddItemToInventory(item);
+            Inventory.Add(item);
+            InventoryIdList.Add(item.Id);
         }
 
         public bool HasItem(Item item)
@@ -251,6 +265,20 @@ namespace TextConsoleRPG
             if (E <= 10)
                 evasion = true;
             return evasion;
+        }
+
+        public bool isAcceptedQuest(string questName) {
+            return QuestNameList.Contains(questName);
+        }
+        public void AcceptQuest(IQuest quest)
+        {
+            Quests.Add(quest);
+            QuestNameList.Add(quest.Name);
+        }
+        public void RemoveQuest(IQuest quest)
+        {
+            Quests.Remove(quest);
+            QuestNameList.Remove(quest.Name);
         }
     }
 }

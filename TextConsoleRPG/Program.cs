@@ -12,6 +12,7 @@ namespace MyApp
     {
         private static Character player;
         private static List<Item> itemDb;
+        private static List<IQuest> QuestDb;
         private static MonsterManager mm;
         public const string playerDataPath = "playerData.json";
         public const string itemDBPath = "items.json";
@@ -43,7 +44,41 @@ namespace MyApp
                 Console.ReadKey();
                 StartScreen();
             }
+            //퀘스트 테스트 코드
+            QuestDb = new List<IQuest>()
+            {
+                new KillMonsterQuest(
+                        "마을을 위협하는 미니언 처치",
+                        "이봐! 마을 근처에 미니언들이 너무 많아졌다고 생각하지 않나??\r\n마을주민들의 안전을 위해서라도 저것들 수를 좀 줄여야 한다고!\r\n자네가 좀 처치해주게!",
+                        "미니언",
+                        5,
+                        10,
+                        2000,
+                        null,
+                        0
+                    ),
+                new KillMonsterQuest(
+                        "마을을 위협하는 공허충 처치",
+                        "이봐! 던전 안에 공허출들이 너무 많아졌다고 생각하지 않나??\r\n마을주민들의 안전을 위해서라도 저것들 수를 좀 줄여야 한다고!\r\n자네가 좀 처치해주게!",
+                        "공허충",
+                        10,
+                        20,
+                        3000,
+                        itemDb[2],
+                        1
+                    ),
+                new UseItemQuest(
+                    "회복 포션 사용",
+                    "안전을 위해 회복 포션을 사용하기",
+                    "회복 포션",
+                    3,
+                                            5,
+                                            0,
+                        null,
+                        0
+                    )
 
+            };
             switch (result)
             {
                 case 1:
@@ -231,11 +266,12 @@ namespace MyApp
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 휴식");
             Console.WriteLine("5. 전투 시작");
-            Console.WriteLine("6. 저장");
+            Console.WriteLine("6. 퀘스트");
+            Console.WriteLine("7. 저장");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            int result = CheckInput(1, 5);
+            int result = CheckInput(1, 7);
 
 
             switch (result)
@@ -258,6 +294,9 @@ namespace MyApp
                     InitializeBattle();
                     break;
                 case 6:
+                    DisplayQuestUI();
+                    break;
+                case 7:
                     SavePlayerData();
                     break;
             }
@@ -722,6 +761,7 @@ namespace MyApp
                 }
                 if (targetMonster.Count >= 2)
                 {
+                    Random random = new Random();
                     List<Monster> shuffledList = targetMonster.OrderBy(x => random.Next()).ToList(); // 몬스터리스트 섞어서 렌덤성부여
                 }
 
@@ -779,7 +819,82 @@ namespace MyApp
             }
             DisplayMainUI();
         }
+        #region 퀘스트
+        static void DisplayQuestUI()
+        {
+            Console.Clear();
+            Console.WriteLine("Quest!!\n");
+            for(int i =0;i< QuestDb.Count; ++i)
+            {
+                Console.WriteLine($"{i + 1}. {QuestDb[i].Name}");
 
+            }
+            Console.WriteLine("\n0. 나가기");
+            Console.WriteLine("\n원하시는 행동을 선택해주세요.");
+            int result = CheckInput(0, QuestDb.Count);
+            switch (result)
+            {
+                case 0: DisplayMainUI();break;//return;
+                default:
+                    DisplaySelectedQuest(--result);
+                    break;
+            }
+            DisplayMainUI();
+        }
+
+        static void DisplaySelectedQuest(int index)
+        {
+            Console.Clear();
+            Console.WriteLine("Quest!!\n");
+            QuestDb[index].DisplayQuestInfo();
+            if (player.isAcceptedQuest(QuestDb[index].Name))
+            {
+                DisplayFinishedQuest(index);
+            }
+            else
+            {
+                DisplayAcceptQuest(index);
+            }
+
+        }
+        static void DisplayAcceptQuest(int index)
+        {
+            Console.WriteLine("\n1. 수락");
+            Console.WriteLine("2. 돌아가기\n");
+            Console.WriteLine("원하시는 행동을 선택해주세요.");
+            int result = CheckInput(1, 2);
+            switch (result)
+            {
+                case 1:
+                    player.AcceptQuest(QuestDb[index]);
+                    break;
+                case 2:
+                    break;
+            }
+        }
+        static void DisplayFinishedQuest(int index)
+        {
+            int i = 1;
+            if (QuestDb[index].isCompleted)
+            {
+                Console.WriteLine($"\n{i}. 보상 받기");
+                ++i;
+            }
+            Console.WriteLine($"{i}. 돌아가기\n");
+            Console.WriteLine("원하시는 행동을 선택해주세요.");
+            int result = CheckInput(1, i);
+            if(i == 1)
+            {
+                return;
+            }
+            else if(result == 1)
+            {
+                QuestDb[index].Completed(player);
+                player.RemoveQuest(QuestDb[index]);
+            }
+        }
+
+        #endregion
 
         #region 세이브
 
@@ -802,7 +917,7 @@ namespace MyApp
             }
             else
             {
-                Console.WriteLine("저장된 데이터가 없습니다."); // 저장된 데이터가 없다고 뜨고 StartScreen으로 바로넘어가니까 콘솔창이 클리어되서 이 문구가 안보임 -> 여유되면 고치기
+                Console.WriteLine("저장된 데이터가 없습니다."); // 저장된 데이터가 없다고 뜨고 StartScreen으로 바로넘어가니까 콘솔창이 클리어되서 이 문구가 안보임 -> 여유되면 고치기 --> 수정 완료
                 Console.ReadKey();
                 StartScreen();
             }
