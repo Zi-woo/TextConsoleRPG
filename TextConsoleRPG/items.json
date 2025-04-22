@@ -1,5 +1,6 @@
 [
   {
+    "Id": 1,
     "Name": "\uC218\uB828\uC790\uC758 \uAC11\uC637",
     "Type": 1,
     "Value": 5,
@@ -8,6 +9,7 @@
     "DisplayTypeText": "\uBC29\uC5B4\uB825"
   },
   {
+    "Id": 2,
     "Name": "\uBB34\uC1E0\uAC11\uC637",
     "Type": 1,
     "Value": 9,
@@ -16,6 +18,7 @@
     "DisplayTypeText": "\uBC29\uC5B4\uB825"
   },
   {
+    "Id": 3,
     "Name": "\uC2A4\uD30C\uB974\uD0C0\uC758 \uAC11\uC637",
     "Type": 1,
     "Value": 15,
@@ -24,6 +27,7 @@
     "DisplayTypeText": "\uBC29\uC5B4\uB825"
   },
   {
+    "Id": 4,
     "Name": "\uB0A1\uC740 \uAC80",
     "Type": 0,
     "Value": 2,
@@ -32,6 +36,7 @@
     "DisplayTypeText": "\uACF5\uACA9\uB825"
   },
   {
+    "Id": 5,
     "Name": "\uCCAD\uB3D9 \uB3C4\uB07C",
     "Type": 0,
     "Value": 5,
@@ -40,6 +45,7 @@
     "DisplayTypeText": "\uACF5\uACA9\uB825"
   },
   {
+    "Id": 6,
     "Name": "\uC2A4\uD30C\uB974\uD0C0\uC758 \uCC3D",
     "Type": 0,
     "Value": 7,
