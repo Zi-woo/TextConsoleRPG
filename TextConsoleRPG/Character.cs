@@ -7,6 +7,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using MyApp;
 
 namespace TextConsoleRPG
 {
@@ -16,6 +17,7 @@ namespace TextConsoleRPG
         public int Level { get; private set; }
         [JsonInclude]
         public int Exp { get; private set; }
+       
         [JsonInclude]
         public string Name { get; private set; }
         [JsonInclude]
@@ -69,10 +71,8 @@ namespace TextConsoleRPG
                 return Inventory.Count;
             }
         }
-
         public Character() { }
         public Character(int level, string name, string job, int atk, int def, int matk, int hp, int mp, int gold, List<Skills> learnedSkills)
-
         {
             Level = level;
             Exp = 0;
@@ -89,6 +89,7 @@ namespace TextConsoleRPG
             MaxMp = mp;
             Gold = gold;
             LearnedSkills = learnedSkills;
+            Potion = 3;
         }
 
         public void LoadItemList(List<Item> items)
@@ -187,6 +188,10 @@ namespace TextConsoleRPG
         {
             return Inventory.Contains(item);
         }
+        public void GetItem(Item item)
+        {
+            Inventory.Add(item);
+        }
 
         public void Rest(int cost)
         {
@@ -208,7 +213,21 @@ namespace TextConsoleRPG
                 Console.ReadLine();
             }
         }
-
+        public void GetExp(int exp, LevelManager lm)
+        {
+            Exp += exp;
+            while (lm.LevelUp(Level, Exp))
+            {
+                Exp -= lm.GetRequiredExp(Level);
+                Level++;
+                Atk++; // 0.5 올라야 되지만 Atk int형을 깨기싫어서..
+                Matk++;
+                Def++;
+                Console.WriteLine("레벨업!!");
+                Console.WriteLine($"현재레벨 : {Level}");
+                Console.WriteLine();
+            }
+        }
         public void DamagebyMonster(int damage)//플레이어 체력 감소
 
         {
@@ -254,13 +273,11 @@ namespace TextConsoleRPG
         }
         public int SkillDamageAttack(int manaCost, float damageMul)
         {
-            if (CurMp < manaCost) return 0;
             CurMp -= manaCost;
             return (int)(Atk * damageMul);
         }
         public int SkillDamageMagic(int manaCost, float damageMul)
         {
-            if (CurMp < manaCost) return 0;
             CurMp -= manaCost;
             return (int)(Matk * damageMul);
         }
@@ -288,7 +305,7 @@ namespace TextConsoleRPG
                 Console.ReadLine();
                 return;
             }
-            if (Potion > 0)
+            if (Potion> 0)
             {
                 Potion--;
                 CurHp += 30;
@@ -301,7 +318,6 @@ namespace TextConsoleRPG
             }
             Console.WriteLine();
         }
-
         public bool isAcceptedQuest(string questName)
         {
             return QuestNameList.Contains(questName);
