@@ -164,10 +164,11 @@ namespace TextConsoleRPG
         {
             return EquipList.Contains(item);
         }
-
-
-
-
+        public void ResetStat()
+        {
+            Atk = originalAtk;
+            Matk = originalMatk;
+        }
         public void GetExp(int exp, LevelManager lm)
         {
             Exp += exp;

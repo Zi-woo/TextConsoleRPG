@@ -760,6 +760,7 @@ namespace MyApp
 
                             if (!targetMonster.AliveMonster()) //타격 후 생존 확인 
                             {
+                                player.UpdateQuest(targetMonster.Name, QUEST_TYPE.KILL_MONSTER);
                                 Console.WriteLine($"{targetMonster.Name}이(가) 쓰러졌습니다!");
                                 Console.WriteLine("\nEnter 를 눌러주세요.");
                                 Console.ReadLine();
@@ -825,6 +826,7 @@ namespace MyApp
                         Thread.Sleep(500);
                         if (!targetMonster[0].AliveMonster())
                         {
+                            player.UpdateQuest(targetMonster[0].Name, QUEST_TYPE.KILL_MONSTER);
                             Console.WriteLine($"{targetMonster[0].Name}이(가) 쓰러졌습니다!");
                             Console.WriteLine("\nEnter 를 눌러주세요.");
                             Console.ReadLine();
@@ -856,6 +858,7 @@ namespace MyApp
                 {
                     if (!target.AliveMonster())
                     {
+                        player.UpdateQuest(target.Name, QUEST_TYPE.KILL_MONSTER);
                         Console.WriteLine($"{target.Name}이(가) 쓰러졌습니다!");
                         Console.WriteLine("\nEnter 를 눌러주세요.");
                         Console.ReadLine();
@@ -924,7 +927,7 @@ namespace MyApp
                                 {
                                     Console.WriteLine($"{targetMonster.Name}을 공격!");
                                     float Atkf = partyMem.Atk;
-                                    int total = partyMem.Damage(Atkf);
+                                    int total = partyMem.Damage(Atkf,partyMem.Def);
                                     targetMonster.DamageByPlayer(total);
                                     Console.WriteLine("Enter 를 눌러주세요.");
                                     Console.ReadLine();

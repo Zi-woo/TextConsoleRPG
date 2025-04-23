@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TextConsoleRPG
 {
+    public enum QUEST_TYPE { KILL_MONSTER, USE_ITEM }
     internal class QuestReward
     {
         public Item? RewardItem { get; } = null;
@@ -71,7 +72,7 @@ namespace TextConsoleRPG
                 if (isCompleted) return;
                 if (monster == targetMonster)
                 {
-                    ++targetMonsterCount;
+                    ++currentKillCount;
                 }
             }
             public void DisplayQuestInfo()
@@ -83,7 +84,7 @@ namespace TextConsoleRPG
                 string reward = "";
                 if(Reward.RewardItem != null)
                 {
-                    reward += $" {Reward.RewardItem} x {Reward.ItemCount}\n";
+                    reward += $" {Reward.RewardItem.Name} x {Reward.ItemCount}\n";
                 }
                 if (Reward.Gold > 0) {
                     reward += $" {Reward.Gold}  G\n";
@@ -97,6 +98,7 @@ namespace TextConsoleRPG
         public void Completed(Player player)
         {
             player.GetReward(Reward.RewardItem, Reward.ItemCount, Reward.Gold, Reward.Exp);
+            currentKillCount = 0;
         }
     }
 
@@ -122,7 +124,7 @@ namespace TextConsoleRPG
                 if (isCompleted) return;
                 if (item == targetItem)
                 {
-                    ++targetItemCount;
+                    ++currentItemCount;
                 }
             }
             public void DisplayQuestInfo()
@@ -149,6 +151,7 @@ namespace TextConsoleRPG
             public void Completed(Player player)
             {
                 player.GetReward(Reward.RewardItem,Reward.ItemCount,Reward.Gold,Reward.Exp);
+            currentItemCount = 0;
             }
         }
 
