@@ -49,23 +49,42 @@ namespace TextConsoleRPG
 
         public List<Monster> spawnedMonsters = new List<Monster>(); // 실제로 스폰된 몬스터 List
 
-        public void SpawnRandomMonster(int count)
+        public void SpawnRandomMonster(int stage)
         {
-            Random rand = new Random();
+            spawnedMonsters.Clear();
+
+            Random random = new Random();
+            int count = random.Next(1, 5); //1~4마리 랜덤
+            int minLevel = 2;
+            int maxLevel = 2 + ((stage - 1) / 2);// 스테이지 1: 2레벨, 2: 2~4레벨, 3: 2~6레벨
+            List<Monster> filtered = monsterDb.Where(m => m.Level >= minLevel && m.Level <= maxLevel).ToList();
+
+            if (filtered.Count == 0)
+            {
+                filtered = monsterDb;
+            }
+
             for (int i = 0; i < count; i++)
             {
-                int index = rand.Next(monsterDb.Count);
+                int index = random.Next(filtered.Count);
+                Monster baseMonster = filtered[index];
+
+                int scaledHp = baseMonster.Hp + (stage * 2);
+                int scaledAtk = baseMonster.Atk + (stage);
+                int scaledExp = baseMonster.Exp + (stage);
+
                 Monster selected = new Monster(
-                    monsterDb[index].Name,
-                    monsterDb[index].Level,
-                    monsterDb[index].Hp,
-                    monsterDb[index].Atk,
-                    monsterDb[index].Exp,
-                    monsterDb[index].DropItemList
+                    baseMonster.Name,
+                    baseMonster.Level,
+                    scaledHp,
+                    scaledAtk,
+                    scaledExp,
+                    baseMonster.DropItemList
                 );
                 spawnedMonsters.Add(selected);
             }
         }
-    }
 
+    }
 }
+
