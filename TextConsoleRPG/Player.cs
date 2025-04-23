@@ -126,7 +126,13 @@ namespace TextConsoleRPG
                     }
                     break;
                 case QUEST_TYPE.USE_ITEM:
-
+                    foreach (var quest in Quests)
+                    {
+                        if (quest is UseItemQuest itemQuest)
+                        {
+                            itemQuest.UseItem(targetName);
+                        }
+                    }
                     break;
             }
         }
