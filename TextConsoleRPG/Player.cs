@@ -111,5 +111,23 @@ namespace TextConsoleRPG
             }
             Console.WriteLine();
         }
+        public void UpdateQuest(string targetName, QUEST_TYPE questType)
+        {
+            switch (questType)
+            {
+                case QUEST_TYPE.KILL_MONSTER:
+                    foreach (var quest in Quests)
+                    {
+                        if (quest is KillMonsterQuest killQuest)
+                        {
+                            killQuest.MonsterKilled(targetName);
+                        }
+                    }
+                    break;
+                case QUEST_TYPE.USE_ITEM:
+
+                    break;
+            }
+        }
     }
 }
