@@ -11,58 +11,58 @@ using MyApp;
 
 namespace TextConsoleRPG
 {
-    internal class Character
+    abstract class Character
     {
         [JsonInclude]
         public int Level { get; private set; }
         [JsonInclude]
-        public int Exp { get; private set; }
-       
+        public int Exp { get; protected set; }
+
         [JsonInclude]
         public string Name { get; private set; }
         [JsonInclude]
         public string Job { get; private set; }
         [JsonInclude]
-        public int Atk { get; private set; }
+        public int Atk { get; protected set; }
         [JsonInclude]
-        public int Def { get; private set; }
+        public int Def { get; protected set; }
         [JsonInclude]
-        public int Matk { get; private set; } // 마법공격력
+        public int Matk { get; protected set; } // 마법공격력
         [JsonInclude]
-        public int CurHp { get; private set; }
+        public int originalAtk { get; protected set; } // 전투에서 올랐던 공격력을 전투종료시 원래값으로 되돌리기 위한 변수
+        [JsonInclude]
+        public int originalMatk { get; protected set; }
+        [JsonInclude]
+        public int CurHp { get; protected set; }
         [JsonInclude]
         public int PreDgnHp { get; set; } // 던전입장전체력
         [JsonInclude]
         public int MaxHp { get; private set; } // 최대체력
         [JsonInclude]
-        public int CurMp { get; private set; }
+        public int CurMp { get; protected set; }
         [JsonInclude]
         public int PreDgnMp { get; set; }
         [JsonInclude]
         public int MaxMp { get; private set; }
-        [JsonInclude]
-        public int Gold { get; private set; }
+
         [JsonInclude]
         public int ExtraAtk { get; private set; }
         [JsonInclude]
         public int ExtraDef { get; private set; }
         [JsonInclude]
         public int ExtraMatk { get; private set; }
-        [JsonInclude]
-        public int Potion { get; private set; }
+
 
         [JsonInclude]
-        private List<int> InventoryIdList { get; set; } = new List<int>();
+        protected List<int> InventoryIdList { get; set; } = new List<int>();
         [JsonInclude]
-        private List<int> EquipItemIdList { get; set; } = new List<int>();
+        protected List<int> EquipItemIdList { get; set; } = new List<int>();
 
-        [JsonInclude]
-        private List<string> QuestNameList { get; set; } = new List<string>();
+
         public List<Skills> LearnedSkills { get; private set; }
-        private List<Item> Inventory { get; set; } = new List<Item>();
-        private List<Item> EquipList { get; set; } = new List<Item>();
+        protected List<Item> Inventory { get; set; } = new List<Item>();
+        protected List<Item> EquipList { get; set; } = new List<Item>();
 
-        private List<IQuest> Quests { get; set; } = new List<IQuest>();
 
         public int InventoryCount
         {
@@ -72,7 +72,7 @@ namespace TextConsoleRPG
             }
         }
         public Character() { }
-        public Character(int level, string name, string job, int atk, int def, int matk, int hp, int mp, int gold, List<Skills> learnedSkills)
+        public Character(int level, string name, string job, int atk, int def, int matk, int hp, int mp, List<Skills> learnedSkills)
         {
             Level = level;
             Exp = 0;
@@ -87,9 +87,9 @@ namespace TextConsoleRPG
             CurMp = mp;
             PreDgnMp = mp;
             MaxMp = mp;
-            Gold = gold;
             LearnedSkills = learnedSkills;
-            Potion = 3;
+            originalAtk = atk;
+            originalMatk = matk;
         }
 
         public void LoadItemList(List<Item> items)
@@ -119,7 +119,7 @@ namespace TextConsoleRPG
             Console.WriteLine(ExtraDef == 0 ? $"마법공격력 : {Matk}" : $"마법공격력 : {Matk + ExtraMatk} (+{ExtraMatk})");
             Console.WriteLine($"HP : {CurHp}/{MaxHp}");
             Console.WriteLine($"MP : {CurMp}/{MaxMp}");
-            Console.WriteLine($"Gold : {Gold} G");
+            // Console.WriteLine($"Gold : {Gold} G");
         }
 
         public void DisplayInventory(bool showIdx)
@@ -164,55 +164,10 @@ namespace TextConsoleRPG
         {
             return EquipList.Contains(item);
         }
-        public void GetReward(Item item, int itemCount, int gold, int exp)
-        {
-            Gold += gold;
-            Exp += exp;
-            if (item != null)
-            {
-                for (int i = 0; i < itemCount; i++)
-                {
-                    Inventory.Add(item);
-                    InventoryIdList.Add(item.Id);
-                }
-            }
-        }
-        public void BuyItem(Item item)
-        {
-            Gold -= item.Price;
-            Inventory.Add(item);
-            InventoryIdList.Add(item.Id);
-        }
 
-        public bool HasItem(Item item)
-        {
-            return Inventory.Contains(item);
-        }
-        public void GetItem(Item item)
-        {
-            Inventory.Add(item);
-        }
 
-        public void Rest(int cost)
-        {
-            Console.Clear();
-            if (Gold >= cost)//보유 여부 확인
-            {
-                Gold -= cost;
-                Console.WriteLine("몸이 한결 가벼워진 느낌을 받습니다.");
-                Console.WriteLine($"HP {CurHp} -> {MaxHp}\n");
-                CurHp = MaxHp;
-                Console.WriteLine("Enter 를 눌러주세요.");
-                Console.ReadLine();
 
-            }
-            else
-            {
-                Console.WriteLine("Gold 가 부족합니다.");
-                Console.WriteLine("Enter 를 눌러주세요.");
-                Console.ReadLine();
-            }
-        }
+
         public void GetExp(int exp, LevelManager lm)
         {
             Exp += exp;
@@ -271,14 +226,12 @@ namespace TextConsoleRPG
             if (CurHp <= 0) CurHp = 0;
 
         }
-        public int SkillDamageAttack(int manaCost, float damageMul)
+        public int SkillDamageAttack(float damageMul)
         {
-            CurMp -= manaCost;
             return (int)(Atk * damageMul);
         }
-        public int SkillDamageMagic(int manaCost, float damageMul)
+        public int SkillDamageMagic(float damageMul)
         {
-            CurMp -= manaCost;
             return (int)(Matk * damageMul);
         }
 
@@ -291,46 +244,18 @@ namespace TextConsoleRPG
                 evasion = true;
             return evasion;
         }
-        public void GetGold(int gold)
+        public void SetAtk(int atk)
         {
-            Gold += gold;
+            Atk = atk;
         }
-        public void UsePotion()
+        public void SetMatk(int matk)
         {
-            if (CurHp == MaxHp)
-            {
-                Console.WriteLine("더 이상 체력을 회복할 수 없습니다.");
-                Console.WriteLine("아무키나 누르세요.");
-                Console.WriteLine();
-                Console.ReadLine();
-                return;
-            }
-            if (Potion> 0)
-            {
-                Potion--;
-                CurHp += 30;
-                if (CurHp > MaxHp) CurHp = MaxHp;
-                Console.WriteLine("회복을 완료했습니다.");
-            }
-            else
-            {
-                Console.WriteLine("포션이 부족합니다.");
-            }
-            Console.WriteLine();
+            Matk = matk;
         }
-        public bool isAcceptedQuest(string questName)
+        public void SetCurHp(int curHp)
         {
-            return QuestNameList.Contains(questName);
+            CurHp = curHp;
         }
-        public void AcceptQuest(IQuest quest)
-        {
-            Quests.Add(quest);
-            QuestNameList.Add(quest.Name);
-        }
-        public void RemoveQuest(IQuest quest)
-        {
-            Quests.Remove(quest);
-            QuestNameList.Remove(quest.Name);
-        }
+
     }
 }
