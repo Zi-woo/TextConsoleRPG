@@ -236,7 +236,7 @@ namespace TextConsoleRPG
             Console.WriteLine($"{damage} 데미지를 입었다!");
         }
 
-        public int Damage(float Atkf) //데미지 계산
+        public int Damage(float Atkf, int DefI) //데미지 계산
         {
             Random random = new Random();//치명타
             int C = random.Next(1, 101);
@@ -253,14 +253,14 @@ namespace TextConsoleRPG
             {
                 damage = damage * 1.6f;
                 Console.WriteLine($"치명타");
-                totaldamage = (int)damage - Def;
+                totaldamage = (int)damage - DefI;
                 if (totaldamage < 0) totaldamage = 0;
                 return totaldamage;
 
             }
             else
             {
-                totaldamage = (int)damage - Def;
+                totaldamage = (int)damage - DefI;
                 if (totaldamage < 0) totaldamage = 0;
                 return totaldamage;
             }

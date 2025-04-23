@@ -14,6 +14,7 @@ namespace MyApp
         private static List<Item> itemDb;
         private static List<IQuest> QuestDb;
         private static MonsterManager mm;
+        private static StageManager stage = new StageManager();
         private static LevelManager lm = new LevelManager();
         public const string playerDataPath = "playerData.json";
         public const string itemDBPath = "items.json";
@@ -297,7 +298,7 @@ namespace MyApp
                     DisplayPotionUI();
                     break;
                 case 6:
-                    InitializeBattle();
+                    StageSelection();
                     break;
                 case 7:
                     DisplayQuestUI();
@@ -558,7 +559,31 @@ namespace MyApp
             }
         }
         #endregion
-
+        #region 스테이지 선택
+        static void StageSelection()
+        {
+            Console.Clear();
+            Console.WriteLine("던전 입구");
+            Console.WriteLine("스테이지를 선택해 주세요\n");
+            for (int i = 1; i <= stage.TopStage; i++)
+            {
+                Console.WriteLine($"{i}. 스테이지 {i}");
+            }
+            Console.WriteLine("\n0. 나가기");
+            Console.WriteLine("\n원하시는 스테이지를 입력해주세요.");
+            int result = CheckInput(0, stage.TopStage);
+            switch (result)
+            {
+                case 0:
+                    DisplayMainUI();
+                    break;
+                default:
+                    stage.SetStage(result);
+                    InitializeBattle();
+                    break;
+            }
+        }
+        #endregion
         #region 전투 세팅
         static void InitializeBattle()
         {
@@ -568,7 +593,7 @@ namespace MyApp
             Random random = new Random();
             
             mm = new MonsterManager();
-            mm.SpawnRandomMonster(random.Next(1, 5));
+            mm.SpawnRandomMonster(stage.CurStage);
             player.PreDgnHp = player.CurHp;
 
             DisplayBattleUI();
@@ -576,6 +601,7 @@ namespace MyApp
         static void DisplayBattleUI()
         {
             Console.Clear();
+            Console.WriteLine($"스테이지{stage.CurStage}");
             for (int i = 0; i < mm.spawnedMonsters.Count; i++)
             {
                 mm.spawnedMonsters[i].MonsterInfoText();
@@ -630,7 +656,7 @@ namespace MyApp
                 else //명중
                 {
                     Console.WriteLine($"{player.Name}을(를) 맞췄습니다. [데미지: {m.Atk}]\n");
-                    int Atkm = player.Damage(m.Atk);
+                    int Atkm = player.Damage(m.Atk, player.Def);
                     player.DamagebyMonster(Atkm);
 
                     Console.WriteLine($"Lv. {player.Level} {player.Name}");
@@ -692,7 +718,7 @@ namespace MyApp
                             {
                                 Console.WriteLine($"{targetMonster.Name}을 공격!");
                                 float Atkf = player.Atk;
-                                int total = player.Damage(Atkf);
+                                int total = player.Damage(Atkf, 0/*몬스터 방어력*/);
                                 targetMonster.DamageByPlayer(total);
                                 Console.WriteLine("Enter 를 눌러주세요.");
                                 Console.ReadLine();
@@ -813,7 +839,7 @@ namespace MyApp
         }
 
         #endregion
-
+        #region 전투결과
         static void DisplayBattleResult(bool isWin)
         {
             Console.Clear();
@@ -860,6 +886,7 @@ namespace MyApp
                 Console.WriteLine();
                 Console.WriteLine("0. 다음");
                 Console.WriteLine();
+                stage.NextStage();
                 CheckInput(0, 0);
             }
             else
@@ -877,6 +904,7 @@ namespace MyApp
             }
             DisplayMainUI();
         }
+        #endregion
         #region 퀘스트
         static void DisplayQuestUI()
         {
