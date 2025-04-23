@@ -14,7 +14,7 @@ namespace TextConsoleRPG
         public int Value { get; }
         public string Desc { get; }
         public int Price { get; }
-        public float ItemDorpRate { get; set; }
+        public float ItemDropRate { get; set; }
 
         public string DisplayTypeText
         {
@@ -32,7 +32,7 @@ namespace TextConsoleRPG
             Value = value;
             Desc = desc;
             Price = price;
-            ItemDorpRate = itemDropRate;
+            ItemDropRate = itemDropRate;
         }
 
         public string ItemInfoText()
