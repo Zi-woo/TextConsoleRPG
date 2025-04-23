@@ -937,7 +937,7 @@ namespace MyApp
                                 {
                                     Console.WriteLine($"{targetMonster.Name}을 공격!");
                                     float Atkf = partyMem.Atk;
-                                    int total = partyMem.Damage(Atkf);
+                                    int total = partyMem.Damage(Atkf,partyMem.Def);
                                     targetMonster.DamageByPlayer(total);
                                     Console.WriteLine("Enter 를 눌러주세요.");
                                     Console.ReadLine();
