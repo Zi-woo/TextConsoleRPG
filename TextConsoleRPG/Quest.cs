@@ -19,7 +19,7 @@ namespace TextConsoleRPG
             RewardItem = item;
             ItemCount = itemCount;
         }
-        public void ApplyReward(Character player)
+        public void ApplyReward(Player player)
         {
             player.GetReward(RewardItem, ItemCount, Gold, Exp);
         }
@@ -32,7 +32,7 @@ namespace TextConsoleRPG
         bool isCompleted { get; }
         QuestReward Reward { get; }
         void DisplayQuestInfo();
-        void Completed(Character player);
+        void Completed(Player player);
     }
     interface IKillMonsterQuest : IQuest
     {
@@ -94,7 +94,7 @@ namespace TextConsoleRPG
                 }
                 Console.WriteLine(reward);
             }
-        public void Completed(Character player)
+        public void Completed(Player player)
         {
             player.GetReward(Reward.RewardItem, Reward.ItemCount, Reward.Gold, Reward.Exp);
         }
@@ -146,7 +146,7 @@ namespace TextConsoleRPG
                 }
                 Console.WriteLine(reward);
             }
-            public void Completed(Character player)
+            public void Completed(Player player)
             {
                 player.GetReward(Reward.RewardItem,Reward.ItemCount,Reward.Gold,Reward.Exp);
             }
@@ -190,7 +190,7 @@ namespace TextConsoleRPG
                 }
                 Console.WriteLine(reward);
             }
-        public void Completed(Character player)
+        public void Completed(Player player)
         {
             player.GetReward(Reward.RewardItem, Reward.ItemCount, Reward.Gold, Reward.Exp);
         }
