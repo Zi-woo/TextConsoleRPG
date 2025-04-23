@@ -598,10 +598,13 @@ namespace MyApp
                 {
                     case 1:
                         player.UsePotion();
+                        player.UpdateQuest("회복 포션", QUEST_TYPE.USE_ITEM);
                         break;
                     case 2:
+                        DisplayMainUI();
                         return;
                 }
+                DisplayMainUI();
             }
         }
         #endregion
