@@ -635,17 +635,14 @@ namespace MyApp
             mm = new MonsterManager();
             mm.SpawnRandomMonster(stage.CurStage);
             player.PreDgnHp = player.CurHp;
-
             DisplayBattleUI();
         }
         static void DisplayBattleUI()
         {
             Console.Clear();
             Console.WriteLine($"스테이지{stage.CurStage}");
-            for (int i = 0; i < mm.spawnedMonsters.Count; i++)
-            {
-                mm.spawnedMonsters[i].MonsterInfoText();
-            }
+
+            mm.MonsterInfoText(true);//몬스터 출력
 
             Console.WriteLine();
             Console.WriteLine("[내정보]");
@@ -717,12 +714,7 @@ namespace MyApp
             Console.WriteLine();
 
             //몬스터 출력
-            for (int i = 0; i < mm.spawnedMonsters.Count; i++)
-            {
-                Monster m = mm.spawnedMonsters[i];
-                string status = m.AliveMonster() ? $"(HP: {m.Hp})" : "(Dead)";
-                Console.WriteLine($"{i + 1}. {m.Name} {status}");
-            }
+            mm.MonsterInfoText();
 
             Console.WriteLine();
             Console.WriteLine("0. 취소");
@@ -793,12 +785,7 @@ namespace MyApp
             Console.WriteLine();
 
             //몬스터 출력
-            for (int i = 0; i < mm.spawnedMonsters.Count; i++)
-            {
-                Monster m = mm.spawnedMonsters[i];
-                string status = m.AliveMonster() ? $"(HP: {m.Hp})" : "(Dead)";
-                Console.WriteLine($"{i + 1}. {m.Name} {status}");
-            }
+            mm.MonsterInfoText();
 
             Console.WriteLine();
             int idx = 1;
