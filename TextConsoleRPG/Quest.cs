@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TextConsoleRPG
 {
+    public enum QUEST_TYPE { KILL_MONSTER, USE_ITEM }
     internal class QuestReward
     {
         public Item? RewardItem { get; } = null;
@@ -19,7 +20,7 @@ namespace TextConsoleRPG
             RewardItem = item;
             ItemCount = itemCount;
         }
-        public void ApplyReward(Character player)
+        public void ApplyReward(Player player)
         {
             player.GetReward(RewardItem, ItemCount, Gold, Exp);
         }
@@ -32,7 +33,7 @@ namespace TextConsoleRPG
         bool isCompleted { get; }
         QuestReward Reward { get; }
         void DisplayQuestInfo();
-        void Completed(Character player);
+        void Completed(Player player);
     }
     interface IKillMonsterQuest : IQuest
     {
@@ -71,7 +72,7 @@ namespace TextConsoleRPG
                 if (isCompleted) return;
                 if (monster == targetMonster)
                 {
-                    ++targetMonsterCount;
+                    ++currentKillCount;
                 }
             }
             public void DisplayQuestInfo()
@@ -83,7 +84,7 @@ namespace TextConsoleRPG
                 string reward = "";
                 if(Reward.RewardItem != null)
                 {
-                    reward += $" {Reward.RewardItem} x {Reward.ItemCount}\n";
+                    reward += $" {Reward.RewardItem.Name} x {Reward.ItemCount}\n";
                 }
                 if (Reward.Gold > 0) {
                     reward += $" {Reward.Gold}  G\n";
@@ -94,9 +95,10 @@ namespace TextConsoleRPG
                 }
                 Console.WriteLine(reward);
             }
-        public void Completed(Character player)
+        public void Completed(Player player)
         {
             player.GetReward(Reward.RewardItem, Reward.ItemCount, Reward.Gold, Reward.Exp);
+            currentKillCount = 0;
         }
     }
 
@@ -122,7 +124,7 @@ namespace TextConsoleRPG
                 if (isCompleted) return;
                 if (item == targetItem)
                 {
-                    ++targetItemCount;
+                    ++currentItemCount;
                 }
             }
             public void DisplayQuestInfo()
@@ -146,9 +148,10 @@ namespace TextConsoleRPG
                 }
                 Console.WriteLine(reward);
             }
-            public void Completed(Character player)
+            public void Completed(Player player)
             {
                 player.GetReward(Reward.RewardItem,Reward.ItemCount,Reward.Gold,Reward.Exp);
+            currentItemCount = 0;
             }
         }
 
@@ -190,7 +193,7 @@ namespace TextConsoleRPG
                 }
                 Console.WriteLine(reward);
             }
-        public void Completed(Character player)
+        public void Completed(Player player)
         {
             player.GetReward(Reward.RewardItem, Reward.ItemCount, Reward.Gold, Reward.Exp);
         }

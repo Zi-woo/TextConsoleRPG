@@ -12,7 +12,7 @@ namespace TextConsoleRPG
         public string Name { get; }
         public int Level { get; }
         public int Hp { get; private set;}
-        public int Atk { get; }
+        public int Atk { get; set; }
         public int Exp { get; }
         
         public List<Item> DropItemList { get; }
@@ -54,8 +54,8 @@ namespace TextConsoleRPG
                 }
             }
             return null;
-
         }
+        
     }
 
 }
