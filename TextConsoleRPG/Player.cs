@@ -15,7 +15,8 @@ namespace TextConsoleRPG
         public int Potion { get; private set; }
         [JsonInclude]
         private List<string> QuestNameList { get; set; } = new List<string>();
-        private List<IQuest> Quests { get; set; } = new List<IQuest>();
+        private List<IQuest> Quests { get; } = new List<IQuest>();
+        public Player() { }
         public Player(int level, string name, string job, int atk, int def, int matk, int hp, int mp, int gold, List<Skills> learnedSkills)
         : base(level, name, job, atk, def, matk, hp, mp, learnedSkills)
         {
@@ -127,6 +128,16 @@ namespace TextConsoleRPG
                 case QUEST_TYPE.USE_ITEM:
 
                     break;
+            }
+        }
+        public void InitPlayerQuest(List<IQuest> quests)
+        {
+            foreach(var quest in quests)
+            {
+                if(QuestNameList.Contains(quest.Name))
+                {
+                    Quests.Add(quest);
+                }
             }
         }
     }
