@@ -1,0 +1,53 @@
+[
+  {
+    "Type": "KillMonster",
+    "Name": "\uB9C8\uC744\uC744 \uC704\uD611\uD558\uB294 \uBBF8\uB2C8\uC5B8 \uCC98\uCE58",
+    "Description": "\uC774\uBD10! \uB9C8\uC744 \uADFC\uCC98\uC5D0 \uBBF8\uB2C8\uC5B8\uB4E4\uC774 \uB108\uBB34 \uB9CE\uC544\uC84C\uB2E4\uACE0 \uC0DD\uAC01\uD558\uC9C0 \uC54A\uB098??\r\n\uB9C8\uC744\uC8FC\uBBFC\uB4E4\uC758 \uC548\uC804\uC744 \uC704\uD574\uC11C\uB77C\uB3C4 \uC800\uAC83\uB4E4 \uC218\uB97C \uC880 \uC904\uC5EC\uC57C \uD55C\uB2E4\uACE0!\r\n\uC790\uB124\uAC00 \uC880 \uCC98\uCE58\uD574\uC8FC\uAC8C!",
+    "Exp": 10,
+    "Gold": 2000,
+    "RewardItemName": null,
+    "RewardItemCount": 0,
+    "TargetMonster": "\uBBF8\uB2C8\uC5B8",
+    "TargetMonsterCount": 5,
+    "CurrentKillCount": 2,
+    "TargetItem": null,
+    "TargetItemCount": 0,
+    "CurrentItemCount": 0,
+    "EquipTargetItem": null,
+    "IsEquipCompleted": false
+  },
+  {
+    "Type": "KillMonster",
+    "Name": "\uB9C8\uC744\uC744 \uC704\uD611\uD558\uB294 \uACF5\uD5C8\uCDA9 \uCC98\uCE58",
+    "Description": "\uC774\uBD10! \uB358\uC804 \uC548\uC5D0 \uACF5\uD5C8\uCDA9\uB4E4\uC774 \uB108\uBB34 \uB9CE\uC544\uC84C\uB2E4\uACE0 \uC0DD\uAC01\uD558\uC9C0 \uC54A\uB098??\r\n\uB9C8\uC744\uC8FC\uBBFC\uB4E4\uC758 \uC548\uC804\uC744 \uC704\uD574\uC11C\uB77C\uB3C4 \uC800\uAC83\uB4E4 \uC218\uB97C \uC880 \uC904\uC5EC\uC57C \uD55C\uB2E4\uACE0!\r\n\uC790\uB124\uAC00 \uC880 \uCC98\uCE58\uD574\uC8FC\uAC8C!",
+    "Exp": 20,
+    "Gold": 3000,
+    "RewardItemName": "\uC2A4\uD30C\uB974\uD0C0\uC758 \uAC11\uC637",
+    "RewardItemCount": 1,
+    "TargetMonster": "\uACF5\uD5C8\uCDA9",
+    "TargetMonsterCount": 10,
+    "CurrentKillCount": 0,
+    "TargetItem": null,
+    "TargetItemCount": 0,
+    "CurrentItemCount": 0,
+    "EquipTargetItem": null,
+    "IsEquipCompleted": false
+  },
+  {
+    "Type": "UseItem",
+    "Name": "\uD68C\uBCF5 \uD3EC\uC158 \uC0AC\uC6A9",
+    "Description": "\uC548\uC804\uC744 \uC704\uD574 \uD68C\uBCF5 \uD3EC\uC158\uC744 \uC0AC\uC6A9\uD558\uAE30",
+    "Exp": 5,
+    "Gold": 0,
+    "RewardItemName": null,
+    "RewardItemCount": 0,
+    "TargetMonster": null,
+    "TargetMonsterCount": 0,
+    "CurrentKillCount": 0,
+    "TargetItem": "\uD68C\uBCF5 \uD3EC\uC158",
+    "TargetItemCount": 3,
+    "CurrentItemCount": 0,
+    "EquipTargetItem": null,
+    "IsEquipCompleted": false
+  }
+]
