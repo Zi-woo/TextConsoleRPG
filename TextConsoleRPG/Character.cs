@@ -58,7 +58,7 @@ namespace TextConsoleRPG
         [JsonInclude]
         protected List<int> EquipItemIdList { get; set; } = new List<int>();
 
-
+        [JsonIgnore]
         public List<Skills> LearnedSkills { get; private set; }
         protected List<Item> Inventory { get; set; } = new List<Item>();
         protected List<Item> EquipList { get; set; } = new List<Item>();
