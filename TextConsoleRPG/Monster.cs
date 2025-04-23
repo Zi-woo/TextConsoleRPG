@@ -25,11 +25,6 @@ namespace TextConsoleRPG
             Exp = exp;
             DropItemList = dropItemList;
         }
-        public void MonsterInfoText()
-        {
-            Console.WriteLine($"Lv.{Level} {Name} HP {Hp}");
-        }
-
         
         public bool AliveMonster() //몬스터 생존 확인 
         {

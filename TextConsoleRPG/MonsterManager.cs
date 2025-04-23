@@ -69,7 +69,7 @@ namespace TextConsoleRPG
                 int index = random.Next(filtered.Count);
                 Monster baseMonster = filtered[index];
 
-                int scaledHp = baseMonster.Hp + (stage * 2);
+                int scaledHp = baseMonster.Hp + (stage);
                 int scaledAtk = baseMonster.Atk + (stage);
                 int scaledExp = baseMonster.Exp + (stage);
 
@@ -84,7 +84,22 @@ namespace TextConsoleRPG
                 spawnedMonsters.Add(selected);
             }
         }
-
+        public void MonsterInfoText(bool Index = false)
+        {
+            //몬스터 출력
+            for (int i = 0; i < spawnedMonsters.Count; i++)
+            {
+                Monster m = spawnedMonsters[i];
+                string status = m.AliveMonster() ? $"(HP: {m.Hp})" : "(Dead)";
+                string index = Index ? $"LV.{m.Level}" : $"{i + 1}.";
+                if (!m.AliveMonster())
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                }
+                Console.WriteLine($"{index} {m.Name} HP: {status}");
+                Console.ResetColor();
+            }
+        }
     }
 }
 
