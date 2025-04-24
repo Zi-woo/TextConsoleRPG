@@ -2,10 +2,138 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace TextConsoleRPG
 {
+    #region 퀘스트 DTO
+    internal class QuestDTO
+    {
+        [JsonInclude]
+        public string Type; // "KillMonster", "UseItem", "EquipItem"
+        [JsonInclude]
+        public string Name;
+        [JsonInclude]
+        public string Description;
+        [JsonInclude]
+        public int Exp;
+        [JsonInclude]
+        public int Gold;
+
+        // 보상 아이템
+        [JsonInclude]
+        public string? RewardItemName;
+        [JsonInclude]
+        public int RewardItemCount;
+
+        // KillMonster 전용
+        [JsonInclude]
+        public string? TargetMonster;
+        [JsonInclude]
+        public int TargetMonsterCount;
+        [JsonInclude]
+        public int CurrentKillCount;
+
+        // UseItem 전용
+        [JsonInclude]
+        public string? TargetItem;
+        [JsonInclude]
+        public int TargetItemCount;
+        [JsonInclude]
+        public int CurrentItemCount;
+
+        // EquipItem 전용
+        [JsonInclude]
+        public string? EquipTargetItem;
+        [JsonInclude]
+        public bool IsEquipCompleted;
+    }
+    internal static class QuestDTOConverter
+    {
+        public static QuestDTO ToDTO(IQuest quest)
+        {
+            QuestDTO dto = new QuestDTO
+            {
+                Name = quest.Name,
+                Description = quest.Description,
+                Exp = quest.Reward.Exp,
+                Gold = quest.Reward.Gold,
+                RewardItemName = quest.Reward.RewardItem?.Name,
+                RewardItemCount = quest.Reward.ItemCount
+            };
+
+            switch (quest)
+            {
+                case KillMonsterQuest kmq:
+                    dto.Type = "KillMonster";
+                    dto.TargetMonster = kmq.TargetMonster;
+                    dto.TargetMonsterCount = kmq.TargetMonsterCount;
+                    dto.CurrentKillCount = kmq.CurrentKillCount;
+                    break;
+
+                case UseItemQuest uiq:
+                    dto.Type = "UseItem";
+                    dto.TargetItem = uiq.TargetItem;
+                    dto.TargetItemCount = uiq.TargetItemCount;
+                    dto.CurrentItemCount = uiq.CurrentItemCount;
+                    break;
+
+                //case EquipItemQuest eiq:
+                //    dto.Type = "EquipItem";
+                //    dto.EquipTargetItem = eiq.TargetItem;
+                //    dto.IsEquipCompleted = eiq.IsCompleted;
+                //    break;
+            }
+
+            return dto;
+        }
+        public static IQuest FromDTO(QuestDTO dto, List<Item> itemList)
+        {
+            var rewardItem = itemList.FirstOrDefault(item => item.Name == dto.RewardItemName);
+
+            return dto.Type switch
+            {
+                "KillMonster" => new KillMonsterQuest(
+                    dto.Name,
+                    dto.Description,
+                    dto.TargetMonster!,
+                    dto.TargetMonsterCount,
+                    dto.Exp,
+                    dto.Gold,
+                    rewardItem!,
+                    dto.RewardItemCount,
+                    dto.CurrentKillCount
+                ),
+
+                "UseItem" => new UseItemQuest(
+                    dto.Name,
+                    dto.Description,
+                    dto.TargetItem!,
+                    dto.TargetItemCount,
+                    dto.Exp,
+                    dto.Gold,
+                    rewardItem!,
+                    dto.RewardItemCount,
+                    dto.CurrentItemCount
+                ),
+
+                //"EquipItem" => new EquipItemQuest(
+                //    dto.Name,
+                //    dto.Description,
+                //    dto.EquipTargetItem!,
+                //    dto.Exp,
+                //    dto.Gold,
+                //    rewardItem!,
+                //    dto.RewardItemCount,
+                //    dto.IsEquipCompleted
+                //),
+
+                _ => throw new InvalidOperationException($"Unknown quest type: {dto.Type}")
+            };
+        }
+    }
+    #endregion
     public enum QUEST_TYPE { KILL_MONSTER, USE_ITEM }
     internal class QuestReward
     {
@@ -26,7 +154,7 @@ namespace TextConsoleRPG
         }
     }
     #region 퀘스트인터페이스
-    interface IQuest
+    internal interface IQuest
     {
         string Name { get; }
         string Description { get; }
@@ -52,6 +180,9 @@ namespace TextConsoleRPG
         {
             public string Name { get; private set; }
             public string Description { get; private set; }
+            public string TargetMonster => targetMonster;
+            public int TargetMonsterCount => targetMonsterCount;
+            public int CurrentKillCount => currentKillCount;
             private string targetMonster;
             private int targetMonsterCount;
             private int currentKillCount = 0;
@@ -66,6 +197,11 @@ namespace TextConsoleRPG
                 targetMonsterCount = targetCount;
                 targetMonster = monster;
                 Reward = new QuestReward(exp, gold, rewardItem, itemCount);
+            }
+            public KillMonsterQuest(string name, string description, string monster, int targetCount, int exp, int gold, Item rewardItem, int itemCount, int current = 0)
+    : this(name, description, monster, targetCount, exp, gold, rewardItem, itemCount)
+            {
+                currentKillCount = current;
             }
             public void MonsterKilled(string monster)
             {
@@ -106,6 +242,9 @@ namespace TextConsoleRPG
         {
             public string Name { get; private set; }
             public string Description { get; private set; }
+            public string TargetItem => targetItem;
+            public int TargetItemCount => targetItemCount;
+            public int CurrentItemCount => currentItemCount;
             private string targetItem;
             private int targetItemCount;
             private int currentItemCount = 0;
@@ -118,7 +257,12 @@ namespace TextConsoleRPG
                 targetItem = item;
                 targetItemCount = targetCount;
                 Reward = new QuestReward(exp, gold, rewardItem, itemCount);
-        }
+            }
+            public UseItemQuest(string name, string description, string item, int targetCount, int exp, int gold, Item rewardItem, int itemCount, int current = 0)
+    : this(name, description, item, targetCount, exp, gold, rewardItem, itemCount)
+            {
+                currentItemCount = current;
+            }
             public void UseItem(string item)
             {
                 if (isCompleted) return;

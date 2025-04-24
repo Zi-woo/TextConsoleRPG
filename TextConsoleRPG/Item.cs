@@ -24,7 +24,9 @@ namespace TextConsoleRPG
             }
         }
 
+
         public Item(int id, string name, int type, int value, string desc, int price, float itemDropRate) // Type 0 : 무기 Type 1: 방어구 Type 2: 기타아이템 Type 3: 회복 아이템
+
         {
             Id = id;
             Name = name;

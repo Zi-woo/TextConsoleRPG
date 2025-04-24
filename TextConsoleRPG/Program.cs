@@ -39,8 +39,8 @@ namespace MyApp
             //아이템 정보 불러오기 - 게임 데이터를 로드할 때 한 번에 하면 좋을 것
             if (File.Exists(itemDBPath))
             {
-                string json = File.ReadAllText(itemDBPath);
-                itemDb = JsonSerializer.Deserialize<List<Item>>(json);
+                string jsonItemDB = File.ReadAllText(itemDBPath);
+                itemDb = JsonSerializer.Deserialize<List<Item>>(jsonItemDB);
             }
             else
             {
@@ -49,41 +49,47 @@ namespace MyApp
                 Console.ReadKey();
                 StartScreen();
             }
-            //퀘스트 테스트 코드
-            QuestDb = new List<IQuest>()
-            {
-                new KillMonsterQuest(
-                        "마을을 위협하는 미니언 처치",
-                        "이봐! 마을 근처에 미니언들이 너무 많아졌다고 생각하지 않나??\r\n마을주민들의 안전을 위해서라도 저것들 수를 좀 줄여야 한다고!\r\n자네가 좀 처치해주게!",
-                        "미니언",
-                        5,
-                        10,
-                        2000,
-                        null,
-                        0
-                    ),
-                new KillMonsterQuest(
-                        "마을을 위협하는 공허충 처치",
-                        "이봐! 던전 안에 공허충들이 너무 많아졌다고 생각하지 않나??\r\n마을주민들의 안전을 위해서라도 저것들 수를 좀 줄여야 한다고!\r\n자네가 좀 처치해주게!",
-                        "공허충",
-                        10,
-                        20,
-                        3000,
-                        itemDb[2],
-                        1
-                    ),
-                new UseItemQuest(
-                    "회복 포션 사용",
-                    "안전을 위해 회복 포션을 사용하기",
-                    "회복 포션",
-                    3,
-                                            5,
-                                            0,
-                        null,
-                        0
-                    )
+            //퀘스트 불러오기 테스트 코드
+            string json = File.ReadAllText("quests.json");
+            List<QuestDTO> dtos = JsonSerializer.Deserialize<List<QuestDTO>>(json);
 
-            };
+            QuestDb = dtos.Select(d => QuestDTOConverter.FromDTO(d, itemDb)).ToList();
+
+            //퀘스트 테스트 코드
+            //QuestDb = new List<IQuest>()
+            //{
+            //    new KillMonsterQuest(
+            //            "마을을 위협하는 미니언 처치",
+            //            "이봐! 마을 근처에 미니언들이 너무 많아졌다고 생각하지 않나??\r\n마을주민들의 안전을 위해서라도 저것들 수를 좀 줄여야 한다고!\r\n자네가 좀 처치해주게!",
+            //            "미니언",
+            //            5,
+            //            10,
+            //            2000,
+            //            null,
+            //            0
+            //        ),
+            //    new KillMonsterQuest(
+            //            "마을을 위협하는 공허충 처치",
+            //            "이봐! 던전 안에 공허충들이 너무 많아졌다고 생각하지 않나??\r\n마을주민들의 안전을 위해서라도 저것들 수를 좀 줄여야 한다고!\r\n자네가 좀 처치해주게!",
+            //            "공허충",
+            //            10,
+            //            20,
+            //            3000,
+            //            itemDb[2],
+            //            1
+            //        ),
+            //    new UseItemQuest(
+            //        "회복 포션 사용",
+            //        "안전을 위해 회복 포션을 사용하기",
+            //        "회복 포션",
+            //        3,
+            //                                5,
+            //                                0,
+            //            null,
+            //            0
+            //        )
+
+            //};
             switch (result)
             {
                 case 1:
@@ -592,10 +598,13 @@ namespace MyApp
                 {
                     case 1:
                         player.UsePotion();
+                        player.UpdateQuest("회복 포션", QUEST_TYPE.USE_ITEM);
                         break;
                     case 2:
+                        DisplayMainUI();
                         return;
                 }
+                DisplayMainUI();
             }
         }
         #endregion
@@ -1196,20 +1205,26 @@ namespace MyApp
 
         static void SavePlayerData()
         {
-            string jsonString = JsonSerializer.Serialize(player, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(playerDataPath, jsonString);
+            string jsonPlayer = JsonSerializer.Serialize(player, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(playerDataPath, jsonPlayer);
+            //퀘스트 리스트 변환 후 json 저장
+            List<QuestDTO> dtos = QuestDb.Select(QuestDTOConverter.ToDTO).ToList();
 
-            string jsonString2 = JsonSerializer.Serialize(itemDb, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(itemDBPath, jsonString2);
+            string jsonQuest = JsonSerializer.Serialize(dtos, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText("quests.json", jsonQuest);
+
+            //string jsonString2 = JsonSerializer.Serialize(itemDb, new JsonSerializerOptions { WriteIndented = true });
+            //File.WriteAllText(itemDBPath, jsonString2);
         }
         static void LoadPlayerData()
         {
             if (File.Exists(playerDataPath))
             {
                 //json 파일 읽어오기
-                string json = File.ReadAllText(playerDataPath);
-                player = (JsonSerializer.Deserialize<Player>(json));
+                string jsonTemp = File.ReadAllText(playerDataPath);
+                player = (JsonSerializer.Deserialize<Player>(jsonTemp));
                 player.LoadItemList(itemDb);
+                player.InitPlayerQuest(QuestDb);
             }
             else
             {
