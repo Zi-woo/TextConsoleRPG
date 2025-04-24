@@ -14,7 +14,7 @@ namespace TextConsoleRPG
         public int Value { get; }
         public string Desc { get; }
         public int Price { get; }
-        public float ItemDropRate { get; set; }
+        public float ItemDropRate { get; set; } //아이템 개별 드랍확률을 위해 추가
 
         public string DisplayTypeText
         {

@@ -49,7 +49,7 @@ namespace TextConsoleRPG
         {
             foreach (var item in DropItemList)
             {
-                float roll = (float)random.NextDouble(); // 0.0 ~ 1.0 사이의 랜덤값
+                float roll = (float)random.NextDouble(); // 0.0 ~ 1.0 사이의 랜덤값입니다
                 if (roll <= item.ItemDropRate)
                 {
                     return item;

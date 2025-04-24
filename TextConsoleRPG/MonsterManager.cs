@@ -12,7 +12,7 @@ namespace TextConsoleRPG
         {
             new Monster("미니언", 2, 15, 5, 2,  new List<Item>
             {
-                new Item(101, "낡은 검", 0, 2, "무뎌진 검. 공격력이 조금 상승한다.", 500, 0.29f),
+                new Item(101, "낡은 검", 0, 2, "무뎌진 검. 공격력이 조금 상승한다.", 500, 0.29f), //0.29f = 확률값
                 new Item(102, "낡은 방패", 1, 3, "튼튼하지 않지만 막을 수는 있다.", 500, 0.29f)
             }),
             new Monster("대포미니언", 5, 25, 8, 5, new List<Item>
