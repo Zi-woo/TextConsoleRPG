@@ -16,6 +16,7 @@ namespace TextConsoleRPG
         [JsonInclude]
         private List<string> QuestNameList { get; set; } = new List<string>();
         private List<IQuest> Quests { get; } = new List<IQuest>();
+        public Player() { }
         public Player(int level, string name, string job, int atk, int def, int matk, int hp, int mp, float cc, float ec, int gold)
         : base(level, name, job, atk, def, matk, hp, mp, cc, ec)
         {

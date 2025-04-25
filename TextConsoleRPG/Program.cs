@@ -1174,33 +1174,33 @@ namespace MyApp
         {
             Console.WriteLine("\n1. 수락");
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\n0. 나가기");
+            Console.WriteLine("0. 나가기\n");
             Console.ResetColor();
             Console.WriteLine("원하시는 행동을 선택해주세요.");
-            int result = CheckInput(1, 2);
+            int result = CheckInput(0, 1);
             switch (result)
             {
                 case 1:
                     player.AcceptQuest(QuestDb[index]);
                     break;
-                case 2:
+                case 0:
                     break;
             }
         }
         static void DisplayFinishedQuest(int index)
         {
-            int i = 1;
+            int i = 0;
             if (QuestDb[index].isCompleted)
             {
+                i = 1;
                 Console.WriteLine($"\n{i}. 보상 받기");
-                ++i;
             }
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\n0. 나가기");
+            Console.WriteLine("0. 나가기\n");
             Console.ResetColor();
             Console.WriteLine("원하시는 행동을 선택해주세요.");
-            int result = CheckInput(1, i);
-            if (i == 1)
+            int result = CheckInput(0, i);
+            if (i == 0)
             {
                 return;
             }
