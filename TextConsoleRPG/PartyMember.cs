@@ -8,8 +8,8 @@ namespace TextConsoleRPG
 {
     class PartyMember : Character
     {
-        public PartyMember(int level, string name, string job, int atk, int def, int matk, int hp, int mp, List<Skills> learnedSkills)
-        : base(level, name, job, atk, def, matk, hp, mp, learnedSkills)
+        public PartyMember(int level, string name, string job, int atk, int def, int matk, int hp, int mp,float cc, float ec, List<Skills> learnedSkills)
+        : base(level, name, job, atk, def, matk, hp, mp, cc, ec, learnedSkills)
         {
 
         }

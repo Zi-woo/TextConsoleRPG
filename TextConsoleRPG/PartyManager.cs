@@ -12,7 +12,7 @@ namespace TextConsoleRPG
     {
         public List<PartyMember> PartyMembers = new List<PartyMember>()
         {
-            new PartyMember(1, "고드프리", "전사", 5, 10, 0, 100, 50,  new List<Skills>
+            new PartyMember(1, "고드프리", "전사", 5, 10, 0, 100, 50, 0.15f, 0.1f, new List<Skills>
             {
                 new Skills("파워 슬래쉬", "공격력 * 2의 데미지로 적 하나를 강하게 내리칩니다.", 10, 1,
                     (partyMember, targetList) => {
@@ -33,7 +33,7 @@ namespace TextConsoleRPG
                         }
                     }),
             }),
-            new PartyMember(1, "엘린", "마법사", 5, 5, 10, 100, 100,  new List<Skills>
+            new PartyMember(1, "엘린", "마법사", 5, 5, 10, 100, 100,  0.15f, 0.1f, new List<Skills>
             {
                 new Skills("힐", "마법공격력 * 1만큼 팀원 전체의 체력을 회복합니다.", 10, 3,
                     actionToCharacter: (partyMember, Characters) => {
@@ -56,7 +56,7 @@ namespace TextConsoleRPG
                         }
                     }),
             }),
-            new PartyMember(1, "실비아", "궁수", 10, 5, 0, 100, 50,  new List<Skills>
+            new PartyMember(1, "실비아", "궁수", 10, 5, 0, 100, 50,  0.15f, 0.1f, new List<Skills>
             {
                 new Skills("진실의 눈", "적 전체의 공격력을 공격력 * 1만큼 감소시킵니다.", 10, 2,
                     (partyMember, targetList) => {
@@ -78,7 +78,7 @@ namespace TextConsoleRPG
                         }
                     }),
             }),
-            new PartyMember(1, "닉스", "도적", 10, 5, 0, 100, 50,  new List<Skills>
+            new PartyMember(1, "닉스", "도적", 10, 5, 0, 100, 50,  0.15f, 0.1f, new List<Skills>
             {
                 new Skills("명치 슬래쉬", "적 하나를 공격합니다. 적은 현재 체력의 50%만큼 데미지를 입습니다.", 10, 1,
                     (partyMember, targetList) => {
@@ -113,6 +113,8 @@ namespace TextConsoleRPG
                     PartyMembers[i].Matk,
                     PartyMembers[i].CurHp,
                     PartyMembers[i].CurMp,
+                    PartyMembers[i].CriticalChance,
+                    PartyMembers[i].EvasionChance,
                     PartyMembers[i].LearnedSkills
                 );
                 OwnedPartyMembers.Add(selected);

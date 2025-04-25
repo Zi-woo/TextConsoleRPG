@@ -242,18 +242,18 @@ namespace MyApp
             //TODO 캐릭터 생성
             switch (job)
             {
-                //레벨, 이름, 직업, 공격력, 방어력, 마법공격력, 체력, 마나, 돈, 보유 스킬
+                //레벨, 이름, 직업, 공격력, 방어력, 마법공격력, 체력, 마나, 치명, 회피, 돈, 보유 스킬
                 case "전사":
-                    player = new Player(1, name, job, 8, 6, 0, 110, 50, 10000, skillsWarrior);
+                    player = new Player(1, name, job, 8, 6, 0, 110, 50, 0.15f, 0.1f, 10000, skillsWarrior);
                     break;
                 case "마법사":
-                    player = new Player(1, name, job, 5, 5, 10, 100, 100, 10000, skillsWizard);
+                    player = new Player(1, name, job, 5, 5, 10, 100, 100, 0.15f, 0.1f, 10000, skillsWizard);
                     break;
                 case "궁수":
-                    player = new Player(1, name, job, 11, 5, 0, 90, 50, 10000, skillsArcher);
+                    player = new Player(1, name, job, 11, 5, 0, 90, 50, 0.3f, 0.1f, 10000, skillsArcher);
                     break;
                 case "도적":
-                    player = new Player(1, name, job, 13, 4, 0, 80, 50, 10000, skillsRogue);
+                    player = new Player(1, name, job, 13, 4, 0, 80, 50, 0.15f, 0.2f, 10000, skillsRogue);
                     break;
             }
         }
@@ -765,14 +765,15 @@ namespace MyApp
 
                 Console.WriteLine($"Lv. {m.Level} {m.Name} 의 공격!");
 
-                bool evasion = player.Evasion();
+                float ec = player.EvasionChance;
+                bool evasion = player.Evasion(ec);
                 if (evasion) //회피
                 {
                     Console.WriteLine($"{player.Name}은 공격을 피했다!\n");//현재체력 최대체력
                 }
                 else //명중
                 {
-                    int Atkm = player.Damage(m.Atk, player.Def);
+                    int Atkm = player.Damage(m.Atk, player.Def, 0.15f);
                     player.DamagebyMonster(Atkm);
                 }
                 if (player.CurHp <= 0)
@@ -826,8 +827,8 @@ namespace MyApp
                                 break;
                             }
                             else
-                            {
-                                bool evasion = player.Evasion();
+                            {                             
+                                bool evasion = player.Evasion(0.1);
                                 if (evasion) //회피
                                 {
                                     Console.WriteLine($"{targetMonster.Name}은(는) 공격을 피했다!");
@@ -838,7 +839,8 @@ namespace MyApp
                                 {
                                     Console.WriteLine($"{targetMonster.Name}을 공격!");
                                     float Atkf = player.Atk + player.ExtraAtk;
-                                    int total = player.Damage(Atkf, 0/*몬스터 방어력*/);
+                                    float cc = player.CriticalChance;
+                                    int total = player.Damage(Atkf, 0/*몬스터 방어력*/, cc);
                                     targetMonster.DamageByPlayer(total);
                                     Console.WriteLine("Enter 를 눌러주세요.");
                                     Console.ReadLine();
@@ -1018,7 +1020,7 @@ namespace MyApp
                             }
                             else
                             {
-                                bool evasion = partyMem.Evasion();
+                                bool evasion = partyMem.Evasion(0.1f);
                                 if (evasion) //회피
                                 {
                                     Console.WriteLine($"{targetMonster.Name}은(는) 공격을 피했다!");
@@ -1029,7 +1031,7 @@ namespace MyApp
                                 {
                                     Console.WriteLine($"{targetMonster.Name}을 공격!");
                                     float Atkf = partyMem.Atk;
-                                    int total = partyMem.Damage(Atkf, partyMem.Def);
+                                    int total = partyMem.Damage(Atkf, partyMem.Def, 0.15f);
                                     targetMonster.DamageByPlayer(total);
                                     Console.WriteLine("Enter 를 눌러주세요.");
                                     Console.ReadLine();
