@@ -279,6 +279,10 @@ namespace TextConsoleRPG
         {
             CurHp = curHp;
         }
+        public void SetCurMp(int curMp)
+        {
+            CurMp = curMp;
+        }
 
     }
 }
