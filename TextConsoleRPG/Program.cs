@@ -4,6 +4,7 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using TextConsoleRPG;
 
@@ -30,10 +31,28 @@ namespace MyApp
         static void StartScreen()
         {
             Console.Clear();
-            Console.WriteLine("1. 새 게임");
-            Console.WriteLine("2. 불러오기");
-            Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(@"
+
+████████╗███████╗██╗  ██╗████████╗██████╗ ██████╗  ██████╗ 
+╚══██╔══╝██╔════╝╚██╗██╔╝╚══██╔══╝██╔══██╗██╔══██╗██╔════╝
+   ██║   █████╗   ╚███╔╝    ██║   ██████╔╝██████╔╝██║  ███╗
+   ██║   ██╔══╝   ██╔██╗    ██║   ██╔══██╗██╔═══╝ ██║   ██║
+   ██║   ███████╗██╔╝ ██╗   ██║   ██║  ██║██║     ╚██████╔╝
+   ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝      ╚═════╝ 
+
+
+
+                      1. 새 게임
+                      2. 불러오기
+
+
+
+              원하시는 행동을 입력해주세요."); 
+            Console.ResetColor();
+            int C = Console.CursorTop;
+            Console.SetCursorPosition(14, C);
             int result = CheckInput(1, 2);
 
             //아이템 정보 불러오기 - 게임 데이터를 로드할 때 한 번에 하면 좋을 것
@@ -96,6 +115,7 @@ namespace MyApp
                     break;
             }
         }
+        #region 스킬
         static void SetData(string name, string job)
         {
             List<Skills> skillsWarrior = new List<Skills>()
@@ -237,6 +257,7 @@ namespace MyApp
                   }
                 )
             };
+            #endregion
             //TODO 캐릭터 생성
             switch (job)
             {
@@ -259,22 +280,35 @@ namespace MyApp
         static string CharacterCreationUI()
         {
             Console.Clear();
-            Console.WriteLine("스파르타 던전에 오신 여러분 환영합니다.");
-            Console.WriteLine("원하시는 이름을 설정해주세요.");
-            Console.WriteLine();
+            Console.Write(@"
+
+ ╔══════════════════════════════════════════╗
+ ║  스파르타 던전에 오신 여러분 환영합니다. ║
+ ║       당신의 이름은 무엇인가요?.         ║
+ ╚══════════════════════════════════════════╝
+
+              이름을 입력하세요
+             
+");
+            int Cut = Console.CursorTop;
+            Console.SetCursorPosition(20, Cut-1);
             string name = Console.ReadLine();
             return name;
         }
         static string ChoiceJobUI()
         {
             Console.Clear();
-            Console.WriteLine("직업을 선택하세요");
-            Console.WriteLine();
-            Console.WriteLine("1. 전사");
-            Console.WriteLine("2. 마법사");
-            Console.WriteLine("3. 궁수");
-            Console.WriteLine("4. 도적");
+            Console.WriteLine(@"
+ ╔═════════════════════════════╗
+ ║   당신은 어떤 사람인가요?   ║
+ ╚═════════════════════════════╝
 
+   1. ⚔️ 전사   - 직업 설명 어떻게 할까요
+   2. 🔮 마법사 - 
+   3. 🏹 궁수   - 
+   4. 🗡  도적   - 
+"); 
+            Console.Write("\t직업을 선택 하세요: ");
             int result = CheckInput(1, 4);
 
             switch (result)
@@ -298,8 +332,12 @@ namespace MyApp
         static void DisplayMainUI()
         {
             Console.Clear();
-            Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
-            Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
+            Console.WriteLine(@"
+ ╔═══════════════════════════════════════════════════════╗
+ ║  스파르타 마을에 오신 여러분 환영합니다.              ║
+ ║  이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.  ║
+ ╚═══════════════════════════════════════════════════════╝
+");
             Console.WriteLine();
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 인벤토리");
@@ -353,8 +391,13 @@ namespace MyApp
         static void DisplayStatUI()
         {
             Console.Clear();
-            Console.WriteLine("상태 보기");
-            Console.WriteLine("캐릭터의 정보가 표시됩니다.");
+            Console.WriteLine(@"
+╔═══════════╗
+║ 상태 보기 ║
+╚═══════════╝
+");
+
+            Console.WriteLine("캐릭터의 정보가 표시됩니다.\n");
 
             player.DisplayCharacterInfo();
 
@@ -377,7 +420,11 @@ namespace MyApp
         static void DisplayInventoryUI()
         {
             Console.Clear();
-            Console.WriteLine("인벤토리");
+            Console.WriteLine(@"
+╔════════════╗
+║  인벤토리  ║
+╚════════════╝
+");
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine();
             Console.WriteLine("[아이템 목록]");
@@ -446,7 +493,11 @@ namespace MyApp
         static void DisplayShopUI()
         {
             Console.Clear();
-            Console.WriteLine("상점");
+            Console.WriteLine(@"
+╔════════════╗
+║    상점    ║
+╚════════════╝
+");
             Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
             Console.WriteLine();
             Console.WriteLine("[보유 골드]");
@@ -486,7 +537,11 @@ namespace MyApp
         static void DisplayBuyUI()
         {
             Console.Clear();
-            Console.WriteLine("상점 - 아이템 구매");
+            Console.WriteLine(@"
+╔══════════════╗
+║  아이템구매  ║
+╚══════════════╝
+");
             Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
             Console.WriteLine();
             Console.WriteLine("[보유 골드]");
@@ -555,7 +610,11 @@ namespace MyApp
         {
             int restcost = 500;
             Console.Clear();
-            Console.WriteLine("휴식");
+            Console.WriteLine(@"
+╔══════════════╗
+║     휴식     ║
+╚══════════════╝
+");
             Console.WriteLine("휴식을 취하여 체력을 회복 할 수 있습니다..\n");
             Console.WriteLine("휴식하기");
             Console.WriteLine($"{restcost} G를 내면 체력을 회복할 수 있습니다.(보유골드 : {player.Gold}G)\n");
@@ -581,7 +640,11 @@ namespace MyApp
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("회복");
+                Console.WriteLine(@"
+╔══════════════╗
+║     회복     ║
+╚══════════════╝
+");
                 Console.WriteLine($"포션을 사용하면 체력을 30 회복 할 수 있습니다. (남은 포션 : {player.Potion} )");
                 Console.WriteLine();
                 Console.WriteLine("1. 사용하기");
@@ -603,7 +666,11 @@ namespace MyApp
         static void StageSelection()
         {
             Console.Clear();
-            Console.WriteLine("던전 입구");
+            Console.WriteLine(@"
+╔══════════════╗
+║   던전 입구  ║
+╚══════════════╝
+");
             Console.WriteLine("스테이지를 선택해 주세요\n");
             for (int i = 1; i <= stage.TopStage; i++)
             {
@@ -640,19 +707,24 @@ namespace MyApp
         static void DisplayBattleUI()
         {
             Console.Clear();
-            Console.WriteLine($"스테이지{stage.CurStage}");
+            Console.WriteLine($"스테이지{stage.CurStage}\n");
+            Console.WriteLine($"[{player.Name}의 턴!]\n");
 
             mm.MonsterInfoText(true);//몬스터 출력
 
             Console.WriteLine();
             Console.WriteLine("[내정보]");
-            Console.WriteLine($"Lv. {player.Level} {player.Name} ({player.Job})");
-            Console.WriteLine($"HP {player.CurHp}/{player.MaxHp}");
+            Console.WriteLine($"Lv.{player.Level} {player.Name}({player.Job})  HP {player.CurHp}/{player.MaxHp}");
+            foreach (var partyMem in pm.OwnedPartyMembers)
+            {
+                Console.WriteLine($"Lv.{partyMem.Level} {partyMem.Name}({partyMem.Job})");
+            }
             Console.WriteLine();
             Console.WriteLine("1. 공격");
             Console.WriteLine("2. 스킬");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
+            
 
             int result = CheckInput(1, 2);
             switch (result)
@@ -675,6 +747,8 @@ namespace MyApp
 
             Console.WriteLine("Battle!!");
             Console.WriteLine();
+            Console.WriteLine($"[몬스터의 턴!]");
+            Console.WriteLine();
             for (int i = 0; i < mm.spawnedMonsters.Count; i++)
             {
                 Monster m = mm.spawnedMonsters[i];
@@ -686,24 +760,19 @@ namespace MyApp
                 bool evasion = player.Evasion();
                 if (evasion) //회피
                 {
-                    Console.WriteLine($"{player.Name}은 공격을 피했다!");//현재체력 최대체력
-                    Console.WriteLine("Enter 를 눌러주세요.");
-                    Console.ReadLine();
+                    Console.WriteLine($"{player.Name}은 공격을 피했다!\n");//현재체력 최대체력
                 }
                 else //명중
                 {
-                    Console.WriteLine($"{player.Name}을(를) 맞췄습니다. [데미지: {m.Atk}]\n");
                     int Atkm = player.Damage(m.Atk, player.Def);
                     player.DamagebyMonster(Atkm);
-
-                    Console.WriteLine($"Lv. {player.Level} {player.Name}");
-                    Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}\n");
-                    Console.WriteLine("Enter 를 눌러주세요.");
-                    Console.ReadLine();
-                    Console.WriteLine();
                 }
                 if (player.CurHp <= 0) DisplayBattleResult(false);
             }
+            Console.WriteLine($"Lv. {player.Level} {player.Name}");
+            Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}\n");
+            Console.WriteLine("Enter 를 눌러주세요.");
+            Console.ReadLine();
             DisplayBattleUI();
         }
         static void PlayerPhaseAttack()
@@ -711,12 +780,11 @@ namespace MyApp
             Console.Clear();
             Console.WriteLine("Battle!!\n");
             Console.WriteLine($"[{player.Name}의 턴!]\n");
-            Console.WriteLine();
 
             //몬스터 출력
             mm.MonsterInfoText();
 
-            Console.WriteLine();
+            Console.WriteLine();      
             Console.WriteLine("0. 취소");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
@@ -884,12 +952,7 @@ namespace MyApp
                 Console.WriteLine();
 
                 //몬스터 출력
-                for (int i = 0; i < mm.spawnedMonsters.Count; i++)
-                {
-                    Monster m = mm.spawnedMonsters[i];
-                    string status = m.AliveMonster() ? $"(HP: {m.Hp})" : "(Dead)";
-                    Console.WriteLine($"{i + 1}. {m.Name} {status}");
-                }
+                mm.MonsterInfoText();
 
                 Console.WriteLine();
                 Console.WriteLine("1. 공격");
@@ -897,7 +960,7 @@ namespace MyApp
                 Console.WriteLine();
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-                int result = CheckInput(1, 2);//몬스터수에 따른 입력값 
+                int result = CheckInput(1, 2);
 
                 switch (result)
                 {
@@ -1119,7 +1182,11 @@ namespace MyApp
         static void DisplayQuestUI()
         {
             Console.Clear();
-            Console.WriteLine("Quest!!\n");
+            Console.WriteLine(@"
+╔══════════════╗
+║    퀘스트    ║
+╚══════════════╝
+");
             for (int i = 0; i < QuestDb.Count; ++i)
             {
                 Console.WriteLine($"{i + 1}. {QuestDb[i].Name}");
@@ -1223,8 +1290,11 @@ namespace MyApp
         static void DisplayRecruitPartyMember()
         {
             Console.Clear();
-            Console.WriteLine("[파티원 모집]");
-            Console.WriteLine();
+            Console.WriteLine(@"
+╔══════════════╗
+║ 파티원 모집  ║
+╚══════════════╝
+");
             
             for (int i = 1; i< pm.PartyMembers.Count + 1;i++)
             {
@@ -1298,6 +1368,10 @@ namespace MyApp
             int result;
             while (true)
             {
+                
+                int Cul = Console.CursorLeft;
+                int Cut = Console.CursorTop;
+                Console.SetCursorPosition(Cul, Cut);
                 string input = Console.ReadLine();
                 bool isNumber = int.TryParse(input, out result);
                 if (isNumber)
