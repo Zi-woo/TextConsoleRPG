@@ -64,7 +64,7 @@ namespace TextConsoleRPG
         protected List<int> EquipItemIdList { get; set; } = new List<int>();
 
         [JsonIgnore]
-        public List<Skills> LearnedSkills { get; private set; }
+        public List<Skills> LearnedSkills { get; protected set; }
         protected List<Item> Inventory { get; set; } = new List<Item>();
         protected List<Item> EquipList { get; set; } = new List<Item>();
 
@@ -77,7 +77,7 @@ namespace TextConsoleRPG
             }
         }
         public Character() { }
-        public Character(int level, string name, string job, int atk, int def, int matk, int hp, int mp, float cc, float ec, List<Skills> learnedSkills)
+        public Character(int level, string name, string job, int atk, int def, int matk, int hp, int mp, float cc, float ec)
         {
             Level = level;
             Exp = 0;
@@ -92,7 +92,6 @@ namespace TextConsoleRPG
             CurMp = mp;
             PreDgnMp = mp;
             MaxMp = mp;
-            LearnedSkills = learnedSkills;
             originalAtk = atk;
             originalMatk = matk;
             CriticalChance = cc;
