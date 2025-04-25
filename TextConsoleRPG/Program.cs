@@ -612,7 +612,7 @@ namespace MyApp
         }
         #endregion
         #region 공격
-        static void EnemyPhase()
+        static bool EnemyPhase()
         {
             Console.Clear();
             Console.WriteLine("Battle!!");
@@ -642,14 +642,14 @@ namespace MyApp
                 {
                     player.SetCurHp(0);
                     DisplayBattleResult(false);
-                    return;
+                    return true;
                 }
             }
             Console.WriteLine($"Lv. {player.Level} {player.Name}");
             Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}\n");
             Console.WriteLine("Enter 를 눌러주세요.");
             Console.ReadLine();
-            return;
+            return false;
         }
         
         static bool PlayerPhaseAttack()
@@ -728,13 +728,11 @@ namespace MyApp
                                 if (isOver) break;
                                 if (pm.OwnedPartyMembers.Count > 0)
                                 {
-                                    PartyPhase();
-                                    return false;
+                                    return PartyPhase();
                                 }
                                 else
                                 {
-                                    EnemyPhase();
-                                    return false;
+                                    return EnemyPhase();
                                 }
                             }
                         }
@@ -848,13 +846,11 @@ namespace MyApp
                 if (isOver) break;
                 if (pm.OwnedPartyMembers.Count > 0)
                 {
-                    PartyPhase();
-                    return false;
+                    return PartyPhase();
                 }
                 else
                 {
-                    EnemyPhase();
-                    return false;
+                    return EnemyPhase();
                 }
             }
             return false;
@@ -1037,8 +1033,7 @@ namespace MyApp
                         break;
                 }
             }
-            EnemyPhase();
-            return false;
+            return EnemyPhase();
         }
         #endregion
         #region 전투결과
