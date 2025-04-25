@@ -152,35 +152,49 @@ namespace TextConsoleRPG
             // 장착 가능 아이템인지 확인 (무기 or 방어구만 가능)
             if (item.Type == 0 || item.Type == 1)
             {
-                // 같은 타입의 장비가 이미 장착돼 있다면 자동 해제
-                for (int i = 0; i < EquipList.Count; i++)
+                bool cehck = EquipList.Any(i => i.Name == item.Name);
+                if (cehck == true)
                 {
-                    if (EquipList[i].Type == item.Type)
-                    {
-                        Item oldItem = EquipList[i];
-                        EquipList.RemoveAt(i);      //찾은 장비(oldItem)를 장착 목록에서 제거
-                        EquipItemIdList.Remove(oldItem.Id);    //EquipItemIdList에서도 제거
+                    EquipList.Remove(item);
 
-                        if (oldItem.Type == 0)      //기존 장비의 스탯 보정값 제거
-                            ExtraAtk -= oldItem.Value;
-                        else if (oldItem.Type == 1)
-                            ExtraDef -= oldItem.Value;
-
-                        Console.WriteLine($"[{oldItem.Name}]을(를) 해제했습니다.");
-                        break;
-                    }
+                    if (item.Type == 0)      //기존 장비의 스탯 보정값 제거
+                        ExtraAtk -= item.Value;
+                    else if (item.Type == 1)
+                        ExtraDef -= item.Value;
+                    Console.WriteLine($"[{item.Name}]을(를) 해제했습니다.");
                 }
+                else
+                {
+                    // 같은 타입의 장비가 이미 장착돼 있다면 자동 해제
+                    for (int i = 0; i < EquipList.Count; i++)
+                    {
+                        if (EquipList[i].Type == item.Type)
+                        {
+                            Item oldItem = EquipList[i];
+                            EquipList.RemoveAt(i);      //찾은 장비(oldItem)를 장착 목록에서 제거
+                            EquipItemIdList.Remove(oldItem.Id);    //EquipItemIdList에서도 제거
 
-                // 새 장비 장착
-                EquipList.Add(item);
-                EquipItemIdList.Add(item.Id);
+                            if (oldItem.Type == 0)      //기존 장비의 스탯 보정값 제거
+                                ExtraAtk -= oldItem.Value;
+                            else if (oldItem.Type == 1)
+                                ExtraDef -= oldItem.Value;
 
-                if (item.Type == 0)
-                    ExtraAtk += item.Value;
-                else if (item.Type == 1)
-                    ExtraDef += item.Value;
+                            Console.WriteLine($"[{oldItem.Name}]을(를) 해제했습니다.");
+                            break;
+                        }
+                    }
 
-                Console.WriteLine($"[{item.Name}]을(를) 장착했습니다.");
+                    // 새 장비 장착
+                    EquipList.Add(item);
+                    EquipItemIdList.Add(item.Id);
+
+                    if (item.Type == 0)
+                        ExtraAtk += item.Value;
+                    else if (item.Type == 1)
+                        ExtraDef += item.Value;
+
+                    Console.WriteLine($"[{item.Name}]을(를) 장착했습니다.");
+                }
             }
             else
             {
