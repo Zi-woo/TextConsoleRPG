@@ -25,7 +25,10 @@ namespace MyApp
         static void Main(string[] args)
         {
             StartScreen();
-            DisplayMainUI();
+            while (true)
+            {
+                DisplayMainUI();
+            }
             //pm.CreatePartyMem();
         }
         static void StartScreen()
@@ -58,8 +61,8 @@ namespace MyApp
             //아이템 정보 불러오기 - 게임 데이터를 로드할 때 한 번에 하면 좋을 것
             if (File.Exists(itemDBPath))
             {
-                string json = File.ReadAllText(itemDBPath);
-                itemDb = JsonSerializer.Deserialize<List<Item>>(json);
+                string jsonItemDB = File.ReadAllText(itemDBPath);
+                itemDb = JsonSerializer.Deserialize<List<Item>>(jsonItemDB);
             }
             else
             {
@@ -68,41 +71,12 @@ namespace MyApp
                 Console.ReadKey();
                 StartScreen();
             }
-            //퀘스트 테스트 코드
-            QuestDb = new List<IQuest>()
-            {
-                new KillMonsterQuest(
-                        "마을을 위협하는 미니언 처치",
-                        "이봐! 마을 근처에 미니언들이 너무 많아졌다고 생각하지 않나??\r\n마을주민들의 안전을 위해서라도 저것들 수를 좀 줄여야 한다고!\r\n자네가 좀 처치해주게!",
-                        "미니언",
-                        5,
-                        10,
-                        2000,
-                        null,
-                        0
-                    ),
-                new KillMonsterQuest(
-                        "마을을 위협하는 공허충 처치",
-                        "이봐! 던전 안에 공허충들이 너무 많아졌다고 생각하지 않나??\r\n마을주민들의 안전을 위해서라도 저것들 수를 좀 줄여야 한다고!\r\n자네가 좀 처치해주게!",
-                        "공허충",
-                        10,
-                        20,
-                        3000,
-                        itemDb[2],
-                        1
-                    ),
-                new UseItemQuest(
-                    "회복 포션 사용",
-                    "안전을 위해 회복 포션을 사용하기",
-                    "회복 포션",
-                    3,
-                                            5,
-                                            0,
-                        null,
-                        0
-                    )
+            //퀘스트 불러오기 테스트 코드
+            string json = File.ReadAllText("quests.json");
+            List<QuestDTO> dtos = JsonSerializer.Deserialize<List<QuestDTO>>(json);
 
-            };
+            QuestDb = dtos.Select(d => QuestDTOConverter.FromDTO(d, itemDb)).ToList();
+
             switch (result)
             {
                 case 1:
@@ -132,6 +106,7 @@ namespace MyApp
                             Console.WriteLine("MP가 부족하여 스킬을 사용할 수 없습니다.");
                             return;
                         }
+                        user.SetCurMp(user.CurMp - 10);
                         target.DamageByPlayer(user.SkillDamageAttack(2f));
                     }
                 ),
@@ -146,6 +121,7 @@ namespace MyApp
                         Console.WriteLine("MP가 부족하여 스킬을 사용할 수 없습니다.");
                         return;
                     }
+                    user.SetCurMp(user.CurMp - 10);
                     foreach (var target in targets)
                     {
                        target.DamageByPlayer(user.SkillDamageAttack(1.5f));
@@ -166,7 +142,7 @@ namespace MyApp
                         return;
                     }
                         Monster target = targetList.First();
-
+                        user.SetCurMp(user.CurMp - 10);
                         target.DamageByPlayer(user.SkillDamageMagic(2f));
                     }
                 ),
@@ -181,6 +157,7 @@ namespace MyApp
                         return;
                     }
                         var targets = targetList.Take(2);
+                    user.SetCurMp(user.CurMp - 10);
                     foreach (var target in targets)
                     {
                         target.DamageByPlayer(user.SkillDamageMagic(1.5f));
@@ -200,6 +177,7 @@ namespace MyApp
                             Console.WriteLine("MP가 부족하여 스킬을 사용할 수 없습니다.");
                             return;
                         }
+                        user.SetCurMp(user.CurMp - 10);
                         Monster target = targetList.First();
                         target.DamageByPlayer(user.SkillDamageAttack(2f));
                     }
@@ -214,6 +192,7 @@ namespace MyApp
                             Console.WriteLine("MP가 부족하여 스킬을 사용할 수 없습니다.");
                             return;
                         }
+                    user.SetCurMp(user.CurMp - 10);
                         var targets = targetList.Take(2);
                     foreach (var target in targets)
                     {
@@ -235,6 +214,7 @@ namespace MyApp
                             Console.WriteLine("MP가 부족하여 스킬을 사용할 수 없습니다.");
                             return;
                         }
+                        user.SetCurMp(user.CurMp - 10);
                         Monster target = targetList.First();
                         target.DamageByPlayer(user.SkillDamageAttack(2f));
                     }
@@ -249,6 +229,7 @@ namespace MyApp
                         Console.WriteLine("MP가 부족하여 스킬을 사용할 수 없습니다.");
                         return;
                     }
+                    user.SetCurMp(user.CurMp - 10);
                     var targets = targetList.Take(2);
                     foreach (var target in targets)
                     {
@@ -348,10 +329,11 @@ namespace MyApp
             Console.WriteLine("7. 퀘스트");
             Console.WriteLine("8. 파티원 모집");
             Console.WriteLine("9. 저장");
+            Console.WriteLine("0. 게임 종료");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            int result = CheckInput(1, 9);
+            int result = CheckInput(0, 9);
 
             switch (result)
             {
@@ -384,6 +366,9 @@ namespace MyApp
                 case 9:
                     SavePlayerData();
                     break;
+                case 0:
+                    Console.WriteLine("게임을 종료합니다.");
+                    Environment.Exit(0); break;
             }
         }
         #endregion
@@ -407,201 +392,203 @@ namespace MyApp
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
             int result = CheckInput(0, 0);
-
-            switch (result)
-            {
-                case 0:
-                    DisplayMainUI();
-                    break;
-            }
         }
         #endregion
         #region 인벤토리
         static void DisplayInventoryUI()
         {
-            Console.Clear();
-            Console.WriteLine(@"
+
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine(@"
 ╔════════════╗
 ║  인벤토리  ║
 ╚════════════╝
 ");
-            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
-            Console.WriteLine();
-            Console.WriteLine("[아이템 목록]");
+                Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
+                Console.WriteLine();
+                Console.WriteLine("[아이템 목록]");
 
-            player.DisplayInventory(false);
 
-            Console.WriteLine();
-            Console.WriteLine("1. 장착 관리");
-            Console.WriteLine("0. 나가기");
-            Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
+                player.DisplayInventory(false);
 
-            int result = CheckInput(0, 1);
+                Console.WriteLine();
+                Console.WriteLine("1. 장착 관리");
+                Console.WriteLine("0. 나가기");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            switch (result)
-            {
-                case 0:
-                    DisplayMainUI();
-                    break;
+                int result = CheckInput(0, 1);
 
-                case 1:
-                    DisplayEquipUI();
-                    break;
+                switch (result)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        DisplayEquipUI();
+                        break;
+                }
             }
         }
         #endregion
         #region 장착관리
         static void DisplayEquipUI()
         {
-            Console.Clear();
-            Console.WriteLine("인벤토리 - 장착관리");
-            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
-            Console.WriteLine();
-            Console.WriteLine("[아이템 목록]");
-
-            player.DisplayInventory(true);
-
-            Console.WriteLine();
-            Console.WriteLine("0. 나가기");
-            Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-            int result = CheckInput(0, player.InventoryCount);
-
-            switch (result)
+            while (true)
             {
-                case 0:
-                    DisplayInventoryUI();
-                    break;
+                Console.Clear();
+                Console.WriteLine("인벤토리 - 장착관리");
+                Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
+                Console.WriteLine();
+                Console.WriteLine("[아이템 목록]");
 
-                default:
-                    //int itemIdx = result - 1;
-                    //Item targetItem = itemDb[itemIdx];
-                    //player.EquipItem(targetItem);
+                player.DisplayInventory(true);
 
-                    //---------인벤토리 리스트 내 아이템 선택 코드 수정-------------
-                    int itemIdx = result - 1;
-                    player.EquipItem(itemIdx);
+                Console.WriteLine();
+                Console.WriteLine("0. 나가기");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-                    DisplayEquipUI();
-                    break;
+                int result = CheckInput(0, player.InventoryCount);
+
+                switch (result)
+                {
+                    case 0:
+                        return;
+
+                    default:
+                        //int itemIdx = result - 1;
+                        //Item targetItem = itemDb[itemIdx];
+                        //player.EquipItem(targetItem);
+
+                        //---------인벤토리 리스트 내 아이템 선택 코드 수정-------------
+                        int itemIdx = result - 1;
+                        player.EquipItem(itemIdx);
+                        break;
+                }
             }
+
         }
         #endregion
         #region 상점
         static void DisplayShopUI()
         {
-            Console.Clear();
+            while (true)
+            {
+                Console.Clear();
             Console.WriteLine(@"
 ╔════════════╗
 ║    상점    ║
 ╚════════════╝
 ");
-            Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
-            Console.WriteLine();
-            Console.WriteLine("[보유 골드]");
-            Console.WriteLine($"{player.Gold} G");
-            Console.WriteLine();
-            Console.WriteLine("[아이템 목록]");
+                Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+                Console.WriteLine();
+                Console.WriteLine("[보유 골드]");
+                Console.WriteLine($"{player.Gold} G");
+                Console.WriteLine();
+                Console.WriteLine("[아이템 목록]");
 
-            for (int i = 0; i < itemDb.Count; i++)
-            {
-                Item curItem = itemDb[i];
+                for (int i = 0; i < itemDb.Count; i++)
+                {
+                    Item curItem = itemDb[i];
 
-                string displayPrice = (player.HasItem(curItem) ? "구매완료" : $"{curItem.Price} G");
-                Console.WriteLine($"- {curItem.ItemInfoText()}  |  {displayPrice}");
+                    string displayPrice = (player.HasItem(curItem) ? "구매완료" : $"{curItem.Price} G");
+                    Console.WriteLine($"- {curItem.ItemInfoText()}  |  {displayPrice}");
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("1. 아이템 구매");
+                Console.WriteLine("0. 나가기");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+                int result = CheckInput(0, 1);
+
+                switch (result)
+                {
+                    case 0:
+                        return;
+
+                    case 1:
+                        DisplayBuyUI();
+                        break;
+                }
             }
 
-            Console.WriteLine();
-            Console.WriteLine("1. 아이템 구매");
-            Console.WriteLine("0. 나가기");
-            Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-            int result = CheckInput(0, 1);
-
-            switch (result)
-            {
-                case 0:
-                    DisplayMainUI();
-                    break;
-
-                case 1:
-                    DisplayBuyUI();
-                    break;
-            }
         }
         #endregion
         #region 아이템 구매
         static void DisplayBuyUI()
         {
-            Console.Clear();
-            Console.WriteLine(@"
+
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine(@"
 ╔══════════════╗
 ║  아이템구매  ║
 ╚══════════════╝
 ");
-            Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
-            Console.WriteLine();
-            Console.WriteLine("[보유 골드]");
-            Console.WriteLine($"{player.Gold} G");
-            Console.WriteLine();
-            Console.WriteLine("[아이템 목록]");
+                Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+                Console.WriteLine();
+                Console.WriteLine("[보유 골드]");
+                Console.WriteLine($"{player.Gold} G");
+                Console.WriteLine();
+                Console.WriteLine("[아이템 목록]");
 
-            for (int i = 0; i < itemDb.Count; i++)
-            {
-                Item curItem = itemDb[i];
+                for (int i = 0; i < itemDb.Count; i++)
+                {
+                    Item curItem = itemDb[i];
 
-                string displayPrice = (player.HasItem(curItem) ? "구매완료" : $"{curItem.Price} G");
-                Console.WriteLine($"- {i + 1} {curItem.ItemInfoText()}  |  {displayPrice}");
-            }
+                    string displayPrice = (player.HasItem(curItem) ? "구매완료" : $"{curItem.Price} G");
+                    Console.WriteLine($"- {i + 1} {curItem.ItemInfoText()}  |  {displayPrice}");
+                }
 
-            Console.WriteLine();
-            Console.WriteLine("0. 나가기");
-            Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.WriteLine();
+                Console.WriteLine("0. 나가기");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            int result = CheckInput(0, itemDb.Count);
+                int result = CheckInput(0, itemDb.Count);
 
-            switch (result)
-            {
-                case 0:
-                    DisplayShopUI();
-                    break;
+                switch (result)
+                {
+                    case 0:
+                        return;
 
-                default:
-                    int itemIdx = result - 1;
-                    Item targetItem = itemDb[itemIdx];
+                    default:
+                        int itemIdx = result - 1;
+                        Item targetItem = itemDb[itemIdx];
 
-                    // 이미 구매한 아이템이라면?
-                    if (player.HasItem(targetItem))
-                    {
-                        Console.WriteLine("이미 구매한 아이템입니다.");
-                        Console.WriteLine("Enter 를 눌러주세요.");
-                        Console.ReadLine();
-                    }
-                    else // 구매가 가능할떄
-                    {
-                        //   소지금이 충분하다
-                        if (player.Gold >= targetItem.Price)
+                        // 이미 구매한 아이템이라면?
+                        if (player.HasItem(targetItem))
                         {
-                            Console.WriteLine("구매를 완료했습니다.");
-                            player.BuyItem(targetItem);
-                        }
-                        else
-                        {
-                            Console.WriteLine("골드가 부족합니다.");
+                            Console.WriteLine("이미 구매한 아이템입니다.");
                             Console.WriteLine("Enter 를 눌러주세요.");
                             Console.ReadLine();
                         }
+                        else // 구매가 가능할떄
+                        {
+                            //   소지금이 충분하다
+                            if (player.Gold >= targetItem.Price)
+                            {
+                                Console.WriteLine("구매를 완료했습니다.");
+                                player.BuyItem(targetItem);
+                            }
+                            else
+                            {
+                                Console.WriteLine("골드가 부족합니다.");
+                                Console.WriteLine("Enter 를 눌러주세요.");
+                                Console.ReadLine();
+                            }
 
-                        //   소지금이 부족핟
-                    }
-
-                    DisplayBuyUI();
-                    break;
+                            //   소지금이 부족핟
+                        }
+                        break;
+                }
             }
+
         }
         #endregion
 
@@ -609,30 +596,31 @@ namespace MyApp
         static void DisplayRestUI()
         {
             int restcost = 500;
+            while (true)
+            {
             Console.Clear();
             Console.WriteLine(@"
 ╔══════════════╗
 ║     휴식     ║
 ╚══════════════╝
 ");
-            Console.WriteLine("휴식을 취하여 체력을 회복 할 수 있습니다..\n");
-            Console.WriteLine("휴식하기");
-            Console.WriteLine($"{restcost} G를 내면 체력을 회복할 수 있습니다.(보유골드 : {player.Gold}G)\n");
-            Console.WriteLine("1. 휴식하기");
-            Console.WriteLine("0. 나가기\n");
-            Console.WriteLine("원하시는 행동을입력해주세요.");
+                Console.WriteLine("휴식을 취하여 체력을 회복 할 수 있습니다..\n");
+                Console.WriteLine("휴식하기");
+                Console.WriteLine($"{restcost} G를 내면 체력을 회복할 수 있습니다.(보유골드 : {player.Gold}G)\n");
+                Console.WriteLine("1. 휴식하기");
+                Console.WriteLine("0. 나가기\n");
+                Console.WriteLine("원하시는 행동을입력해주세요.");
 
-            int result = CheckInput(0, 1);
+                int result = CheckInput(0, 1);
 
-            switch (result)
-            {
-                case 0:
-                    DisplayMainUI();
-                    break;
-                case 1:
-                    player.Rest(restcost);
-                    DisplayRestUI();
-                    break;
+                switch (result)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        player.Rest(restcost);
+                        break;
+                }
             }
         }
         static void DisplayPotionUI()
@@ -648,15 +636,16 @@ namespace MyApp
                 Console.WriteLine($"포션을 사용하면 체력을 30 회복 할 수 있습니다. (남은 포션 : {player.Potion} )");
                 Console.WriteLine();
                 Console.WriteLine("1. 사용하기");
-                Console.WriteLine("2. 나가기");
+                Console.WriteLine("0. 나가기");
                 Console.WriteLine();
-                int result = CheckInput(1, 2);
+                int result = CheckInput(0, 1);
                 switch (result)
                 {
                     case 1:
                         player.UsePotion();
+                        player.UpdateQuest("회복 포션", QUEST_TYPE.USE_ITEM);
                         break;
-                    case 2:
+                    case 0:
                         return;
                 }
             }
@@ -665,29 +654,31 @@ namespace MyApp
         #region 스테이지 선택
         static void StageSelection()
         {
+            while (true)
+            {
             Console.Clear();
             Console.WriteLine(@"
 ╔══════════════╗
 ║   던전 입구  ║
 ╚══════════════╝
 ");
-            Console.WriteLine("스테이지를 선택해 주세요\n");
-            for (int i = 1; i <= stage.TopStage; i++)
-            {
-                Console.WriteLine($"{i}. 스테이지 {i}");
-            }
-            Console.WriteLine("\n0. 나가기");
-            Console.WriteLine("\n원하시는 스테이지를 입력해주세요.");
-            int result = CheckInput(0, stage.TopStage);
-            switch (result)
-            {
-                case 0:
-                    DisplayMainUI();
-                    break;
-                default:
-                    stage.SetStage(result);
-                    InitializeBattle();
-                    break;
+                Console.WriteLine("스테이지를 선택해 주세요\n");
+                for (int i = 1; i <= stage.TopStage; i++)
+                {
+                    Console.WriteLine($"{i}. 스테이지 {i}");
+                }
+                Console.WriteLine("\n0. 나가기");
+                Console.WriteLine("\n원하시는 스테이지를 입력해주세요.");
+                int result = CheckInput(0, stage.TopStage);
+                switch (result)
+                {
+                    case 0:
+                        return;
+                    default:
+                        stage.SetStage(result);
+                        InitializeBattle();
+                        break;
+                }
             }
         }
         #endregion
@@ -742,9 +733,7 @@ namespace MyApp
         #region 공격
         static void EnemyPhase()
         {
-
             Console.Clear();
-
             Console.WriteLine("Battle!!");
             Console.WriteLine();
             Console.WriteLine($"[몬스터의 턴!]");
@@ -767,185 +756,214 @@ namespace MyApp
                     int Atkm = player.Damage(m.Atk, player.Def);
                     player.DamagebyMonster(Atkm);
                 }
-                if (player.CurHp <= 0) DisplayBattleResult(false);
+                if (player.CurHp <= 0)
+                {
+                    player.SetCurHp(0);
+                    DisplayBattleResult(false);
+                    break;
+                }
             }
             Console.WriteLine($"Lv. {player.Level} {player.Name}");
             Console.WriteLine($"HP {player.PreDgnHp} -> {player.CurHp}\n");
             Console.WriteLine("Enter 를 눌러주세요.");
             Console.ReadLine();
-            DisplayBattleUI();
+            return;
         }
+        
         static void PlayerPhaseAttack()
         {
-            Console.Clear();
-            Console.WriteLine("Battle!!\n");
-            Console.WriteLine($"[{player.Name}의 턴!]\n");
-
-            //몬스터 출력
-            mm.MonsterInfoText();
-
+            bool isOver = false;
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("Battle!!\n");
+                Console.WriteLine($"[{player.Name}의 턴!]\n");
+                Console.WriteLine();
+                //몬스터 출력
+                mm.MonsterInfoText();
+              
             Console.WriteLine();      
             Console.WriteLine("0. 취소");
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
-            int result = CheckInput(0, mm.spawnedMonsters.Count);//몬스터수에 따른 입력값 
+                int result = CheckInput(0, mm.spawnedMonsters.Count);//몬스터수에 따른 입력값 
 
-            switch (result)
+                switch (result)
+                {
+                    case 0:
+                        return;
+                    default:
+                        int MonsterIdx = result - 1;
+                        Monster targetMonster = mm.spawnedMonsters[MonsterIdx];
+                        {
+                            if (!targetMonster.AliveMonster()) //타격 전 생존 확인 
+                            {
+                                Console.WriteLine("이미 죽은 대상입니다");
+                                Console.WriteLine("Enter 를 눌러주세요.");
+                                Console.ReadLine();
+                                break;
+                            }
+                            else
+                            {
+                                bool evasion = player.Evasion();
+                                if (evasion) //회피
+                                {
+                                    Console.WriteLine($"{targetMonster.Name}은(는) 공격을 피했다!");
+                                    Console.WriteLine("Enter 를 눌러주세요.");
+                                    Console.ReadLine();
+                                }
+                                else //명중
+                                {
+                                    Console.WriteLine($"{targetMonster.Name}을 공격!");
+                                    float Atkf = player.Atk + player.ExtraAtk;
+                                    int total = player.Damage(Atkf, 0/*몬스터 방어력*/);
+                                    targetMonster.DamageByPlayer(total);
+                                    Console.WriteLine("Enter 를 눌러주세요.");
+                                    Console.ReadLine();
+                                }
+
+                                if (!targetMonster.AliveMonster()) //타격 후 생존 확인 
+                                {
+                                    player.UpdateQuest(targetMonster.Name, QUEST_TYPE.KILL_MONSTER);
+                                    Console.WriteLine($"{targetMonster.Name}이(가) 쓰러졌습니다!");
+                                    Console.WriteLine("\nEnter 를 눌러주세요.");
+                                    Console.ReadLine();
+                                }
+                                for (int i = 0; i < mm.spawnedMonsters.Count; i++)
+                                {
+                                    if (mm.spawnedMonsters[i].Hp > 0) break;
+                                    if (i == mm.spawnedMonsters.Count - 1)
+                                    {
+                                        isOver = true;
+                                        DisplayBattleResult(true);
+                                        break;
+                                    }
+                                }
+                                if (isOver) break;
+                                if (pm.OwnedPartyMembers.Count > 0) PartyPhase();
+                                else EnemyPhase();
+                            }
+                        }
+                        break;
+                }
+            }
+
+        }
+        static void PlayerPhaseSkill()
+        {
+            bool isOver = false;
+            while (true)
             {
-                case 0:
-                    DisplayBattleUI();
-                    break;
-                default:
+                Console.Clear();
+                Console.WriteLine("Battle!!\n");
+                Console.WriteLine($"[{player.Name}의 턴!]\n");
+                Console.WriteLine();
+
+                //몬스터 출력
+                mm.MonsterInfoText();
+
+                Console.WriteLine();
+                int idx = 1;
+                foreach (var skill in player.LearnedSkills)
+                {
+                    Console.WriteLine($"{idx}. {skill.Name} - MP {skill.MpCost}");
+                    Console.WriteLine($"{skill.Description}");
+                    idx++;
+                }
+                Console.WriteLine("0. 취소");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+                int userChoice = CheckInput(0, player.LearnedSkills.Count);
+                int skillChoice = userChoice - 1;
+                if (userChoice == 0) return;
+                if (player.LearnedSkills[userChoice - 1].Type == 1)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("대상을 입력하세요.");
+                    int result = CheckInput(1, mm.spawnedMonsters.Count);//몬스터수에 따른 입력값
                     int MonsterIdx = result - 1;
-                    Monster targetMonster = mm.spawnedMonsters[MonsterIdx];
+
+                    List<Monster> targetMonster = new List<Monster>();
+                    targetMonster.Add(mm.spawnedMonsters[MonsterIdx]);
                     {
-                        if (!targetMonster.AliveMonster()) //타격 전 생존 확인 
+                        if (!targetMonster[0].AliveMonster()) //스킬시전 전 생존 확인 
                         {
                             Console.WriteLine("이미 죽은 대상입니다");
                             Console.WriteLine("Enter 를 눌러주세요.");
                             Console.ReadLine();
-                            PlayerPhaseAttack();
+                            break;
                         }
                         else
                         {
-                            bool evasion = player.Evasion();
-                            if (evasion) //회피
+                            player.LearnedSkills[skillChoice].ActionToMonster(player, targetMonster);
+                            Console.WriteLine($"{player.LearnedSkills[skillChoice].Name}을(를) 시전!");
+                            Thread.Sleep(500);
+                            if (!targetMonster[0].AliveMonster())
                             {
-                                Console.WriteLine($"{targetMonster.Name}은(는) 공격을 피했다!");
-                                Console.WriteLine("Enter 를 눌러주세요.");
-                                Console.ReadLine();
-                            }
-                            else //명중
-                            {
-                                Console.WriteLine($"{targetMonster.Name}을 공격!");
-                                float Atkf = player.Atk;
-                                int total = player.Damage(Atkf, 0/*몬스터 방어력*/);
-                                targetMonster.DamageByPlayer(total);
-                                Console.WriteLine("Enter 를 눌러주세요.");
-                                Console.ReadLine();
-                            }
-
-                            if (!targetMonster.AliveMonster()) //타격 후 생존 확인 
-                            {
-                                player.UpdateQuest(targetMonster.Name, QUEST_TYPE.KILL_MONSTER);
-                                Console.WriteLine($"{targetMonster.Name}이(가) 쓰러졌습니다!");
+                                player.UpdateQuest(targetMonster[0].Name, QUEST_TYPE.KILL_MONSTER);
+                                Console.WriteLine($"{targetMonster[0].Name}이(가) 쓰러졌습니다!");
                                 Console.WriteLine("\nEnter 를 눌러주세요.");
                                 Console.ReadLine();
                             }
                         }
                     }
-                    for (int i = 0; i < mm.spawnedMonsters.Count; i++)
-                    {
-                        if (mm.spawnedMonsters[i].Hp > 0) break;
-                        if (i == mm.spawnedMonsters.Count - 1) DisplayBattleResult(true);
-                    }
-                    if (pm.OwnedPartyMembers.Count > 0) PartyPhase();
-                    else EnemyPhase();
-                    break;
-            }
-        }
-        static void PlayerPhaseSkill()
-        {
-            Console.Clear();
-            Console.WriteLine("Battle!!\n");
-            Console.WriteLine($"[{player.Name}의 턴!]\n");
-            Console.WriteLine();
-
-            //몬스터 출력
-            mm.MonsterInfoText();
-
-            Console.WriteLine();
-            int idx = 1;
-            foreach (var skill in player.LearnedSkills)
-            {
-                Console.WriteLine($"{idx}. {skill.Name} - MP {skill.MpCost}");
-                Console.WriteLine($"{skill.Description}");
-                idx++;
-            }
-            Console.WriteLine("0. 취소");
-            Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
-
-            int userChoice = CheckInput(0, player.LearnedSkills.Count);
-            int skillChoice = userChoice - 1;
-            if (userChoice == 0) DisplayBattleUI();
-            if (player.LearnedSkills[userChoice - 1].Type == 1)
-            {
-                Console.WriteLine();
-                Console.WriteLine("대상을 입력하세요.");
-                int result = CheckInput(1, mm.spawnedMonsters.Count);//몬스터수에 따른 입력값
-                int MonsterIdx = result - 1;
-
-                List<Monster> targetMonster = new List<Monster>();
-                targetMonster.Add(mm.spawnedMonsters[MonsterIdx]);
+                }
+                else if (player.LearnedSkills[userChoice - 1].Type == 2)
                 {
-                    if (!targetMonster[0].AliveMonster()) //스킬시전 전 생존 확인 
+                    List<Monster> targetMonster = new List<Monster>();
+                    Random random = new Random();
+                    foreach (var target in mm.spawnedMonsters)
                     {
-                        Console.WriteLine("이미 죽은 대상입니다");
-                        Console.WriteLine("Enter 를 눌러주세요.");
-                        Console.ReadLine();
-                        PlayerPhaseSkill();
-                    }
-                    else
-                    {
-                        player.LearnedSkills[skillChoice].ActionToMonster(player, targetMonster);
-                        Console.WriteLine($"{player.LearnedSkills[skillChoice].Name}을(를) 시전!");
-                        Thread.Sleep(500);
-                        if (!targetMonster[0].AliveMonster())
+                        if (target.Hp > 0)
                         {
-                            player.UpdateQuest(targetMonster[0].Name, QUEST_TYPE.KILL_MONSTER);
-                            Console.WriteLine($"{targetMonster[0].Name}이(가) 쓰러졌습니다!");
+                            targetMonster.Add(target);
+                        }
+                    }
+                    if (targetMonster.Count >= 2)
+                    {
+                        List<Monster> shuffledList = targetMonster.OrderBy(x => random.Next()).ToList(); // 몬스터리스트 섞어서 렌덤성부여
+                    }
+
+                    player.LearnedSkills[skillChoice].ActionToMonster(player, targetMonster);
+
+                    Console.WriteLine($"{player.LearnedSkills[skillChoice].Name}을(를) 시전!");
+                    Thread.Sleep(500);
+                    foreach (var target in targetMonster)
+                    {
+                        if (!target.AliveMonster())
+                        {
+                            player.UpdateQuest(target.Name, QUEST_TYPE.KILL_MONSTER);
+                            Console.WriteLine($"{target.Name}이(가) 쓰러졌습니다!");
                             Console.WriteLine("\nEnter 를 눌러주세요.");
                             Console.ReadLine();
                         }
                     }
                 }
-            }
-            else if (player.LearnedSkills[userChoice - 1].Type == 2)
-            {
-                List<Monster> targetMonster = new List<Monster>();
-                Random random = new Random();
-                foreach (var target in mm.spawnedMonsters)
+
+                for (int i = 0; i < mm.spawnedMonsters.Count; i++)
                 {
-                    if (target.Hp > 0)
+                    if (mm.spawnedMonsters[i].Hp > 0) break;
+                    if (i == mm.spawnedMonsters.Count - 1)
                     {
-                        targetMonster.Add(target);
+                        isOver = true;
+                        DisplayBattleResult(true);
+                        break;
                     }
                 }
-                if (targetMonster.Count >= 2)
-                {
-                    List<Monster> shuffledList = targetMonster.OrderBy(x => random.Next()).ToList(); // 몬스터리스트 섞어서 렌덤성부여
-                }
-
-                player.LearnedSkills[skillChoice].ActionToMonster(player, targetMonster);
-
-                Console.WriteLine($"{player.LearnedSkills[skillChoice].Name}을(를) 시전!");
-                Thread.Sleep(500);
-                foreach (var target in targetMonster)
-                {
-                    if (!target.AliveMonster())
-                    {
-                        player.UpdateQuest(target.Name, QUEST_TYPE.KILL_MONSTER);
-                        Console.WriteLine($"{target.Name}이(가) 쓰러졌습니다!");
-                        Console.WriteLine("\nEnter 를 눌러주세요.");
-                        Console.ReadLine();
-                    }
-                }
+                if (isOver) break;
+                if (pm.OwnedPartyMembers.Count > 0) PartyPhase();
+                else EnemyPhase();
             }
-            
-            for (int i = 0; i < mm.spawnedMonsters.Count; i++)
-            {
-                if (mm.spawnedMonsters[i].Hp > 0) break;
-                if (i == mm.spawnedMonsters.Count - 1) DisplayBattleResult(true);
-            }
-            if (pm.OwnedPartyMembers.Count > 0) PartyPhase();
-            else EnemyPhase();
+
         }
         static void PartyPhase()
         {
-            foreach (var partyMem in pm.OwnedPartyMembers)
+            bool isOver = false;
+            for (int j = 0; j < pm.OwnedPartyMembers.Count; j++)
             {
+                PartyMember partyMem = pm.OwnedPartyMembers[j];
                 Console.Clear();
                 Console.WriteLine("Battle!!\n");
                 Console.WriteLine($"[{partyMem.Name}의 턴!]\n");
@@ -967,7 +985,7 @@ namespace MyApp
                     case 1:
                         Console.WriteLine("대상을 선택해주세요.");
                         int monsterIdx = CheckInput(1, mm.spawnedMonsters.Count) - 1;
-                        
+
                         Monster targetMonster = mm.spawnedMonsters[monsterIdx];
                         {
                             if (!targetMonster.AliveMonster()) //타격 전 생존 확인 
@@ -975,7 +993,7 @@ namespace MyApp
                                 Console.WriteLine("이미 죽은 대상입니다");
                                 Console.WriteLine("Enter 를 눌러주세요.");
                                 Console.ReadLine();
-                                PartyPhase();
+                                j--;
                             }
                             else
                             {
@@ -990,7 +1008,7 @@ namespace MyApp
                                 {
                                     Console.WriteLine($"{targetMonster.Name}을 공격!");
                                     float Atkf = partyMem.Atk;
-                                    int total = partyMem.Damage(Atkf,partyMem.Def);
+                                    int total = partyMem.Damage(Atkf, partyMem.Def);
                                     targetMonster.DamageByPlayer(total);
                                     Console.WriteLine("Enter 를 눌러주세요.");
                                     Console.ReadLine();
@@ -1003,11 +1021,17 @@ namespace MyApp
                                     Console.ReadLine();
                                 }
                             }
+                            break;
                         }
                         for (int i = 0; i < mm.spawnedMonsters.Count; i++)
                         {
                             if (mm.spawnedMonsters[i].Hp > 0) break;
-                            if (i == mm.spawnedMonsters.Count - 1) DisplayBattleResult(true);
+                            if (i == mm.spawnedMonsters.Count - 1)
+                            {
+                                isOver = true;
+                                DisplayBattleResult(true);
+                                break;
+                            }
                         }
                         break;
                     case 2:
@@ -1038,7 +1062,7 @@ namespace MyApp
                                     Console.WriteLine("이미 죽은 대상입니다");
                                     Console.WriteLine("Enter 를 눌러주세요.");
                                     Console.ReadLine();
-                                    PartyPhase();
+                                    j--;
                                 }
                                 else
                                 {
@@ -1083,7 +1107,7 @@ namespace MyApp
                         {
                             List<Character> target = new List<Character>();
                             target.Add(player);
-                            
+
                             foreach (var targetCharacter in pm.OwnedPartyMembers)
                             {
                                 if (targetCharacter.CurHp > 0)
@@ -1098,7 +1122,7 @@ namespace MyApp
                                 Thread.Sleep(500);
                             }
                         }
-                        break;
+                    break;
                 }
             }
             EnemyPhase();
@@ -1116,9 +1140,9 @@ namespace MyApp
                 int expUp = 0;
                 int getGold = 0;
                 player.ResetStat();
-                if(pm.OwnedPartyMembers.Count>0)
+                if (pm.OwnedPartyMembers.Count > 0)
                 {
-                    for(int i = 0; i< pm.OwnedPartyMembers.Count; i++)
+                    for (int i = 0; i < pm.OwnedPartyMembers.Count; i++)
                     {
                         pm.OwnedPartyMembers[i].ResetStat();
                     }
@@ -1175,34 +1199,37 @@ namespace MyApp
                 Console.WriteLine();
                 CheckInput(0, 0);
             }
-            DisplayMainUI();
+            return;
         }
         #endregion
         #region 퀘스트
         static void DisplayQuestUI()
         {
+            while(true)
+            {
             Console.Clear();
             Console.WriteLine(@"
 ╔══════════════╗
 ║    퀘스트    ║
 ╚══════════════╝
 ");
-            for (int i = 0; i < QuestDb.Count; ++i)
-            {
-                Console.WriteLine($"{i + 1}. {QuestDb[i].Name}");
+                for (int i = 0; i < QuestDb.Count; ++i)
+                {
+                    Console.WriteLine($"{i + 1}. {QuestDb[i].Name}");
 
+                }
+                Console.WriteLine("\n0. 나가기");
+                Console.WriteLine("\n원하시는 행동을 선택해주세요.");
+                int result = CheckInput(0, QuestDb.Count);
+                switch (result)
+                {
+                    case 0: return;
+                    default:
+                        DisplaySelectedQuest(--result);
+                        break;
+                }
             }
-            Console.WriteLine("\n0. 나가기");
-            Console.WriteLine("\n원하시는 행동을 선택해주세요.");
-            int result = CheckInput(0, QuestDb.Count);
-            switch (result)
-            {
-                case 0: DisplayMainUI(); break;//return;
-                default:
-                    DisplaySelectedQuest(--result);
-                    break;
-            }
-            DisplayMainUI();
+            
         }
 
         static void DisplaySelectedQuest(int index)
@@ -1263,20 +1290,26 @@ namespace MyApp
 
         static void SavePlayerData()
         {
-            string jsonString = JsonSerializer.Serialize(player, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(playerDataPath, jsonString);
+            string jsonPlayer = JsonSerializer.Serialize(player, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(playerDataPath, jsonPlayer);
+            //퀘스트 리스트 변환 후 json 저장
+            List<QuestDTO> dtos = QuestDb.Select(QuestDTOConverter.ToDTO).ToList();
 
-            string jsonString2 = JsonSerializer.Serialize(itemDb, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(itemDBPath, jsonString2);
+            string jsonQuest = JsonSerializer.Serialize(dtos, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText("quests.json", jsonQuest);
+
+            //string jsonString2 = JsonSerializer.Serialize(itemDb, new JsonSerializerOptions { WriteIndented = true });
+            //File.WriteAllText(itemDBPath, jsonString2);
         }
         static void LoadPlayerData()
         {
             if (File.Exists(playerDataPath))
             {
                 //json 파일 읽어오기
-                string json = File.ReadAllText(playerDataPath);
-                player = (JsonSerializer.Deserialize<Player>(json));
+                string jsonTemp = File.ReadAllText(playerDataPath);
+                player = (JsonSerializer.Deserialize<Player>(jsonTemp));
                 player.LoadItemList(itemDb);
+                player.InitPlayerQuest(QuestDb);
             }
             else
             {
@@ -1289,78 +1322,77 @@ namespace MyApp
         #region 파티원
         static void DisplayRecruitPartyMember()
         {
-            Console.Clear();
+            while(true)
+            {
+                Console.Clear();
             Console.WriteLine(@"
 ╔══════════════╗
 ║ 파티원 모집  ║
 ╚══════════════╝
 ");
-            
-            for (int i = 1; i< pm.PartyMembers.Count + 1;i++)
-            {
-                Console.WriteLine($"{i}. {pm.PartyMembers[i-1].Name} ({pm.PartyMembers[i - 1].Job})");
-            }
-            
-            Console.WriteLine();
-            Console.Write("[현재 파티원]");
-            Console.WriteLine();
-            if (pm.OwnedPartyMembers.Count == 0)
-            {
-                Console.WriteLine("현재 파티원은 없습니다.");
-            }
-            else
-            {
-                for (int i = 1; i < pm.OwnedPartyMembers.Count + 1; i++)
+
+                for (int i = 1; i < pm.PartyMembers.Count + 1; i++)
                 {
-                    Console.WriteLine($"{i}. {pm.OwnedPartyMembers[i - 1].Name} ({pm.OwnedPartyMembers[i - 1].Job})");
+                    Console.WriteLine($"{i}. {pm.PartyMembers[i - 1].Name} ({pm.PartyMembers[i - 1].Job})");
+                }
+
+                Console.WriteLine();
+                Console.Write("[현재 파티원]");
+                Console.WriteLine();
+                if (pm.OwnedPartyMembers.Count == 0)
+                {
+                    Console.WriteLine("현재 파티원은 없습니다.");
+                }
+                else
+                {
+                    for (int i = 1; i < pm.OwnedPartyMembers.Count + 1; i++)
+                    {
+                        Console.WriteLine($"{i}. {pm.OwnedPartyMembers[i - 1].Name} ({pm.OwnedPartyMembers[i - 1].Job})");
+                    }
+                }
+                Console.WriteLine();
+                Console.WriteLine("1. 파티원 모집");
+                Console.WriteLine("2. 파티원 방출");
+                Console.WriteLine("0. 나가기");
+                Console.WriteLine();
+                int result = CheckInput(0, 2);
+                Console.WriteLine();
+                switch (result)
+                {
+                    case 1:
+                        if (pm.OwnedPartyMembers.Count > 1)
+                        {
+                            Console.WriteLine("파티원은 최대 2명까지 보유할 수 있습니다.");
+                            Thread.Sleep(500);
+                        }
+                        else
+                        {
+                            Console.WriteLine("모집하고자 하는 파티원을 선택해주세요.");
+                            int userChoice = CheckInput(1, pm.PartyMembers.Count) - 1;
+                            pm.OwnedPartyMembers.Add(pm.PartyMembers[userChoice]);
+                            pm.PartyMembers.Remove(pm.PartyMembers[userChoice]);
+
+                        }
+                        break;
+                    case 2:
+                        if (pm.OwnedPartyMembers.Count == 0)
+                        {
+                            Console.WriteLine("파티원이 없습니다.");
+                            Console.WriteLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("방출하고자 하는 파티원을 선택해주세요.");
+                            int userChoice = CheckInput(1, pm.OwnedPartyMembers.Count) - 1;
+                            pm.PartyMembers.Add(pm.OwnedPartyMembers[userChoice]);
+                            pm.OwnedPartyMembers.Remove(pm.OwnedPartyMembers[userChoice]);
+
+                        }
+                        break;
+                    case 0:
+                        return;
                 }
             }
-            Console.WriteLine();
-            Console.WriteLine("1. 파티원 모집");
-            Console.WriteLine("2. 파티원 방출");
-            Console.WriteLine("0. 나가기");
-            Console.WriteLine();
-            int result = CheckInput(0, 2);
-            Console.WriteLine();
-            switch (result)
-            {
-                case 1:
-                    if (pm.OwnedPartyMembers.Count > 1)
-                    {
-                        Console.WriteLine("파티원은 최대 2명까지 보유할 수 있습니다.");
-                        Thread.Sleep(500);
-                    }
-                    else
-                    {
-                        Console.WriteLine("모집하고자 하는 파티원을 선택해주세요.");
-                        int userChoice = CheckInput(1, pm.PartyMembers.Count) - 1;
-                        pm.OwnedPartyMembers.Add(pm.PartyMembers[userChoice]);
-                        pm.PartyMembers.Remove(pm.PartyMembers[userChoice]);
-
-                    }
-                    DisplayRecruitPartyMember();
-                    break;
-                case 2:
-                    if(pm.OwnedPartyMembers.Count == 0)
-                    {
-                        Console.WriteLine("파티원이 없습니다.");
-                        Console.WriteLine();
-                    }
-                    else
-                    {
-                        Console.WriteLine("방출하고자 하는 파티원을 선택해주세요.");
-                        int userChoice = CheckInput(1,pm.OwnedPartyMembers.Count) - 1;
-                        pm.PartyMembers.Add(pm.OwnedPartyMembers[userChoice]);
-                        pm.OwnedPartyMembers.Remove(pm.OwnedPartyMembers[userChoice]);
-                        
-                    }
-                    DisplayRecruitPartyMember();
-                    break;
-                case 0:
-                    DisplayMainUI();
-                    break;
-            }
-
         }
         #endregion
         static int CheckInput(int min, int max)

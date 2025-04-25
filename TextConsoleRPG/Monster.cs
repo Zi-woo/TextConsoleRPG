@@ -25,6 +25,14 @@ namespace TextConsoleRPG
             Exp = exp;
             DropItemList = dropItemList;
         }
+
+        private static Random random = new Random();
+        public void MonsterInfoText()
+        {
+            Console.WriteLine($"Lv.{Level} {Name} HP {Hp}");
+        }
+
+
         
         public bool AliveMonster() //몬스터 생존 확인 
         {
@@ -39,12 +47,13 @@ namespace TextConsoleRPG
         }
         public Item ItemDrop()
         {
-            Random random = new Random();
-            int chance = random.Next(0, 100);
-            if (chance > 30 && DropItemList.Count>0)
+            foreach (var item in DropItemList)
             {
-                int index = random.Next(DropItemList.Count);
-                return DropItemList[index];
+                float roll = (float)random.NextDouble(); // 0.0 ~ 1.0 사이의 랜덤값입니다
+                if (roll <= item.ItemDropRate)
+                {
+                    return item;
+                }
             }
             return null;
         }
