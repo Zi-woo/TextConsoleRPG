@@ -44,6 +44,11 @@ namespace TextConsoleRPG
         public int PreDgnMp { get; set; }
         [JsonInclude]
         public int MaxMp { get; private set; }
+        [JsonInclude]
+        public float CriticalChance { get; set; }
+        [JsonInclude]
+        public float EvasionChance { get; set; }
+
 
         [JsonInclude]
         public int ExtraAtk { get; private set; }
@@ -72,7 +77,7 @@ namespace TextConsoleRPG
             }
         }
         public Character() { }
-        public Character(int level, string name, string job, int atk, int def, int matk, int hp, int mp, List<Skills> learnedSkills)
+        public Character(int level, string name, string job, int atk, int def, int matk, int hp, int mp, float cc, float ec, List<Skills> learnedSkills)
         {
             Level = level;
             Exp = 0;
@@ -90,6 +95,8 @@ namespace TextConsoleRPG
             LearnedSkills = learnedSkills;
             originalAtk = atk;
             originalMatk = matk;
+            CriticalChance = cc;
+            EvasionChance = ec;
         }
 
         public void LoadItemList(List<Item> items)
@@ -216,34 +223,37 @@ namespace TextConsoleRPG
             Console.WriteLine($"{damage} 데미지를 입었다!\n");
         }
 
-        public int Damage(float Atkf, int DefI) //데미지 계산
+        public int Damage(float Atkf, int DefI, float CC) //데미지 계산
         {
-            Random random = new Random();//치명타
-            int C = random.Next(1, 101);
-            bool critical = false;
-            if (C <= 15)
-                critical = true;
+            Random random = new Random();
 
+            // 치명타 판정
+            double roll = random.NextDouble();
+
+            // 공격력 변동
             int d = (int)Math.Ceiling(Atkf * 0.1);
             float randomAtk = random.Next(-d, d + 1);
             float damage = Atkf + randomAtk;
 
-            int totaldamage;
-            if (critical)
+            // 치명타 적용
+            if (roll < CC)
             {
-                damage = damage * 1.6f;
-                Console.Write($"치명타! ");
-                totaldamage = (int)damage - DefI;
-                if (totaldamage < 0) totaldamage = 0;
-                return totaldamage;
+                damage *= 1.6f;
+                Console.Write("치명타! ");
+            }
 
-            }
-            else
-            {
-                totaldamage = (int)damage - DefI;
-                if (totaldamage < 0) totaldamage = 0;
-                return totaldamage;
-            }
+            int totalDamage = (int)damage - DefI;
+            if (totalDamage < 0) totalDamage = 0;
+
+            return totalDamage;
+
+        }
+        public bool Evasion(double ec) //회피
+        {
+            Random random = new Random();
+            double roll = random.NextDouble();
+
+            return roll < ec;
         }
         public void ReceivedDamage(int damage)
         {
@@ -260,15 +270,6 @@ namespace TextConsoleRPG
             return (int)((Matk + ExtraMatk) * damageMul);
         }
 
-        public bool Evasion() //회피
-        {
-            Random random = new Random();
-            int E = random.Next(1, 101);
-            bool evasion = false;
-            if (E <= 10)
-                evasion = true;
-            return evasion;
-        }
         public void SetAtk(int atk)
         {
             Atk = atk;
