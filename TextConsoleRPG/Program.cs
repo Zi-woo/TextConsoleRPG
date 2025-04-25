@@ -328,8 +328,11 @@ namespace MyApp
             Console.WriteLine("6. 전투 시작");
             Console.WriteLine("7. 퀘스트");
             Console.WriteLine("8. 파티원 모집");
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("9. 저장");
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("0. 게임 종료");
+            Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -387,7 +390,9 @@ namespace MyApp
             player.DisplayCharacterInfo();
 
             Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("0. 나가기");
+            Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -415,7 +420,9 @@ namespace MyApp
 
                 Console.WriteLine();
                 Console.WriteLine("1. 장착 관리");
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("0. 나가기");
+                Console.ResetColor();
                 Console.WriteLine();
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -446,7 +453,9 @@ namespace MyApp
                 player.DisplayInventory(true);
 
                 Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("0. 나가기");
+                Console.ResetColor();
                 Console.WriteLine();
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -499,7 +508,9 @@ namespace MyApp
 
                 Console.WriteLine();
                 Console.WriteLine("1. 아이템 구매");
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("0. 나가기");
+                Console.ResetColor();
                 Console.WriteLine();
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -546,7 +557,9 @@ namespace MyApp
                 }
 
                 Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("0. 나가기");
+                Console.ResetColor();
                 Console.WriteLine();
                 Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -608,7 +621,9 @@ namespace MyApp
                 Console.WriteLine("휴식하기");
                 Console.WriteLine($"{restcost} G를 내면 체력을 회복할 수 있습니다.(보유골드 : {player.Gold}G)\n");
                 Console.WriteLine("1. 휴식하기");
-                Console.WriteLine("0. 나가기\n");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("0. 나가기");
+                Console.ResetColor();
                 Console.WriteLine("원하시는 행동을입력해주세요.");
 
                 int result = CheckInput(0, 1);
@@ -636,7 +651,9 @@ namespace MyApp
                 Console.WriteLine($"포션을 사용하면 체력을 30 회복 할 수 있습니다. (남은 포션 : {player.Potion} )");
                 Console.WriteLine();
                 Console.WriteLine("1. 사용하기");
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("0. 나가기");
+                Console.ResetColor();
                 Console.WriteLine();
                 int result = CheckInput(0, 1);
                 switch (result)
@@ -667,7 +684,9 @@ namespace MyApp
                 {
                     Console.WriteLine($"{i}. 스테이지 {i}");
                 }
-                Console.WriteLine("\n0. 나가기");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("0. 나가기");
+                Console.ResetColor();
                 Console.WriteLine("\n원하시는 스테이지를 입력해주세요.");
                 int result = CheckInput(0, stage.TopStage);
                 switch (result)
@@ -782,8 +801,10 @@ namespace MyApp
                 //몬스터 출력
                 mm.MonsterInfoText();
               
-            Console.WriteLine();      
-            Console.WriteLine("0. 취소");
+            Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("0. 취소");
+                Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
@@ -1152,9 +1173,15 @@ namespace MyApp
 
                 Console.WriteLine("Battle!! - Result");
                 Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Victory");
+                Console.ResetColor();
                 Console.WriteLine();
-                Console.WriteLine($"던전에서 몬스터 {mm.spawnedMonsters.Count}마리를 잡았습니다.");
+                Console.Write("던전에서 몬스터 ");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write(mm.spawnedMonsters.Count);
+                Console.ResetColor();
+                Console.WriteLine( "마리를 잡았습니다.");
                 Console.WriteLine();
                 foreach (var monster in mm.spawnedMonsters)
                 {
@@ -1190,7 +1217,9 @@ namespace MyApp
             {
                 Console.WriteLine("Battle!! - Result");
                 Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("You Lose");
+                Console.ResetColor();
                 Console.WriteLine();
                 Console.WriteLine($"Lv. {player.Level} {player.Name}");
                 Console.WriteLine($"HP {player.PreDgnHp} -> 0");
@@ -1218,7 +1247,9 @@ namespace MyApp
                     Console.WriteLine($"{i + 1}. {QuestDb[i].Name}");
 
                 }
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\n0. 나가기");
+                Console.ResetColor();
                 Console.WriteLine("\n원하시는 행동을 선택해주세요.");
                 int result = CheckInput(0, QuestDb.Count);
                 switch (result)
@@ -1250,7 +1281,9 @@ namespace MyApp
         static void DisplayAcceptQuest(int index)
         {
             Console.WriteLine("\n1. 수락");
-            Console.WriteLine("2. 돌아가기\n");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n0. 나가기");
+            Console.ResetColor();
             Console.WriteLine("원하시는 행동을 선택해주세요.");
             int result = CheckInput(1, 2);
             switch (result)
@@ -1270,7 +1303,9 @@ namespace MyApp
                 Console.WriteLine($"\n{i}. 보상 받기");
                 ++i;
             }
-            Console.WriteLine($"{i}. 돌아가기\n");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\n0. 나가기");
+            Console.ResetColor();
             Console.WriteLine("원하시는 행동을 선택해주세요.");
             int result = CheckInput(1, i);
             if (i == 1)
@@ -1353,7 +1388,9 @@ namespace MyApp
                 Console.WriteLine();
                 Console.WriteLine("1. 파티원 모집");
                 Console.WriteLine("2. 파티원 방출");
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("0. 나가기");
+                Console.ResetColor();
                 Console.WriteLine();
                 int result = CheckInput(0, 2);
                 Console.WriteLine();
