@@ -263,7 +263,7 @@ namespace TextConsoleRPG
         }
         public int SkillDamageAttack(float damageMul)
         {
-            return (int)((Atk+ExtraAtk)* damageMul);
+            return (int)((Atk + ExtraAtk)* damageMul);
         }
         public int SkillDamageMagic(float damageMul)
         {

@@ -716,36 +716,40 @@ namespace MyApp
         }
         static void DisplayBattleUI()
         {
-            Console.Clear();
-            Console.WriteLine($"스테이지{stage.CurStage}\n");
-            Console.WriteLine($"[{player.Name}의 턴!]\n");
-
-            mm.MonsterInfoText(true);//몬스터 출력
-
-            Console.WriteLine();
-            Console.WriteLine("[내정보]");
-            Console.WriteLine($"Lv.{player.Level} {player.Name}({player.Job})  HP {player.CurHp}/{player.MaxHp}");
-            foreach (var partyMem in pm.OwnedPartyMembers)
+            while (true)
             {
-                Console.WriteLine($"Lv.{partyMem.Level} {partyMem.Name}({partyMem.Job})");
+                Console.Clear();
+                Console.WriteLine($"스테이지{stage.CurStage}\n");
+                Console.WriteLine($"[{player.Name}의 턴!]\n");
+
+                mm.MonsterInfoText(true);//몬스터 출력
+
+                Console.WriteLine();
+                Console.WriteLine("[내정보]");
+                Console.WriteLine($"Lv.{player.Level} {player.Name}({player.Job})  HP {player.CurHp}/{player.MaxHp}");
+                foreach (var partyMem in pm.OwnedPartyMembers)
+                {
+                    Console.WriteLine($"Lv.{partyMem.Level} {partyMem.Name}({partyMem.Job})");
+                }
+                Console.WriteLine();
+                Console.WriteLine("1. 공격");
+                Console.WriteLine("2. 스킬");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
+
+
+                int result = CheckInput(1, 2);
+                switch (result)
+                {
+                    case 1:
+                        if (PlayerPhaseAttack()) return;
+                        break;
+                    case 2:
+                        if (PlayerPhaseSkill()) return;
+                        break;
+                }
             }
-            Console.WriteLine();
-            Console.WriteLine("1. 공격");
-            Console.WriteLine("2. 스킬");
-            Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
             
-
-            int result = CheckInput(1, 2);
-            switch (result)
-            {
-                case 1:
-                    PlayerPhaseAttack();
-                    break;
-                case 2:
-                    PlayerPhaseSkill();
-                    break;
-            }
 
         }
         #endregion
@@ -780,7 +784,7 @@ namespace MyApp
                 {
                     player.SetCurHp(0);
                     DisplayBattleResult(false);
-                    break;
+                    return;
                 }
             }
             Console.WriteLine($"Lv. {player.Level} {player.Name}");
@@ -790,7 +794,7 @@ namespace MyApp
             return;
         }
         
-        static void PlayerPhaseAttack()
+        static bool PlayerPhaseAttack()
         {
             bool isOver = false;
             while (true)
@@ -814,7 +818,7 @@ namespace MyApp
                 switch (result)
                 {
                     case 0:
-                        return;
+                        return false;
                     default:
                         int MonsterIdx = result - 1;
                         Monster targetMonster = mm.spawnedMonsters[MonsterIdx];
@@ -860,12 +864,20 @@ namespace MyApp
                                     {
                                         isOver = true;
                                         DisplayBattleResult(true);
-                                        break;
+                                        return true;
                                     }
                                 }
                                 if (isOver) break;
-                                if (pm.OwnedPartyMembers.Count > 0) PartyPhase();
-                                else EnemyPhase();
+                                if (pm.OwnedPartyMembers.Count > 0)
+                                {
+                                    PartyPhase();
+                                    return false;
+                                }
+                                else
+                                {
+                                    EnemyPhase();
+                                    return false;
+                                }
                             }
                         }
                         break;
@@ -873,7 +885,7 @@ namespace MyApp
             }
 
         }
-        static void PlayerPhaseSkill()
+        static bool PlayerPhaseSkill()
         {
             bool isOver = false;
             while (true)
@@ -900,7 +912,7 @@ namespace MyApp
 
                 int userChoice = CheckInput(0, player.LearnedSkills.Count);
                 int skillChoice = userChoice - 1;
-                if (userChoice == 0) return;
+                if (userChoice == 0) return false;
                 if (player.LearnedSkills[userChoice - 1].Type == 1)
                 {
                     Console.WriteLine();
@@ -972,16 +984,25 @@ namespace MyApp
                     {
                         isOver = true;
                         DisplayBattleResult(true);
-                        break;
+                        return true;
                     }
                 }
                 if (isOver) break;
-                if (pm.OwnedPartyMembers.Count > 0) PartyPhase();
-                else EnemyPhase();
+                if (pm.OwnedPartyMembers.Count > 0)
+                {
+                    PartyPhase();
+                    return false;
+                }
+                else
+                {
+                    EnemyPhase();
+                    return false;
+                }
             }
+            return false;
 
         }
-        static void PartyPhase()
+        static bool PartyPhase()
         {
             bool isOver = false;
             for (int j = 0; j < pm.OwnedPartyMembers.Count; j++)
@@ -1053,7 +1074,7 @@ namespace MyApp
                             {
                                 isOver = true;
                                 DisplayBattleResult(true);
-                                break;
+                                return true;
                             }
                         }
                         break;
@@ -1071,7 +1092,7 @@ namespace MyApp
 
                         int userChoice = CheckInput(1, partyMem.LearnedSkills.Count);
                         int skillChoice = userChoice - 1;
-                        if (partyMem.LearnedSkills[userChoice - 1].Type == 1)
+                        if (partyMem.LearnedSkills[skillChoice].Type == 1)
                         {
                             Console.WriteLine();
                             Console.WriteLine("대상을 입력하세요.");
@@ -1145,10 +1166,21 @@ namespace MyApp
                                 Thread.Sleep(500);
                             }
                         }
-                    break;
+                        for (int i = 0; i < mm.spawnedMonsters.Count; i++)
+                        {
+                            if (mm.spawnedMonsters[i].Hp > 0) break;
+                            if (i == mm.spawnedMonsters.Count - 1)
+                            {
+                                isOver = true;
+                                DisplayBattleResult(true);
+                                return true;
+                            }
+                        }
+                        break;
                 }
             }
             EnemyPhase();
+            return false;
         }
         #endregion
         #region 전투결과
