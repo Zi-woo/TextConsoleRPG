@@ -19,6 +19,7 @@ namespace MyApp
         private static StageManager stage = new StageManager();
         private static PartyManager pm = new PartyManager();
         private static LevelManager lm = new LevelManager();
+        private static bool isSkillsSet = false;
         public const string playerDataPath = "playerData.json";
         public const string itemDBPath = "items.json";
 
@@ -1249,84 +1250,89 @@ namespace MyApp
         #region 파티원
         static void DisplayRecruitPartyMember()
         {
-            foreach(var partyMem in pm.PartyMembers)
+            if (!isSkillsSet)
             {
-                partyMem.SetSkills(partyMem.Job);
+                foreach (var partyMem in pm.PartyMembers)
+                {
+                    partyMem.SetSkills(partyMem.Job);
+                }
+                isSkillsSet = true;
             }
-            while(true)
-            {
-                Console.Clear();
-            Console.WriteLine(@"
+
+                while (true)
+                {
+                    Console.Clear();
+                    Console.WriteLine(@"
 ╔══════════════╗
 ║ 파티원 모집  ║
 ╚══════════════╝
 ");
 
-                for (int i = 1; i < pm.PartyMembers.Count + 1; i++)
-                {
-                    Console.WriteLine($"{i}. {pm.PartyMembers[i - 1].Name} ({pm.PartyMembers[i - 1].Job})");
-                }
-
-                Console.WriteLine();
-                Console.Write("[현재 파티원]");
-                Console.WriteLine();
-                if (pm.OwnedPartyMembers.Count == 0)
-                {
-                    Console.WriteLine("현재 파티원은 없습니다.");
-                }
-                else
-                {
-                    for (int i = 1; i < pm.OwnedPartyMembers.Count + 1; i++)
+                    for (int i = 1; i < pm.PartyMembers.Count + 1; i++)
                     {
-                        Console.WriteLine($"{i}. {pm.OwnedPartyMembers[i - 1].Name} ({pm.OwnedPartyMembers[i - 1].Job})");
+                        Console.WriteLine($"{i}. {pm.PartyMembers[i - 1].Name} ({pm.PartyMembers[i - 1].Job})");
+                    }
+
+                    Console.WriteLine();
+                    Console.Write("[현재 파티원]");
+                    Console.WriteLine();
+                    if (pm.OwnedPartyMembers.Count == 0)
+                    {
+                        Console.WriteLine("현재 파티원은 없습니다.");
+                    }
+                    else
+                    {
+                        for (int i = 1; i < pm.OwnedPartyMembers.Count + 1; i++)
+                        {
+                            Console.WriteLine($"{i}. {pm.OwnedPartyMembers[i - 1].Name} ({pm.OwnedPartyMembers[i - 1].Job})");
+                        }
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("1. 파티원 모집");
+                    Console.WriteLine("2. 파티원 방출");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("0. 나가기");
+                    Console.ResetColor();
+                    Console.WriteLine();
+                    int result = CheckInput(0, 2);
+                    Console.WriteLine();
+                    switch (result)
+                    {
+                        case 1:
+                            if (pm.OwnedPartyMembers.Count > 1)
+                            {
+                                Console.WriteLine("파티원은 최대 2명까지 보유할 수 있습니다.");
+                                Thread.Sleep(500);
+                            }
+                            else
+                            {
+                                Console.WriteLine("모집하고자 하는 파티원을 선택해주세요.");
+                                int userChoice = CheckInput(1, pm.PartyMembers.Count) - 1;
+                                pm.OwnedPartyMembers.Add(pm.PartyMembers[userChoice]);
+
+                                pm.PartyMembers.Remove(pm.PartyMembers[userChoice]);
+
+                            }
+                            break;
+                        case 2:
+                            if (pm.OwnedPartyMembers.Count == 0)
+                            {
+                                Console.WriteLine("파티원이 없습니다.");
+                                Console.WriteLine();
+                            }
+                            else
+                            {
+                                Console.WriteLine("방출하고자 하는 파티원을 선택해주세요.");
+                                int userChoice = CheckInput(1, pm.OwnedPartyMembers.Count) - 1;
+                                pm.PartyMembers.Add(pm.OwnedPartyMembers[userChoice]);
+                                pm.OwnedPartyMembers.Remove(pm.OwnedPartyMembers[userChoice]);
+
+                            }
+                            break;
+                        case 0:
+                            return;
                     }
                 }
-                Console.WriteLine();
-                Console.WriteLine("1. 파티원 모집");
-                Console.WriteLine("2. 파티원 방출");
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("0. 나가기");
-                Console.ResetColor();
-                Console.WriteLine();
-                int result = CheckInput(0, 2);
-                Console.WriteLine();
-                switch (result)
-                {
-                    case 1:
-                        if (pm.OwnedPartyMembers.Count > 1)
-                        {
-                            Console.WriteLine("파티원은 최대 2명까지 보유할 수 있습니다.");
-                            Thread.Sleep(500);
-                        }
-                        else
-                        {
-                            Console.WriteLine("모집하고자 하는 파티원을 선택해주세요.");
-                            int userChoice = CheckInput(1, pm.PartyMembers.Count) - 1;
-                            pm.OwnedPartyMembers.Add(pm.PartyMembers[userChoice]);
-                            
-                            pm.PartyMembers.Remove(pm.PartyMembers[userChoice]);
-
-                        }
-                        break;
-                    case 2:
-                        if (pm.OwnedPartyMembers.Count == 0)
-                        {
-                            Console.WriteLine("파티원이 없습니다.");
-                            Console.WriteLine();
-                        }
-                        else
-                        {
-                            Console.WriteLine("방출하고자 하는 파티원을 선택해주세요.");
-                            int userChoice = CheckInput(1, pm.OwnedPartyMembers.Count) - 1;
-                            pm.PartyMembers.Add(pm.OwnedPartyMembers[userChoice]);
-                            pm.OwnedPartyMembers.Remove(pm.OwnedPartyMembers[userChoice]);
-
-                        }
-                        break;
-                    case 0:
-                        return;
-                }
-            }
         }
         #endregion
         static int CheckInput(int min, int max)
