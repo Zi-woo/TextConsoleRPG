@@ -744,7 +744,7 @@ namespace MyApp
                                 else //명중
                                 {
                                     Console.WriteLine($"{targetMonster.Name}을 공격!");
-                                    float Atkf = player.Atk;
+                                    float Atkf = player.Atk + player.ExtraAtk;
                                     int total = player.Damage(Atkf, 0/*몬스터 방어력*/);
                                     targetMonster.DamageByPlayer(total);
                                     Console.WriteLine("Enter 를 눌러주세요.");
