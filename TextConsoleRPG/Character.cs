@@ -251,11 +251,11 @@ namespace TextConsoleRPG
         }
         public int SkillDamageAttack(float damageMul)
         {
-            return (int)(Atk * damageMul);
+            return (int)((Atk+ExtraAtk)* damageMul);
         }
         public int SkillDamageMagic(float damageMul)
         {
-            return (int)(Matk * damageMul);
+            return (int)((Matk + ExtraMatk) * damageMul);
         }
 
         public bool Evasion() //회피
