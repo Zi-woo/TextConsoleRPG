@@ -1249,6 +1249,10 @@ namespace MyApp
         #region 파티원
         static void DisplayRecruitPartyMember()
         {
+            foreach(var partyMem in pm.PartyMembers)
+            {
+                partyMem.SetSkills(partyMem.Job);
+            }
             while(true)
             {
                 Console.Clear();
@@ -1299,6 +1303,7 @@ namespace MyApp
                             Console.WriteLine("모집하고자 하는 파티원을 선택해주세요.");
                             int userChoice = CheckInput(1, pm.PartyMembers.Count) - 1;
                             pm.OwnedPartyMembers.Add(pm.PartyMembers[userChoice]);
+                            
                             pm.PartyMembers.Remove(pm.PartyMembers[userChoice]);
 
                         }
