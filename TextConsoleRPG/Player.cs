@@ -9,6 +9,7 @@ namespace TextConsoleRPG
 {
     class Player : Character
     {
+        public Player() { }
         [JsonInclude]
         public int Gold { get; private set; }
         [JsonInclude]

@@ -90,13 +90,13 @@ namespace TextConsoleRPG
             for (int i = 0; i < spawnedMonsters.Count; i++)
             {
                 Monster m = spawnedMonsters[i];
-                string status = m.AliveMonster() ? $"(HP: {m.Hp})" : "(Dead)";
+                string status = m.AliveMonster() ? $"HP {m.Hp} [공격력 {m.Atk}]" : "(Dead)";
                 string index = Index ? $"LV.{m.Level}" : $"{i + 1}.";
                 if (!m.AliveMonster())
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                 }
-                Console.WriteLine($"{index} {m.Name} HP: {status}");
+                Console.WriteLine($"{index} {m.Name} {status}");
                 Console.ResetColor();
             }
         }

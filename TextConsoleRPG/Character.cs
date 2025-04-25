@@ -112,14 +112,16 @@ namespace TextConsoleRPG
 
         public void DisplayCharacterInfo()
         {
-            Console.WriteLine($"Lv. {Level:D2}");
-            Console.WriteLine($"{Name} {{ {Job} }}");
-            Console.WriteLine(ExtraAtk == 0 ? $"공격력 : {Atk}" : $"공격력 : {Atk + ExtraAtk} (+{ExtraAtk})");
-            Console.WriteLine(ExtraDef == 0 ? $"방어력 : {Def}" : $"방어력 : {Def + ExtraDef} (+{ExtraDef})");
-            Console.WriteLine(ExtraDef == 0 ? $"마법공격력 : {Matk}" : $"마법공격력 : {Matk + ExtraMatk} (+{ExtraMatk})");
-            Console.WriteLine($"HP : {CurHp}/{MaxHp}");
-            Console.WriteLine($"MP : {CurMp}/{MaxMp}");
+            Console.WriteLine("╔═══════════════════════╗");
+            Console.WriteLine($"  Lv. {Level:D2}");
+            Console.WriteLine($"  {Name} {{ {Job} }}");
+            Console.WriteLine(ExtraAtk == 0 ? $"  공격력 : {Atk}" : $"  공격력 : {Atk + ExtraAtk} (+{ExtraAtk})");
+            Console.WriteLine(ExtraDef == 0 ? $"  방어력 : {Def}" : $"  방어력 : {Def + ExtraDef} (+{ExtraDef})");
+            Console.WriteLine(ExtraDef == 0 ? $"  마법공격력 : {Matk}" : $"  마법공격력 : {Matk + ExtraMatk} (+{ExtraMatk})");
+            Console.WriteLine($"  HP : {CurHp}/{MaxHp}");
+            Console.WriteLine($"  MP : {CurMp}/{MaxMp}");
             // Console.WriteLine($"Gold : {Gold} G");
+            Console.WriteLine("╚═══════════════════════╝");
         }
 
         public void DisplayInventory(bool showIdx)
@@ -211,7 +213,7 @@ namespace TextConsoleRPG
         {
             CurHp -= damage;
             if (CurHp < 0) CurHp = 0;
-            Console.WriteLine($"{damage} 데미지를 입었다!");
+            Console.WriteLine($"{damage} 데미지를 입었다!\n");
         }
 
         public int Damage(float Atkf, int DefI) //데미지 계산
@@ -230,7 +232,7 @@ namespace TextConsoleRPG
             if (critical)
             {
                 damage = damage * 1.6f;
-                Console.WriteLine($"치명타");
+                Console.Write($"치명타! ");
                 totaldamage = (int)damage - DefI;
                 if (totaldamage < 0) totaldamage = 0;
                 return totaldamage;
