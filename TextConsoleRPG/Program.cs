@@ -570,6 +570,7 @@ namespace MyApp
             mm = new MonsterManager();
             mm.SpawnRandomMonster(stage.CurStage);
             player.PreDgnHp = player.CurHp;
+            player.CurMp = player.MaxMp;
             DisplayBattleUI();
         }
         static void DisplayBattleUI()
@@ -584,7 +585,7 @@ namespace MyApp
 
                 Console.WriteLine();
                 Console.WriteLine("[내정보]");
-                Console.WriteLine($"Lv.{player.Level} {player.Name}({player.Job})  HP {player.CurHp}/{player.MaxHp}");
+                Console.WriteLine($"Lv.{player.Level} {player.Name}({player.Job})  HP {player.CurHp}/{player.MaxHp} MP {player.CurMp}/{player.MaxMp}" );
                 foreach (var partyMem in pm.OwnedPartyMembers)
                 {
                     Console.WriteLine($"Lv.{partyMem.Level} {partyMem.Name}({partyMem.Job})");
