@@ -914,6 +914,7 @@ namespace MyApp
 
                                 if (!targetMonster.AliveMonster()) //타격 후 생존 확인 
                                 {
+                                    player.UpdateQuest(targetMonster.Name, QUEST_TYPE.KILL_MONSTER);
                                     Console.WriteLine($"{targetMonster.Name}이(가) 쓰러졌습니다!");
                                     Console.WriteLine("\nEnter 를 눌러주세요.");
                                     Console.ReadLine();
@@ -969,6 +970,7 @@ namespace MyApp
                                     Thread.Sleep(500);
                                     if (!target[0].AliveMonster())
                                     {
+                                        player.UpdateQuest(target[0].Name, QUEST_TYPE.KILL_MONSTER);
                                         Console.WriteLine($"{target[0].Name}이(가) 쓰러졌습니다!");
                                         Console.WriteLine("\nEnter 를 눌러주세요.");
                                         Console.ReadLine();
