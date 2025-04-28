@@ -20,8 +20,9 @@ namespace MyApp
         private static PartyManager pm = new PartyManager();
         private static LevelManager lm = new LevelManager();
         private static bool isSkillsSet = false;
-        public const string playerDataPath = "playerData.json";
-        public const string itemDBPath = "items.json";
+        public const string playerDataPath = "../../../../playerData.json";
+        public const string itemDBPath = "../../../../items.json";
+        public const string questPath = "../../../../quests.json";
 
         static void Main(string[] args)
         {
@@ -73,7 +74,7 @@ namespace MyApp
                 StartScreen();
             }
             //퀘스트 불러오기 테스트 코드
-            string json = File.ReadAllText("quests.json");
+            string json = File.ReadAllText(questPath);
             List<QuestDTO> dtos = JsonSerializer.Deserialize<List<QuestDTO>>(json);
 
             QuestDb = dtos.Select(d => QuestDTOConverter.FromDTO(d, itemDb)).ToList();
