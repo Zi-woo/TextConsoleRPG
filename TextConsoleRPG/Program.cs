@@ -53,7 +53,7 @@ namespace MyApp
 
 
 
-              원하시는 행동을 입력해주세요."); 
+              원하시는 행동을 입력해주세요.");
             Console.ResetColor();
             int C = Console.CursorTop;
             Console.SetCursorPosition(14, C);
@@ -130,7 +130,7 @@ namespace MyApp
              
 ");
             int Cut = Console.CursorTop;
-            Console.SetCursorPosition(20, Cut-1);
+            Console.SetCursorPosition(20, Cut - 1);
             string name = Console.ReadLine();
             return name;
         }
@@ -146,7 +146,7 @@ namespace MyApp
    2. 🔮 마법사 - 
    3. 🏹 궁수   - 
    4. 🗡  도적   - 
-"); 
+");
             Console.Write("\t직업을 선택 하세요: ");
             int result = CheckInput(1, 4);
 
@@ -344,7 +344,7 @@ namespace MyApp
             while (true)
             {
                 Console.Clear();
-            Console.WriteLine(@"
+                Console.WriteLine(@"
 ╔════════════╗
 ║    상점    ║
 ╚════════════╝
@@ -469,8 +469,8 @@ namespace MyApp
             int restcost = 500;
             while (true)
             {
-            Console.Clear();
-            Console.WriteLine(@"
+                Console.Clear();
+                Console.WriteLine(@"
 ╔══════════════╗
 ║     휴식     ║
 ╚══════════════╝
@@ -531,8 +531,8 @@ namespace MyApp
         {
             while (true)
             {
-            Console.Clear();
-            Console.WriteLine(@"
+                Console.Clear();
+                Console.WriteLine(@"
 ╔══════════════╗
 ║   던전 입구  ║
 ╚══════════════╝
@@ -607,7 +607,7 @@ namespace MyApp
                         break;
                 }
             }
-            
+
 
         }
         #endregion
@@ -651,7 +651,7 @@ namespace MyApp
             Console.ReadLine();
             return false;
         }
-        
+
         static bool PlayerPhaseAttack()
         {
             bool isOver = false;
@@ -663,13 +663,13 @@ namespace MyApp
                 Console.WriteLine();
                 //몬스터 출력
                 mm.MonsterInfoText();
-              
-            Console.WriteLine();
+
+                Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("0. 취소");
                 Console.ResetColor();
-            Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
+                Console.WriteLine();
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
 
                 int result = CheckInput(0, mm.spawnedMonsters.Count);//몬스터수에 따른 입력값 
 
@@ -689,7 +689,7 @@ namespace MyApp
                                 break;
                             }
                             else
-                            {                             
+                            {
                                 bool evasion = player.Evasion(0.1);
                                 if (evasion) //회피
                                 {
@@ -1020,17 +1020,17 @@ namespace MyApp
                                 Thread.Sleep(500);
                             }
                         }
-                        for (int i = 0; i < mm.spawnedMonsters.Count; i++)
-                        {
-                            if (mm.spawnedMonsters[i].Hp > 0) break;
-                            if (i == mm.spawnedMonsters.Count - 1)
-                            {
-                                isOver = true;
-                                DisplayBattleResult(true);
-                                return true;
-                            }
-                        }
                         break;
+                }
+                for (int i = 0; i < mm.spawnedMonsters.Count; i++)
+                {
+                    if (mm.spawnedMonsters[i].Hp > 0) break;
+                    if (i == mm.spawnedMonsters.Count - 1)
+                    {
+                        isOver = true;
+                        DisplayBattleResult(true);
+                        return true;
+                    }
                 }
             }
             return EnemyPhase();
@@ -1068,7 +1068,7 @@ namespace MyApp
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write(mm.spawnedMonsters.Count);
                 Console.ResetColor();
-                Console.WriteLine( "마리를 잡았습니다.");
+                Console.WriteLine("마리를 잡았습니다.");
                 Console.WriteLine();
                 foreach (var monster in mm.spawnedMonsters)
                 {
@@ -1121,10 +1121,10 @@ namespace MyApp
         #region 퀘스트
         static void DisplayQuestUI()
         {
-            while(true)
+            while (true)
             {
-            Console.Clear();
-            Console.WriteLine(@"
+                Console.Clear();
+                Console.WriteLine(@"
 ╔══════════════╗
 ║    퀘스트    ║
 ╚══════════════╝
@@ -1147,7 +1147,7 @@ namespace MyApp
                         break;
                 }
             }
-            
+
         }
 
         static void DisplaySelectedQuest(int index)
@@ -1254,80 +1254,80 @@ namespace MyApp
                 isSkillsSet = true;
             }
 
-                while (true)
-                {
-                    Console.Clear();
-                    Console.WriteLine(@"
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine(@"
 ╔══════════════╗
 ║ 파티원 모집  ║
 ╚══════════════╝
 ");
 
-                    for (int i = 1; i < pm.PartyMembers.Count + 1; i++)
-                    {
-                        Console.WriteLine($"{i}. {pm.PartyMembers[i - 1].Name} ({pm.PartyMembers[i - 1].Job})");
-                    }
+                for (int i = 1; i < pm.PartyMembers.Count + 1; i++)
+                {
+                    Console.WriteLine($"{i}. {pm.PartyMembers[i - 1].Name} ({pm.PartyMembers[i - 1].Job})");
+                }
 
-                    Console.WriteLine();
-                    Console.Write("[현재 파티원]");
-                    Console.WriteLine();
-                    if (pm.OwnedPartyMembers.Count == 0)
+                Console.WriteLine();
+                Console.Write("[현재 파티원]");
+                Console.WriteLine();
+                if (pm.OwnedPartyMembers.Count == 0)
+                {
+                    Console.WriteLine("현재 파티원은 없습니다.");
+                }
+                else
+                {
+                    for (int i = 1; i < pm.OwnedPartyMembers.Count + 1; i++)
                     {
-                        Console.WriteLine("현재 파티원은 없습니다.");
-                    }
-                    else
-                    {
-                        for (int i = 1; i < pm.OwnedPartyMembers.Count + 1; i++)
-                        {
-                            Console.WriteLine($"{i}. {pm.OwnedPartyMembers[i - 1].Name} ({pm.OwnedPartyMembers[i - 1].Job})");
-                        }
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine("1. 파티원 모집");
-                    Console.WriteLine("2. 파티원 방출");
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("0. 나가기");
-                    Console.ResetColor();
-                    Console.WriteLine();
-                    int result = CheckInput(0, 2);
-                    Console.WriteLine();
-                    switch (result)
-                    {
-                        case 1:
-                            if (pm.OwnedPartyMembers.Count > 1)
-                            {
-                                Console.WriteLine("파티원은 최대 2명까지 보유할 수 있습니다.");
-                                Thread.Sleep(500);
-                            }
-                            else
-                            {
-                                Console.WriteLine("모집하고자 하는 파티원을 선택해주세요.");
-                                int userChoice = CheckInput(1, pm.PartyMembers.Count) - 1;
-                                pm.OwnedPartyMembers.Add(pm.PartyMembers[userChoice]);
-
-                                pm.PartyMembers.Remove(pm.PartyMembers[userChoice]);
-
-                            }
-                            break;
-                        case 2:
-                            if (pm.OwnedPartyMembers.Count == 0)
-                            {
-                                Console.WriteLine("파티원이 없습니다.");
-                                Console.WriteLine();
-                            }
-                            else
-                            {
-                                Console.WriteLine("방출하고자 하는 파티원을 선택해주세요.");
-                                int userChoice = CheckInput(1, pm.OwnedPartyMembers.Count) - 1;
-                                pm.PartyMembers.Add(pm.OwnedPartyMembers[userChoice]);
-                                pm.OwnedPartyMembers.Remove(pm.OwnedPartyMembers[userChoice]);
-
-                            }
-                            break;
-                        case 0:
-                            return;
+                        Console.WriteLine($"{i}. {pm.OwnedPartyMembers[i - 1].Name} ({pm.OwnedPartyMembers[i - 1].Job})");
                     }
                 }
+                Console.WriteLine();
+                Console.WriteLine("1. 파티원 모집");
+                Console.WriteLine("2. 파티원 방출");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("0. 나가기");
+                Console.ResetColor();
+                Console.WriteLine();
+                int result = CheckInput(0, 2);
+                Console.WriteLine();
+                switch (result)
+                {
+                    case 1:
+                        if (pm.OwnedPartyMembers.Count > 1)
+                        {
+                            Console.WriteLine("파티원은 최대 2명까지 보유할 수 있습니다.");
+                            Thread.Sleep(500);
+                        }
+                        else
+                        {
+                            Console.WriteLine("모집하고자 하는 파티원을 선택해주세요.");
+                            int userChoice = CheckInput(1, pm.PartyMembers.Count) - 1;
+                            pm.OwnedPartyMembers.Add(pm.PartyMembers[userChoice]);
+
+                            pm.PartyMembers.Remove(pm.PartyMembers[userChoice]);
+
+                        }
+                        break;
+                    case 2:
+                        if (pm.OwnedPartyMembers.Count == 0)
+                        {
+                            Console.WriteLine("파티원이 없습니다.");
+                            Console.WriteLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("방출하고자 하는 파티원을 선택해주세요.");
+                            int userChoice = CheckInput(1, pm.OwnedPartyMembers.Count) - 1;
+                            pm.PartyMembers.Add(pm.OwnedPartyMembers[userChoice]);
+                            pm.OwnedPartyMembers.Remove(pm.OwnedPartyMembers[userChoice]);
+
+                        }
+                        break;
+                    case 0:
+                        return;
+                }
+            }
         }
         #endregion
         static int CheckInput(int min, int max)
@@ -1335,7 +1335,7 @@ namespace MyApp
             int result;
             while (true)
             {
-                
+
                 int Cul = Console.CursorLeft;
                 int Cut = Console.CursorTop;
                 Console.SetCursorPosition(Cul, Cut);
