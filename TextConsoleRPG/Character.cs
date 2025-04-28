@@ -39,7 +39,7 @@ namespace TextConsoleRPG
         [JsonInclude]
         public int MaxHp { get; private set; } // 최대체력
         [JsonInclude]
-        public int CurMp { get; protected set; }
+        public int CurMp { get; set; }
         [JsonInclude]
         public int PreDgnMp { get; set; }
         [JsonInclude]
